@@ -1,0 +1,10 @@
+.vscode
+.DS_Store
+# ignore virtual environments
+caip 
+terraform.tfstate
+terraform.tfstate.backup
+.terraform/
+terraform.tfvars
+run.sh
+

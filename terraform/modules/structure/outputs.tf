@@ -14,6 +14,19 @@
  * limitations under the License.
  */
 
-// Adding these outputs allows other modules as well as the calling
-// terraform script to access the attributes of these modules.
+// VPC-SC perimeter needs a list of projects to protect
+output "perimeter_project_trusted_data_number" {
+  value = google_project.prj_trusted_data.number
+}
 
+output "perimeter_project_trusted_analytics_number" {
+  value = google_project.prj_trusted_analytics.number
+}
+
+output "perimeter_project_trusted_data_etl_number" {
+  value = google_project.prj_trusted_data_etl.number
+}
+
+output "perimeter_project_kms_number" {
+  value = google_project.prj_kms.number
+}

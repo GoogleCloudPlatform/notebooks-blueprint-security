@@ -49,11 +49,38 @@ data "google_storage_project_service_account" "gcs_default_account_bootstrap" {
   project = var.project_bootstrap
 }
 
+# TODO create a temporry VM in the analytics project so that a default account is created
+# resource "google_compute_instance" "tmp_vm" {
+#   name         = "tmp_vm"
+#   machine_type = "n1-standard-1"
+#   zone         = "us-central1-a"
+#   project = var.project_trusted_analytics
+#   boot_disk {
+#     initialize_params {
+#       image = "debian-cloud/debian-9"
+#     }
+#   }
+
+#   // Local SSD disk
+#   scratch_disk {
+#     interface = "SCSI"
+#   }
+
+#   network_interface {
+#     network = "default"
+
+#     access_config {
+#       // Ephemeral IP
+#     }
+#   }
+# }
+
+
 # TODO somehow need to get the SA used by CAIP service's identity used to create compute
 # // get the GCS default service account for the bootstrap project
-data "google_compute_default_service_account" "gce_default_account_analytics" {
-  project = var.project_trusted_analytics
-}
+# data "google_compute_default_service_account" "gce_default_account_analytics" {
+#   project = var.project_trusted_analytics
+# }
 
 // get the notebook service account
 //TODO remove hardcoded SA account name (have to split the @ out)
@@ -81,7 +108,7 @@ resource "google_kms_crypto_key_iam_binding" "iam_p_bq_sa_confid" {
       "serviceAccount:${data.google_bigquery_default_service_account.bq_default_account.email}",
       "serviceAccount:${data.google_storage_project_service_account.gcs_default_account_data.email_address}",
       "serviceAccount:${data.google_storage_project_service_account.gcs_default_account_bootstrap.email_address}",
-      "serviceAccount:${data.google_compute_default_service_account.gce_default_account_analytics.email}",
+#      "serviceAccount:${data.google_compute_default_service_account.gce_default_account_analytics.email}",
       "serviceAccount:service-${data.google_project.project_analytics.number}@compute-system.iam.gserviceaccount.com",
     ],
     var.key_bq_confid_members,

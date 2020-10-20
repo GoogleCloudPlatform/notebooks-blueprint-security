@@ -28,7 +28,7 @@ variable "project_id" {
 variable "ip_range" {
   description = "Specifies the CIDR for the network's primary subnetwork"
   type        = string
-  default     = "10.10.32.0/22"
+  default     = "10.100.32.0/21"
 }
 
 variable "region" {

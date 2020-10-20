@@ -28,16 +28,27 @@ resource "google_storage_bucket_object" "postscript" {
   bucket   = var.bucket_bootstrap.name
 } 
 
+#IAM for each Data Scientist
+resource "google_project_iam_member" "notebook_caip_user_iam" {
+  project = var.project_id
+  role    = "roles/notebooks.viewer"
+  for_each        = toset(var.caip_users)
+
+  member  = "user:${each.value}"
+}
+
+
+
 # Creates a confid notebook per relevant user that has file
 # download disabled. Although some values are hardcoded, you can
 # customize them using variables.
-resource "google_notebooks_instance" "caip_nbk_p_aaaa_confid" {
+resource "google_notebooks_instance" "caip_nbk_p_bbbb_confid" {
   provider        = google-beta
   project         = var.project_id
   for_each        = toset(var.caip_users)
   service_account = var.caip_sa_email
 
-  name         = format("caip-nbk-aaaa-confid-%s", replace(each.value, "/[@._]/", "-"))
+  name         = format("caip-nbk-bbbb-confid-%s", replace(each.value, "/[@._]/", "-"))
   location     = var.zone
   machine_type = "n1-standard-1"
 

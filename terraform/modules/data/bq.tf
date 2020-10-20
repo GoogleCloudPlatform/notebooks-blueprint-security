@@ -19,7 +19,7 @@
 // create datasets
 //=====================================================================
 resource "google_bigquery_dataset" "bq_p_confid_dataset" {
-  dataset_id    = "bq_0000_p_confid_dataset"
+  dataset_id    = "bq_bbbb_p_confid_dataset"
   friendly_name = "confid data"
   description   = "Dataset holding tables with PII"
   project       = var.project_trusted_data
@@ -44,11 +44,13 @@ resource "google_bigquery_dataset" "bq_p_confid_dataset" {
 
 resource "google_bigquery_table" "confid_table" {
   dataset_id = google_bigquery_dataset.bq_p_confid_dataset.dataset_id
+  project       = var.project_trusted_data
   table_id   = "confid_table"
 }
 
 resource "google_bigquery_job" "confid_table_load" {
-  job_id     = "confid_table_load"
+  project    = var.project_trusted_data
+  job_id     = format("confid_table_load_%s", formatdate("YYYY_MM_DD_hh_mm_ss", timestamp()))
 
   load {
     source_uris = [

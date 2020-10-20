@@ -47,25 +47,27 @@ resource "google_folder_organization_policy" "service_account_policy" {
   }
 }
 
+
 // TODO can the SA be in a separate project to be centrally managed?  For now, place into the Analytics folder
 // Override org policy to only allow service accounts in the analytics project
-resource "google_project_organization_policy" "service_account_policy" {
-  project    = google_project.prj_trusted_analytics.name
-  constraint = "iam.disableServiceAccountCreation"
+# resource "google_project_organization_policy" "service_account_policy" {
+#   project    = google_project.prj_trusted_analytics.name
+#   constraint = "iam.disableServiceAccountCreation"
 
-  boolean_policy {
-    enforced = false
-  }
-}
+#   boolean_policy {
+#     enforced = false
+#   }
+# }
 
-resource "google_folder_organization_policy" "service_account_key_policy" {
-  folder     = google_folder.fldr_trusted.name
-  constraint = "iam.disableServiceAccountKeyCreation"
+#TODO add to a lockdown module
+# resource "google_folder_organization_policy" "service_account_key_policy" {
+#   folder     = google_folder.fldr_trusted.name
+#   constraint = "iam.disableServiceAccountKeyCreation"
 
-  boolean_policy {
-    enforced = true
-  }
-}
+#   boolean_policy {
+#     enforced = true
+#   }
+# }
 
 resource "google_folder_organization_policy" "iam_grant_policy" {
   folder     = google_folder.fldr_trusted.name

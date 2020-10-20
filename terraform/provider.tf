@@ -16,18 +16,18 @@ limitations under the License.
 
 // Configures the default project and zone for underlying Google Cloud API calls
 provider "google" {
-  project = var.project
+  project = var.default_billing_project
   zone    = var.zone
   version = ">= 3.33.0"
   credentials = file("/tmp/key.json")
-  // billing_project = "ain-bp"
+  billing_project = var.default_billing_project
   user_project_override = true
 }
 
 provider "google-beta" {
-  project = var.project
+  project = var.default_billing_project
   version = ">= 3.33.0"
   credentials = file("/tmp/key.json")
-  billing_project = var.project
+  billing_project = var.default_billing_project
   user_project_override = true
 }

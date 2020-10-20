@@ -89,7 +89,12 @@ resource "google_project_iam_member" "notebook_instance_bq_job" {
   member  = "serviceAccount:${google_service_account.sa_p_notebook_compute.email}"
 }
 
-//TODO do we need this role
+resource "google_project_iam_member" "notebook_instance_bq_session" {
+  project = var.project_trusted_analytics
+  role    = "roles/bigquery.readSessionUser"
+  member  = "serviceAccount:${google_service_account.sa_p_notebook_compute.email}"
+}
+
 resource "google_project_iam_member" "notebook_instance_caip" {
   project = var.project_trusted_analytics
   role    = "roles/notebooks.admin"

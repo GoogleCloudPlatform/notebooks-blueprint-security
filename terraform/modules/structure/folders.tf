@@ -21,21 +21,21 @@ resource "google_folder" "fldr_trusted" {
 }
 
 resource "google_project" "prj_trusted_data" {
-  name            = "prj-aaaa-p-trusted-data"
+  name            = "prj-bbbb-p-trusted-data"
   project_id      = var.project_trusted_data
   folder_id       = google_folder.fldr_trusted.name
   billing_account = var.billing_account
 }
 
 resource "google_project" "prj_trusted_analytics" {
-  name            = "prj-aaaa-p-trusted-analytics"
+  name            = "prj-bbbb-p-trusted-analytics"
   project_id      = var.project_trusted_analytics
   folder_id       = google_folder.fldr_trusted.name
   billing_account = var.billing_account
 }
 
 resource "google_project" "prj_trusted_data_etl" {
-  name            = "prj-aaaa-p-trusted-data-etl"
+  name            = "prj-bbbb-p-trusted-data-etl"
   project_id      = var.project_trusted_data_etl
   folder_id       = google_folder.fldr_trusted.name
   billing_account = var.billing_account
@@ -43,7 +43,7 @@ resource "google_project" "prj_trusted_data_etl" {
 
 # TODO The parent env should be the boot project
 resource "google_project" "prj_kms" {
-  name            = "prj-aaaa-b-kms"
+  name            = "prj-bbbb-b-kms"
   project_id      = var.project_trusted_kms
   folder_id       = var.parent_env
   billing_account = var.billing_account

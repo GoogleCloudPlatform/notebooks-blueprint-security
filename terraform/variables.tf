@@ -19,11 +19,25 @@ This file exposes variables that can be overridden to customize your cloud confi
 https://www.terraform.io/docs/configuration/variables.html
 */
 
+// Determine whether or not the resource structure should be deployed as is or
+// use existing hierarchy.
+// If you change the value to false, please uncomment the `perimeter_projects` variable below
+variable "enable_module_structure" {
+  description = "Whether to create the Terraform structure module."
+  default = true
+}
+
+# Note: These projects are dynamically created by this blueprint.  If you choose to not deplooy the structure module,
+# please uncomment and provide the project names in your tfvars file.
+# variable "perimeter_projects" {
+#   description = "Projects to add to perimeter."
+#   type        = list(string)
+# }
+
 /*
 Required Variables
 These must be provided at runtime.
 */
-
 variable "zone" {
   description = "The zone in which to create the secured notebook. Must match the region"
   type        = string
@@ -39,8 +53,8 @@ variable "region_trusted_network" {
   type        = string
 }
 
-variable "project" {
-  description = "The name of the project in which to create the notebook."
+variable "default_billing_project" {
+  description = "The name of the default billing and resource project in case one is not specified in the terraform"
   type        = string
 }
 
@@ -101,11 +115,6 @@ variable "trusted_scientists" {
   description = "The list of trusted users."
 }
 
-variable "enable_module_structure" {
-  description = "Whether to create the Terraform structure module."
-  default = false
-}
-
 variable "billing_account" {
   description = "Billing account required if creating structure. Otherwise, optional"
   type        = string
@@ -114,24 +123,65 @@ variable "billing_account" {
 
 # TODO(mayran): Add a map project, services.
 # Add depends_on in all module
-variable "enable_services" {
+variable "enable_services_data" {
+  description = "The list of services to enable."
+  default     = [
+    "cloudkms.googleapis.com",
+    "storage.googleapis.com",
+    "bigquery.googleapis.com",
+    "cloudresourcemanager.googleapis.com",
+  ]
+}
+
+variable "enable_services_data_etl" {
+  description = "The list of services to enable."
+  default     = [
+    "cloudkms.googleapis.com",
+    "cloudresourcemanager.googleapis.com",
+  ]
+}
+
+variable "enable_services_analytics" {
   description = "The list of services to enable."
   default     = [
     "compute.googleapis.com", 
     "cloudkms.googleapis.com",
     "secretmanager.googleapis.com",
     "notebooks.googleapis.com",
-    "accesscontextmanager.googleapis.com"
+    "accesscontextmanager.googleapis.com",
+    "storage.googleapis.com",
+    "bigquery.googleapis.com",
+    "cloudresourcemanager.googleapis.com",
   ]
 }
 
-variable "perimeters_ip_subnetworks" {
-  description = "IP subnets for perimeters"
-  type        = list(string)
+# likely the same project as the analytics, match the APIs
+variable "enable_services_networks" {
+  description = "The list of services to enable."
+  default     = [
+    "compute.googleapis.com", 
+    "cloudkms.googleapis.com",
+    "secretmanager.googleapis.com",
+    "notebooks.googleapis.com",
+    "accesscontextmanager.googleapis.com",
+    "storage.googleapis.com",
+    "bigquery.googleapis.com",
+    "cloudresourcemanager.googleapis.com",
+  ]
 }
 
-variable "perimeter_projects" {
-  description = "Projects to add to perimeter."
+variable "enable_services_kms" {
+  description = "The list of services to enable."
+  default     = [
+    "cloudkms.googleapis.com",
+    "secretmanager.googleapis.com",
+    "cloudresourcemanager.googleapis.com",
+  ]
+}
+
+
+variable "perimeters_ip_subnetworks" {
+  description = "IP subnets for perimeters"
   type        = list(string)
 }
 

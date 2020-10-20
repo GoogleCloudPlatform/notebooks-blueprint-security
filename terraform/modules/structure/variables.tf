@@ -55,3 +55,8 @@ variable "billing_account" {
   type        = string
   default     = ""
 }
+
+variable "terraform_sa_email" {
+  description = "String for the email of the Terraform Service Account"
+  type        = string
+}

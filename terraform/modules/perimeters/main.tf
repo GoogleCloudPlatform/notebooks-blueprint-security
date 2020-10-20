@@ -22,7 +22,7 @@
 # Use existing default policy.
 resource "google_access_context_manager_service_perimeter" "trusted_perimeter_resource" {
   parent = "accessPolicies/${var.policy_name}"
-  name   = "accessPolicies/${var.policy_name}/servicePerimeters/restrict_all"
+  name   = "accessPolicies/${var.policy_name}/servicePerimeters/blueprint_restrict_all"
   title  = "restrict_all"
   status {
     restricted_services = [
@@ -37,6 +37,7 @@ resource "google_access_context_manager_service_perimeter" "trusted_perimeter_re
       "secretmanager.googleapis.com"
     ]
     resources = var.resources
+    access_levels = [google_access_context_manager_access_level.trusted_access_level.id]
   }
 }
 
@@ -53,7 +54,8 @@ resource "google_access_context_manager_access_level" "trusted_access_level" {
           "ENCRYPTED"
         ]
       }
-      regions = []
+      regions = [upper(var.region)]
+      ip_subnetworks = var.ip_subnetworks
     }
   }
 }

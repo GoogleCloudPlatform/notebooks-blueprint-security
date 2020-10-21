@@ -16,7 +16,7 @@
 
 # Top-level folder under an organization.
 resource "google_folder" "fldr_trusted" {
-  display_name = "fldr-trusted"
+  display_name = format("elo-%s", var.folder_trusted)
   parent       = var.parent_env
 }
 

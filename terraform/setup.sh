@@ -193,10 +193,6 @@ echo "changing to terraform SA to provision resources"
 gcloud auth activate-service-account ${SA_NAME}@${DEPLOYMENT_PROJECT}.iam.gserviceaccount.com \
     --key-file /tmp/key.json
 
-echo " stopping for now"
-exit 0
-
-
 terraform init
 
 # terraform import \

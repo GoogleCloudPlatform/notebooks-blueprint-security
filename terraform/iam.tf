@@ -58,7 +58,7 @@ resource "google_project_iam_member" "notebook_instance_compute" {
 // Note: resourcemanager.projects.list is not applicable at project level, but is assigned in the BQ DataViewer predefined role (org level)
 resource "google_project_iam_custom_role" "role_restricted_data_viewer" {
   project     = var.project_trusted_analytics
-  role_id     = "restricted_data_viewer"
+  role_id     = "bbbb_restricted_data_viewer"
   title       = "Restricted Data Viewer"
   description = "BQ Data Viewer role with export removed"
   permissions = [

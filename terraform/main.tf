@@ -27,12 +27,13 @@ module "structure" {
   project_trusted_data_etl  = var.project_trusted_data_etl
   project_trusted_kms       = var.project_trusted_kms
   terraform_sa_email        = var.terraform_sa_email
-  # depends_on = [
+  depends_on = [
+    google_project_iam_member.notebook_instance_compute
   #   google_project_service.enable_services_trusted_analytics,
   #   google_project_service.enable_services_trusted_data,
   #   google_project_service.enable_services_trusted_data_etl,
   #   google_project_service.enable_services_trusted_kms
-  # ]
+  ]
 }
 
 resource "google_project_service" "enable_services_trusted_data" {

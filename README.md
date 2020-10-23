@@ -14,7 +14,7 @@ This repository provides an opinionated way to set up AI Platform Notebook in a 
         3.  the KMS keys
     4.  Your Access Context Manager policy used for VPC-SC configuration for your data scientists
         1.  Select your region from where you'd like data scientiests to access data
-    5.  Your IAM group and data scientists identities
+    5.  Create and get tour IAM group and data scientists identities
     6.  Your VPC subnet (CIDR) where you want your notebooks deployed
     7.  Your zone where you want your notebooks deployed
 2.  Update the `setup_variables.sh` file with your GCP specific resource information from step 1
@@ -31,10 +31,11 @@ source setup_variables.sh
 cd terraform
 # Note: The setup script needs a privilege account to create a terraform project and service account.
 # It will then provision using that SA instead of the privilege identity.
+#     - serviceAccountTokenCreator
 #     - service account admin
-#     - service account key admin
 #     - resource manager admin
 #     - access context manager admin
+
 gcloud auth login <privilegeId>
 ```
 

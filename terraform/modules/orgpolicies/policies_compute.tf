@@ -29,7 +29,7 @@
 # none
 
 resource "google_folder_organization_policy" "external_ip_policy" {
-  folder     = google_folder.fldr_trusted.name
+  folder     = var.folder_trusted
   constraint = "compute.vmExternalIpAccess"
 
   list_policy {
@@ -40,7 +40,7 @@ resource "google_folder_organization_policy" "external_ip_policy" {
 }
 
 resource "google_folder_organization_policy" "network_policy" {
-  folder     = google_folder.fldr_trusted.name
+  folder     = var.folder_trusted
   constraint = "compute.skipDefaultNetworkCreation"
 
   boolean_policy {
@@ -49,7 +49,7 @@ resource "google_folder_organization_policy" "network_policy" {
 }
 
 resource "google_folder_organization_policy" "serial_port_access_policy" {
-  folder     = google_folder.fldr_trusted.name
+  folder     = var.folder_trusted
   constraint = "compute.disableSerialPortAccess"
 
   boolean_policy {
@@ -58,7 +58,7 @@ resource "google_folder_organization_policy" "serial_port_access_policy" {
 }
 
 resource "google_folder_organization_policy" "serial_port_logging_policy" {
-  folder     = google_folder.fldr_trusted.name
+  folder     = var.folder_trusted
   constraint = "compute.disableSerialPortLogging"
 
   boolean_policy {
@@ -67,7 +67,7 @@ resource "google_folder_organization_policy" "serial_port_logging_policy" {
 }
 
 resource "google_folder_organization_policy" "ssh_policy" {
-  folder     = google_folder.fldr_trusted.name
+  folder     = var.folder_trusted
   constraint = "compute.requireOsLogin"
 
   boolean_policy {
@@ -78,7 +78,7 @@ resource "google_folder_organization_policy" "ssh_policy" {
 # TODO CAIP APIs do not allow create VM with shielded_policy, so cannot enable.
 # For now, need to have a script that runs later to stop the VM and enable the policy
 # resource "google_folder_organization_policy" "shielded_policy" {
-#   folder     = google_folder.fldr_trusted.name
+#   folder     = var.folder_trusted
 #   constraint = "compute.requireShieldedVm"
 #   boolean_policy {
 #     enforced = true
@@ -91,7 +91,7 @@ resource "google_folder_organization_policy" "ssh_policy" {
 #}
 
 resource "google_folder_organization_policy" "vpc_subnet_policy" {
-  folder     = google_folder.fldr_trusted.name
+  folder     = var.folder_trusted
   constraint = "compute.restrictSharedVpcSubnetworks"
 
   // list_policy {

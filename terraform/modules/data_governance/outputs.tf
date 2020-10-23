@@ -19,10 +19,10 @@ limitations under the License.
 
 // network_self_link can be used to reference the confid data key created by this module
 output "key_confid_data" {
-  value = google_kms_crypto_key.key_bbbb_p_confid_data.self_link
+  value = google_kms_crypto_key.key_dddd_p_confid_data.self_link
 }
 
 // subnet_self_link can be used to reference the confid etl key created by this module
 output "key_confid_etl" {
-  value = google_kms_crypto_key.key_bbbb_p_confid_etl.self_link
+  value = google_kms_crypto_key.key_dddd_p_confid_etl.self_link
 }

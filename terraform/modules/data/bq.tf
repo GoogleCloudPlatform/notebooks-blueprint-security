@@ -19,7 +19,7 @@
 // create datasets
 //=====================================================================
 resource "google_bigquery_dataset" "bq_p_confid_dataset" {
-  dataset_id    = "bq_bbbb_p_confid_dataset"
+  dataset_id    = "bq_dddd_p_confid_dataset"
   friendly_name = "confid data"
   description   = "Dataset holding tables with PII"
   project       = var.project_trusted_data
@@ -69,4 +69,5 @@ resource "google_bigquery_job" "confid_table_load" {
     write_disposition = "WRITE_APPEND"
     autodetect = true
   }
+
 }

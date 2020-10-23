@@ -42,13 +42,13 @@ resource "google_project_iam_member" "notebook_caip_user_iam" {
 # Creates a confid notebook per relevant user that has file
 # download disabled. Although some values are hardcoded, you can
 # customize them using variables.
-resource "google_notebooks_instance" "caip_nbk_p_bbbb_confid" {
+resource "google_notebooks_instance" "caip_nbk_p_dddd_confid" {
   provider        = google-beta
   project         = var.project_id
   for_each        = toset(var.caip_users)
   service_account = var.caip_sa_email
 
-  name         = format("caip-nbk-bbbb-confid-%s", replace(each.value, "/[@._]/", "-"))
+  name         = format("caip-nbk-dddd-confid-%s", split("@", each.value)[0])
   location     = var.zone
   machine_type = "n1-standard-1"
 
@@ -90,7 +90,6 @@ resource "google_notebooks_instance" "caip_nbk_p_bbbb_confid" {
     notebook-disable-nbconvert  = "true"
   }
 
-  # TODO update once module no longer in beta
   # allow idempotency
   lifecycle {
     prevent_destroy = false
@@ -110,8 +109,8 @@ resource "google_notebooks_instance" "caip_nbk_p_bbbb_confid" {
 
 
 
-# add secure boot
-# TODO how to get the VM name?
+# future: add secure boot
+# TODO need VM names
 #   provisioner "local-exec" {
 #     command = "gcloud compute instances stop ${local.notebook_name} && \
 #         gcloud compute instances stop ${local.notebook_name} --shielded-secure-boot && \

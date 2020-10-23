@@ -14,15 +14,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
 # Example:
 # `bash setup.sh $DEPLOYMENT_PROJECT_ID $ORGANIZATION_ID $POLICY_NAME $BILLING_ACCOUNT`
+
+
+set -x
+
 DEPLOYMENT_PROJECT=${DEPLOYMENT_PROJECT_ID}  # 12346789
 PARENT_FOLDER=${PARENT_FOLDER}       # 11112222
 ORGANIZATION=${ORGANIZATION_ID}              # 33334444
 POLICY_NAME=${POLICY_NAME}                   # 987654321
 BILLING_ACCOUNT=${BILLING_ACCOUNT}           # ABCD-2345-GHIJ
-SA_NAME="blueprint-terraform-b"
+SA_NAME="notebook-blueprint-terraform-d"
+
+echo "hi ${DEPLOYMENT_PROJECT}"
 
 echo "Make sure that you enable a billing account for the project."
 
@@ -80,11 +85,12 @@ if [[ $? -eq 1 ]]; then
 fi
 
 echo "Adding admin policies to the terraform SA...."
+echo ""
 
-gcloud projects add-iam-policy-binding ${DEPLOYMENT_PROJECT} \
+gcloud organizations add-iam-policy-binding ${ORGANIZATION} \
 --member serviceAccount:${SA_NAME}@${DEPLOYMENT_PROJECT}.iam.gserviceaccount.com \
---role roles/iam.roleAdmin
-echo "....Added project owner role"
+--role roles/iam.securityAdmin
+echo "....Added security admin role"
 
 # TODO maybe?
 gcloud organizations add-iam-policy-binding ${ORGANIZATION} \
@@ -122,10 +128,17 @@ gcloud organizations add-iam-policy-binding ${ORGANIZATION} \
 --role roles/iam.serviceAccountCreator
 echo "....Added service accout creator role"
 
-gcloud organizations add-iam-policy-binding ${ORGANIZATION} \
+# TODO remove since using oauth token for provider
+# gcloud organizations add-iam-policy-binding ${ORGANIZATION} \
+# --member serviceAccount:${SA_NAME}@${DEPLOYMENT_PROJECT}.iam.gserviceaccount.com \
+# --role roles/iam.serviceAccountKeyAdmin
+# echo "....Added service accout key admin role"
+
+gcloud projects add-iam-policy-binding ${DEPLOYMENT_PROJECT} \
 --member serviceAccount:${SA_NAME}@${DEPLOYMENT_PROJECT}.iam.gserviceaccount.com \
---role roles/iam.serviceAccountKeyAdmin
-echo "....Added service accout key admin role"
+--role roles/editor
+echo "....Added project editor role"
+
 
 gcloud projects add-iam-policy-binding ${DEPLOYMENT_PROJECT} \
 --member serviceAccount:${SA_NAME}@${DEPLOYMENT_PROJECT}.iam.gserviceaccount.com \
@@ -173,25 +186,30 @@ gcloud projects add-iam-policy-binding ${DEPLOYMENT_PROJECT} \
 echo "....Added notebooks runner role"
 
 # Create local key for the Terraform service account
-client_id=$(cat /tmp/key.json | jq -r '.client_id') || key_sa=""
-unique_id=$(gcloud iam service-accounts describe ${SA_NAME}@${DEPLOYMENT_PROJECT}.iam.gserviceaccount.com  --format="value(uniqueId)")
+# client_id=$(cat /tmp/key.json | jq -r '.client_id') || key_sa=""
+# unique_id=$(gcloud iam service-accounts describe ${SA_NAME}@${DEPLOYMENT_PROJECT}.iam.gserviceaccount.com  --format="value(uniqueId)")
 
-echo "client_id for the key is ${client_id}"
-echo "unique_id for the service account is ${unique_id}"
+# echo "client_id for the key is ${client_id}"
+# echo "unique_id for the service account is ${unique_id}"
 
-if [[ "$client_id" != "${unique_id}" ]]; then
-  echo "IDs do not match, creates key file for ${SA_NAME}@${DEPLOYMENT_PROJECT}.iam.gserviceaccount.com in /tmp/key.json..."
+# if [[ "$client_id" != "${unique_id}" ]]; then
+#   echo "IDs do not match, creates key file for ${SA_NAME}@${DEPLOYMENT_PROJECT}.iam.gserviceaccount.com in /tmp/key.json..."
   
-  rm /tmp/key.json
+#   rm /tmp/key.json
 
-  gcloud iam service-accounts keys create /tmp/key.json \
-    --iam-account ${SA_NAME}@${DEPLOYMENT_PROJECT}.iam.gserviceaccount.com
+#   gcloud iam service-accounts keys create /tmp/key.json \
+#     --iam-account ${SA_NAME}@${DEPLOYMENT_PROJECT}.iam.gserviceaccount.com
 
-fi
+# fi
 
-echo "changing to terraform SA to provision resources"
-gcloud auth activate-service-account ${SA_NAME}@${DEPLOYMENT_PROJECT}.iam.gserviceaccount.com \
-    --key-file /tmp/key.json
+
+# echo "changing to terraform SA to provision resources"
+# gcloud auth activate-service-account ${SA_NAME}@${DEPLOYMENT_PROJECT}.iam.gserviceaccount.com \
+#     --key-file /tmp/key.json
+
+# impersonnate with a 1 hr token (the default time)
+gcloud config set auth/impersonate_service_account ${SA_NAME}@${DEPLOYMENT_PROJECT}.iam.gserviceaccount.com
+export GOOGLE_OAUTH_ACCESS_TOKEN=$(gcloud auth print-access-token)
 
 terraform init
 

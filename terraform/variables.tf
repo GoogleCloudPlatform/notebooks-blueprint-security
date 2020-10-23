@@ -24,15 +24,15 @@ https://www.terraform.io/docs/configuration/variables.html
 // If you change the value to false, please uncomment the `perimeter_projects` variable below
 variable "enable_module_structure" {
   description = "Whether to create the Terraform structure module."
-  default = true
+  default = false
 }
 
-# Note: These projects are dynamically created by this blueprint.  If you choose to not deplooy the structure module,
+# Note: These projects are dynamically created by this blueprint.  If you choose to not deploy the structure module,
 # please uncomment and provide the project names in your tfvars file.
-# variable "perimeter_projects" {
-#   description = "Projects to add to perimeter."
-#   type        = list(string)
-# }
+variable "perimeter_projects" {
+  description = "Projects to add to perimeter."
+  type        = list(string)
+}
 
 /*
 Required Variables
@@ -44,12 +44,12 @@ variable "zone" {
 }
 
 variable "region" {
-  description = "The region in which to create the notebook and data."
+  description = "The region 2 letter identifier for keys, storage, vpc-sc, etc."
   type        = string
 }
 
 variable "region_trusted_network" {
-  description = "The region in which to create the notebook and data."
+  description = "The region in which to create the notebook and data. such as us-central1-a"
   type        = string
 }
 
@@ -90,6 +90,11 @@ variable "project_trusted_data_etl" {
 
 variable "parent_env" {
   description = "Top level environment folder that will house the notebook"
+  type        = string
+}
+
+variable "bootstrap_env" {
+  description = "environment folder that has bootstrap resources"
   type        = string
 }
 

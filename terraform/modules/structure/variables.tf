@@ -21,7 +21,12 @@ https://www.terraform.io/docs/configuration/variables.html
 */
 
 variable "parent_env" {
-  description = "configured for folder representing an environment"
+  description = "configured for folder representing a production environment"
+  type        = string
+}
+
+variable "bootstrap_env" {
+  description = "configured for folder representing sensitive bootstrap environment"
   type        = string
 }
 

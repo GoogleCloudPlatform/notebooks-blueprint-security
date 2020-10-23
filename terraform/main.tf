@@ -20,6 +20,7 @@ module "structure" {
   source                    = "./modules/structure"
   for_each                  = tobool(var.enable_module_structure) == true ? toset(["1"]) : toset([])
   parent_env                = var.parent_env
+  bootstrap_env             = var.bootstrap_env
   billing_account           = var.billing_account
   folder_trusted            = var.folder_trusted
   project_trusted_analytics = var.project_trusted_analytics
@@ -28,12 +29,21 @@ module "structure" {
   project_trusted_kms       = var.project_trusted_kms
   terraform_sa_email        = var.terraform_sa_email
   depends_on = [
-    google_project_iam_member.notebook_instance_compute
-  #   google_project_service.enable_services_trusted_analytics,
-  #   google_project_service.enable_services_trusted_data,
-  #   google_project_service.enable_services_trusted_data_etl,
-  #   google_project_service.enable_services_trusted_kms
+    #  google_project_iam_member.notebook_instance_compute
+    #  google_project_service.enable_services_trusted_analytics,
+    #  google_project_service.enable_services_trusted_data,
+    #  google_project_service.enable_services_trusted_data_etl,
+    #  google_project_service.enable_services_trusted_kms
   ]
+}
+
+# TODO externalize the folder_ID
+module "orgpolicies" {
+  source         = "./modules/orgpolicies"
+  folder_trusted = "468858118486"
+
+  # only disable after all SA's have been created
+  depends_on = [google_service_account.sa_p_notebook_compute]
 }
 
 resource "google_project_service" "enable_services_trusted_data" {
@@ -93,35 +103,15 @@ module "network" {
   source     = "./modules/network"
   project_id = var.project_networks
   region     = var.region_trusted_network
-  depends_on = [google_project_service.enable_services_trusted_networks]
+  #depends_on = [google_project_service.enable_services_trusted_networks]
 }
 
 module "firewall" {
   source     = "./modules/firewall"
   project_id = var.project_networks
   vpc_name   = module.network.vpc_trusted_private
-  depends_on = [google_project_service.enable_services_trusted_networks]
+  #depends_on = [google_project_service.enable_services_trusted_networks]
 }
-
-# Configures perimeters.
-# module "perimeters" {
-#   source      = "./modules/perimeters"
-#   region      = var.region
-#   org         = var.org
-#   policy_name = var.default_policy_name
-#   resources = [
-#     format("projects/%s", module.structure[1].perimeter_project_trusted_analytics_number),
-#     format("projects/%s", module.structure[1].perimeter_project_trusted_data_number),
-#     format("projects/%s", module.structure[1].perimeter_project_trusted_data_etl_number),
-#     format("projects/%s", module.structure[1].perimeter_project_kms_number)
-#   ]
-#   ip_subnetworks     = var.perimeters_ip_subnetworks
-#   terraform_sa_email = var.terraform_sa_email
-#   depends_on = [
-#     module.structure,
-#     module.notebooks
-#   ]
-# }
 
 # Custom module called 'data_governance' in the modules folder
 # Provides data governance controls
@@ -130,7 +120,7 @@ module "data_governance" {
   project_kms     = var.project_trusted_kms
   project_secrets = var.project_trusted_kms
   region          = var.region
-  depends_on      = [google_project_service.enable_services_trusted_kms]
+  #depends_on      = [google_project_service.enable_services_trusted_kms]
 }
 
 # Provides data controls
@@ -149,10 +139,10 @@ module "data" {
   ]
   depends_on = [
     module.network,
-    google_project_service.enable_services_trusted_data,
-    google_project_service.enable_services_trusted_data_etl,
-    google_project_service.enable_services_trusted_kms,
-    google_project_service.enable_services_trusted_analytics,
+    #google_project_service.enable_services_trusted_data,
+    #google_project_service.enable_services_trusted_data_etl,
+    #google_project_service.enable_services_trusted_kms,
+    #google_project_service.enable_services_trusted_analytics,
   ]
 }
 
@@ -167,8 +157,18 @@ module "notebooks" {
   sb_trusted_private  = module.network.subnet_trusted_private
   key_confid_data     = module.data_governance.key_confid_data
   depends_on = [
-    google_project_service.enable_services_trusted_analytics,
+    #google_project_service.enable_services_trusted_analytics,
     module.data
   ]
   // obj_notebook_postscript = module.data.bkt_p_bootstrap_notebook_postscript.name
+}
+
+module "perimeters" {
+  source             = "./modules/perimeters"
+  org                = var.org
+  policy_name        = var.default_policy_name
+  region             = var.region
+  resources          = var.perimeter_projects
+  ip_subnetworks     = var.perimeters_ip_subnetworks
+  terraform_sa_email = var.terraform_sa_email
 }

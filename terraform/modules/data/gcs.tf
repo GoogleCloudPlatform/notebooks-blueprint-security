@@ -21,7 +21,7 @@ limitations under the License.
 
 // confid bucket is encrypted with CMEK key and with versioning
 resource "google_storage_bucket" "bkt_p_confid" {
-  name               = "${var.project_bootstrap}-bkt-bbbb-p-confid"
+  name               = "${var.project_bootstrap}-bkt-dddd-p-confid"
   project            = var.project_trusted_data
   location           = var.region
   uniform_bucket_level_access = true
@@ -37,7 +37,7 @@ resource "google_storage_bucket" "bkt_p_confid" {
 }
 
 resource "google_storage_bucket" "bkt_p_bootstrap_notebooks" {
-  name               = "${var.project_bootstrap}-bkt-bbbb-p-bootstrap-notebooks"
+  name               = "${var.project_bootstrap}-bkt-dddd-p-bootstrap-notebooks"
   project            = var.project_bootstrap
   location           = var.region
   uniform_bucket_level_access = true
@@ -54,7 +54,7 @@ resource "google_storage_bucket" "bkt_p_bootstrap_notebooks" {
 
 // a temporary bucket for intake for data flow/DLP processing
 resource "google_storage_bucket" "bkt_p_data_etl" {
-  name               = "${var.project_bootstrap}-bkt-bbbb-p-data-etl"
+  name               = "${var.project_bootstrap}-bkt-dddd-p-data-etl"
   project            = var.project_trusted_data_etl
   location           = var.region
   uniform_bucket_level_access = true

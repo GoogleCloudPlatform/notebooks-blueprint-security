@@ -14,6 +14,22 @@
  * limitations under the License.
  */
 
+# TODO adding these for foundation support
+#==================
+# Grant terraform SA ability to create sample BQ dataset within the data project
+# resource "google_project_iam_member" "data_prj_bq_data_owner" {
+#   project = var.project_trusted_data
+#   role    =  "roles/bigquery.admin"
+#   member  = "serviceAccount:${var.terraform_sa_email}"
+# }
+
+# resource "google_project_iam_member" "data_prj_storage_admin" {
+#   project = var.project_trusted_data
+#   role    =  "roles/bigquery.admin"
+#   member  = "serviceAccount:${var.terraform_sa_email}"
+# }
+#==================
+
 # The notebook-compute-sa provides the underlying policies that the compute uses to access other resources
 # within the project for the data scientist.  
 #
@@ -23,6 +39,8 @@ resource "google_service_account" "sa_p_notebook_compute" {
   project      = var.project_trusted_analytics
   account_id   = "sa-p-notebook-compute"
   display_name = "Notebooks in trusted environment"
+
+  depends_on = [module.structure]
 }
 
 
@@ -58,7 +76,7 @@ resource "google_project_iam_member" "notebook_instance_compute" {
 // Note: resourcemanager.projects.list is not applicable at project level, but is assigned in the BQ DataViewer predefined role (org level)
 resource "google_project_iam_custom_role" "role_restricted_data_viewer" {
   project     = var.project_trusted_analytics
-  role_id     = "bbbb_restricted_data_viewer"
+  role_id     = "dddd_restricted_data_viewer"
   title       = "Restricted Data Viewer"
   description = "BQ Data Viewer role with export removed"
   permissions = [

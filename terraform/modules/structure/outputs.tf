@@ -30,3 +30,7 @@ output "perimeter_project_trusted_data_etl_number" {
 output "perimeter_project_kms_number" {
   value = google_project.prj_kms.number
 }
+
+output "high_trust_folder" {
+  value = google_folder.fldr_trusted.name
+}

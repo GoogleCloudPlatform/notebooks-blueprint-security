@@ -14,11 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-/*
-This file exposes module variables that can be overridden to customize the network
-configuration
-https://www.terraform.io/docs/configuration/variables.html
-*/
 
 variable "project_id" {
   description = "the project for this network"

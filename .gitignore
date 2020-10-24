@@ -4,7 +4,10 @@
 caip 
 terraform.tfstate
 terraform.tfstate.backup
+*tfstate*
 .terraform/
 terraform.tfvars
 run.sh
 
+# tests
+*scan*

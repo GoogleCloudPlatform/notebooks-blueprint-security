@@ -14,19 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-// Adding these outputs allows other modules as well as the calling
-// terraform script to access the attributes of these modules.
-
-// bucket used for ETL pipeline created by this module
+# bucket used for ETL pipeline created by this module
 output "bkt_p_data_etl" {
   value = google_storage_bucket.bkt_p_data_etl.self_link
 }
 
+# bucket containing the boot scripts for notebooks
 output "bkt_p_bootstrap_notebook" {
   value = google_storage_bucket.bkt_p_bootstrap_notebooks
 }
-
-// // provides the name to append to the gs:// in Notebook postscript metadata value
-// output "bkt_p_bootstrap_notebook-postscript" {
-//   value = google_storage_bucket_object.notebook-postscript.name
-// }

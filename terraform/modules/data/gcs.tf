@@ -14,14 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-// TODO fix the business unit 4 digit number
 
-// TODO move the CAIP notebook startup script here
-// the GCS bucket should be in the boot environment so it cannot be altered
-
-// confid bucket is encrypted with CMEK key and with versioning
+# confid bucket is configured as follows:
+#    - encrypted with CMEK key
+#    - versioning enabled
+#    - uniform bucket level access
 resource "google_storage_bucket" "bkt_p_confid" {
-  name               = "${var.project_bootstrap}-bkt-dddd-p-confid"
+  name               = "${var.project_bootstrap}-bkt-eeee-p-confid"
   project            = var.project_trusted_data
   location           = var.region
   uniform_bucket_level_access = true
@@ -36,8 +35,9 @@ resource "google_storage_bucket" "bkt_p_confid" {
   depends_on = [google_kms_crypto_key_iam_binding.iam_p_bq_sa_confid]
 }
 
+# the GCS bucket containing boot scrtips should be in the boot environment so it cannot be altered
 resource "google_storage_bucket" "bkt_p_bootstrap_notebooks" {
-  name               = "${var.project_bootstrap}-bkt-dddd-p-bootstrap-notebooks"
+  name               = "${var.project_bootstrap}-bkt-eeee-p-bootstrap-notebooks"
   project            = var.project_bootstrap
   location           = var.region
   uniform_bucket_level_access = true
@@ -52,9 +52,9 @@ resource "google_storage_bucket" "bkt_p_bootstrap_notebooks" {
   depends_on = [google_kms_crypto_key_iam_binding.iam_p_bq_sa_confid]
 }
 
-// a temporary bucket for intake for data flow/DLP processing
+# a temporary bucket for intake for data flow/DLP processing in the future
 resource "google_storage_bucket" "bkt_p_data_etl" {
-  name               = "${var.project_bootstrap}-bkt-dddd-p-data-etl"
+  name               = "${var.project_bootstrap}-bkt-eeee-p-data-etl"
   project            = var.project_trusted_data_etl
   location           = var.region
   uniform_bucket_level_access = true
@@ -64,7 +64,7 @@ resource "google_storage_bucket" "bkt_p_data_etl" {
   encryption {
     default_kms_key_name = var.key_confid_etl
   }
-  // create a bucket lifecycle policy to delete after 1 day
+  # create a bucket lifecycle policy to delete after 1 day
   lifecycle_rule {
     action {
       type = "Delete"
@@ -76,6 +76,7 @@ resource "google_storage_bucket" "bkt_p_data_etl" {
   depends_on = [google_kms_crypto_key_iam_binding.iam_p_gcs_sa_confid_etl]
 }
 
+# load sample fake PII data into the higher trust bucket
 resource "google_storage_bucket_object" "confid_data" {
   name     = "confid_data.csv"
   source   = "${path.module}/files/confid.csv"

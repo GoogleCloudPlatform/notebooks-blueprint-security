@@ -24,8 +24,8 @@
 # Use existing default policy.
 resource "google_access_context_manager_service_perimeter" "higher_trusted_perimeter_resource" {
   parent = "accessPolicies/${var.policy_name}"
-  name   = "accessPolicies/${var.policy_name}/servicePerimeters/sp_p_higher_trust_analytics"
-  title  = "sp_p_higher_trust_analytics"
+  name   = "accessPolicies/${var.policy_name}/servicePerimeters/sp_p_higher_trust_analytics_eeee"
+  title  = "sp_p_higher_trust_analytics_eeee"
   status {
     restricted_services = [
       "compute.googleapis.com",
@@ -43,11 +43,11 @@ resource "google_access_context_manager_service_perimeter" "higher_trusted_perim
   }
 }
 
-# Enable additional conditions as needed with endpoint verification.
+# Enable additional conditions as needed with endpoint verification by uncommenting items below
 resource "google_access_context_manager_access_level" "trusted_access_level" {
   parent = "accessPolicies/${var.policy_name}"
-  name   = "accessPolicies/${var.policy_name}/accessLevels/alp_p_higher_trust_analytics"
-  title  = "alp_p_higher_trust_analytics"
+  name   = "accessPolicies/${var.policy_name}/accessLevels/alp_p_higher_trust_analytics_eeee"
+  title  = "alp_p_higher_trust_analytics_eeee"
   basic {
     conditions {
     #   device_policy {

@@ -14,7 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-# Custom module called 'structure' in the modules folder
 # Provides resource manager, folder structure, and org level settings
 module "structure" {
   source                    = "./modules/structure"
@@ -28,21 +27,14 @@ module "structure" {
   project_trusted_data_etl  = var.project_trusted_data_etl
   project_trusted_kms       = var.project_trusted_kms
   terraform_sa_email        = var.terraform_sa_email
-  depends_on = [
-    #  google_project_iam_member.notebook_instance_compute
-    #  google_project_service.enable_services_trusted_analytics,
-    #  google_project_service.enable_services_trusted_data,
-    #  google_project_service.enable_services_trusted_data_etl,
-    #  google_project_service.enable_services_trusted_kms
-  ]
 }
 
-# TODO externalize the folder_ID
 module "orgpolicies" {
-  source         = "./modules/orgpolicies"
-  folder_trusted = "468858118486"
+  source             = "./modules/orgpolicies"
+  folder_trusted     = module.structure.high_trust_folder
+  resource_locations = var.resource_locations
 
-  # only disable after all SA's have been created
+  # only configure org policies after all SA's have been created
   depends_on = [google_service_account.sa_p_notebook_compute]
 }
 
@@ -96,34 +88,29 @@ resource "google_project_service" "enable_services_trusted_kms" {
   depends_on                 = [module.structure]
 }
 
-# This module is called 'network' and is defined in the modules folder
-# We are creating an instance also called 'network'
-# Enables required services for the module.
+# Configure the networks for the CAIP Notebooks
 module "network" {
   source     = "./modules/network"
   project_id = var.project_networks
   region     = var.region_trusted_network
-  #depends_on = [google_project_service.enable_services_trusted_networks]
 }
 
+# Configures the firewall rules in the higher trust environment
 module "firewall" {
   source     = "./modules/firewall"
   project_id = var.project_networks
   vpc_name   = module.network.vpc_trusted_private
-  #depends_on = [google_project_service.enable_services_trusted_networks]
 }
 
-# Custom module called 'data_governance' in the modules folder
-# Provides data governance controls
+# Provides data governance controls such as KMS and secrets
 module "data_governance" {
   source          = "./modules/data_governance"
   project_kms     = var.project_trusted_kms
   project_secrets = var.project_trusted_kms
   region          = var.region
-  #depends_on      = [google_project_service.enable_services_trusted_kms]
 }
 
-# Provides data controls
+# Configures data resources holding PII information
 module "data" {
   source                    = "./modules/data"
   project_trusted_data      = var.project_trusted_data
@@ -139,13 +126,10 @@ module "data" {
   ]
   depends_on = [
     module.network,
-    #google_project_service.enable_services_trusted_data,
-    #google_project_service.enable_services_trusted_data_etl,
-    #google_project_service.enable_services_trusted_kms,
-    #google_project_service.enable_services_trusted_analytics,
   ]
 }
 
+# Configures the notebooks as well as startup scripts
 module "notebooks" {
   source              = "./modules/notebooks"
   project_id          = var.project_trusted_analytics
@@ -157,12 +141,11 @@ module "notebooks" {
   sb_trusted_private  = module.network.subnet_trusted_private
   key_confid_data     = module.data_governance.key_confid_data
   depends_on = [
-    #google_project_service.enable_services_trusted_analytics,
     module.data
   ]
-  // obj_notebook_postscript = module.data.bkt_p_bootstrap_notebook_postscript.name
 }
 
+# Creates a VPC service perimeter.  Should enable at the end after notebooks are configured
 module "perimeters" {
   source             = "./modules/perimeters"
   org                = var.org
@@ -171,4 +154,8 @@ module "perimeters" {
   resources          = var.perimeter_projects
   ip_subnetworks     = var.perimeters_ip_subnetworks
   terraform_sa_email = var.terraform_sa_email
+
+  depends_on = [
+    module.notebooks
+  ]
 }

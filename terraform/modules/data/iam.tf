@@ -27,68 +27,29 @@ resource "google_bigquery_dataset_iam_binding" "iam_bq_confid_viewer" {
   members = var.confid_users
 }
 
-//=====================================================================
-// Get Service Accounts for all data services
-//=====================================================================
+#=====================================================================
+# Get Service Accounts for all data services
+#=====================================================================
 data "google_bigquery_default_service_account" "bq_default_account" {
   project = var.project_trusted_data
 }
 
-// get the GCS default service account for the data project
+# get the GCS default service account for the data project
 data "google_storage_project_service_account" "gcs_default_account_data" {
   project = var.project_trusted_data
 }
 
-// get the GCS default service account for the ETL project
+# get the GCS default service account for the ETL project
 data "google_storage_project_service_account" "gcs_default_account_etl" {
   project = var.project_trusted_data_etl
 }
 
-// get the GCS default service account for the bootstrap project
+# get the GCS default service account for the bootstrap project
 data "google_storage_project_service_account" "gcs_default_account_bootstrap" {
   project = var.project_bootstrap
 }
 
-# TODO create a temporry VM in the analytics project so that a default account is created
-# resource "google_compute_instance" "tmp_vm" {
-#   name         = "tmp_vm"
-#   machine_type = "n1-standard-1"
-#   zone         = "us-central1-a"
-#   project = var.project_trusted_analytics
-#   boot_disk {
-#     initialize_params {
-#       image = "debian-cloud/debian-9"
-#     }
-#   }
-
-#   // Local SSD disk
-#   scratch_disk {
-#     interface = "SCSI"
-#   }
-
-#   network_interface {
-#     network = "default"
-
-#     access_config {
-#       // Ephemeral IP
-#     }
-#   }
-# }
-
-
-# TODO somehow need to get the SA used by CAIP service's identity used to create compute
-# // get the GCS default service account for the bootstrap project
-# data "google_compute_default_service_account" "gce_default_account_analytics" {
-#   project = var.project_trusted_analytics
-# }
-
-// get the notebook service account
-//TODO remove hardcoded SA account name (have to split the @ out)
-// data "google_service_account" "sa_notebook" {
-//   account_id = "sa-p-notebook-compute"
-//   project    = var.project_trusted_analytics
-// }
-
+# get the project for analytics
 data "google_project" "project_analytics" {
   project_id    = var.project_trusted_analytics
 }
@@ -108,7 +69,6 @@ resource "google_kms_crypto_key_iam_binding" "iam_p_bq_sa_confid" {
       "serviceAccount:${data.google_bigquery_default_service_account.bq_default_account.email}",
       "serviceAccount:${data.google_storage_project_service_account.gcs_default_account_data.email_address}",
       "serviceAccount:${data.google_storage_project_service_account.gcs_default_account_bootstrap.email_address}",
-#      "serviceAccount:${data.google_compute_default_service_account.gce_default_account_analytics.email}",
       "serviceAccount:service-${data.google_project.project_analytics.number}@compute-system.iam.gserviceaccount.com",
     ],
     var.key_bq_confid_members,
@@ -116,6 +76,7 @@ resource "google_kms_crypto_key_iam_binding" "iam_p_bq_sa_confid" {
   )
 }
 
+# ETL bucket also needs access to the KMS key used to protect higher trust data
 resource "google_kms_crypto_key_iam_binding" "iam_p_gcs_sa_confid_etl" {
   crypto_key_id = var.key_confid_etl
   role          = "roles/cloudkms.cryptoKeyEncrypterDecrypter"

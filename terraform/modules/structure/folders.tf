@@ -15,28 +15,27 @@
  */
 
 # Top-level folder under an organization.
-# TODO remove elo
 resource "google_folder" "fldr_trusted" {
-  display_name = format("elo-%s", var.folder_trusted)
+  display_name = format("eeee-%s", var.folder_trusted)
   parent       = var.parent_env
 }
 
 resource "google_project" "prj_trusted_data" {
-  name            = "prj-dddd-p-trusted-data"
+  name            = "prj-eeee-p-trusted-data"
   project_id      = var.project_trusted_data
   folder_id       = google_folder.fldr_trusted.name
   billing_account = var.billing_account
 }
 
 resource "google_project" "prj_trusted_analytics" {
-  name            = "prj-dddd-p-trusted-analytics"
+  name            = "prj-eeee-p-trusted-analytics"
   project_id      = var.project_trusted_analytics
   folder_id       = google_folder.fldr_trusted.name
   billing_account = var.billing_account
 }
 
 resource "google_project" "prj_trusted_data_etl" {
-  name            = "prj-dddd-p-trusted-data-etl"
+  name            = "prj-eeee-p-trusted-data-etl"
   project_id      = var.project_trusted_data_etl
   folder_id       = google_folder.fldr_trusted.name
   billing_account = var.billing_account
@@ -44,7 +43,7 @@ resource "google_project" "prj_trusted_data_etl" {
 
 # TODO The parent env should be the boot project
 resource "google_project" "prj_kms" {
-  name            = "prj-dddd-b-kms"
+  name            = "prj-eeee-b-kms"
   project_id      = var.project_trusted_kms
   folder_id       = var.bootstrap_env
   billing_account = var.billing_account

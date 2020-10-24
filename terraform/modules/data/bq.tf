@@ -15,11 +15,11 @@
  */
 
 
-//=====================================================================
-// create datasets
-//=====================================================================
+#=====================================================================
+# create datasets
+#=====================================================================
 resource "google_bigquery_dataset" "bq_p_confid_dataset" {
-  dataset_id    = "bq_dddd_p_confid_dataset"
+  dataset_id    = "bq_eeee_p_confid_dataset"
   friendly_name = "confid data"
   description   = "Dataset holding tables with PII"
   project       = var.project_trusted_data
@@ -50,6 +50,8 @@ resource "google_bigquery_table" "confid_table" {
 
 resource "google_bigquery_job" "confid_table_load" {
   project    = var.project_trusted_data
+
+  # allows redeployment of the load job through terraform
   job_id     = format("confid_table_load_%s", formatdate("YYYY_MM_DD_hh_mm_ss", timestamp()))
 
   load {
@@ -69,5 +71,4 @@ resource "google_bigquery_job" "confid_table_load" {
     write_disposition = "WRITE_APPEND"
     autodetect = true
   }
-
 }

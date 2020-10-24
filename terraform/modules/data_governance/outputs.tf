@@ -14,15 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-// Adding these outputs allows other modules as well as the calling
-// terraform script to access the attributes of these modules.
-
-// network_self_link can be used to reference the confid data key created by this module
+# network_self_link can be used to reference the confid data key created by this module
 output "key_confid_data" {
-  value = google_kms_crypto_key.key_dddd_p_confid_data.self_link
+  value = google_kms_crypto_key.key_eeee_p_confid_data.self_link
 }
 
-// subnet_self_link can be used to reference the confid etl key created by this module
+# subnet_self_link can be used to reference the confid etl key created by this module
 output "key_confid_etl" {
-  value = google_kms_crypto_key.key_dddd_p_confid_etl.self_link
+  value = google_kms_crypto_key.key_eeee_p_confid_etl.self_link
 }

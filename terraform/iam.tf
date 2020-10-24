@@ -14,22 +14,6 @@
  * limitations under the License.
  */
 
-# TODO adding these for foundation support
-#==================
-# Grant terraform SA ability to create sample BQ dataset within the data project
-# resource "google_project_iam_member" "data_prj_bq_data_owner" {
-#   project = var.project_trusted_data
-#   role    =  "roles/bigquery.admin"
-#   member  = "serviceAccount:${var.terraform_sa_email}"
-# }
-
-# resource "google_project_iam_member" "data_prj_storage_admin" {
-#   project = var.project_trusted_data
-#   role    =  "roles/bigquery.admin"
-#   member  = "serviceAccount:${var.terraform_sa_email}"
-# }
-#==================
-
 # The notebook-compute-sa provides the underlying policies that the compute uses to access other resources
 # within the project for the data scientist.  
 #
@@ -76,21 +60,21 @@ resource "google_project_iam_member" "notebook_instance_compute" {
 // Note: resourcemanager.projects.list is not applicable at project level, but is assigned in the BQ DataViewer predefined role (org level)
 resource "google_project_iam_custom_role" "role_restricted_data_viewer" {
   project     = var.project_trusted_analytics
-  role_id     = "dddd_restricted_data_viewer"
+  role_id     = "eeee_restricted_data_viewer"
   title       = "Restricted Data Viewer"
   description = "BQ Data Viewer role with export removed"
   permissions = [
-    "bigquery.datasets.get", 
-    "bigquery.datasets.getIamPolicy", 
-    "bigquery.models.getData", 
-    "bigquery.models.getMetadata", 
-    "bigquery.models.list", 
-    "bigquery.routines.get", 
-    "bigquery.routines.list", 
-    "bigquery.tables.get", 
-    "bigquery.tables.getData", 
-    "bigquery.tables.getIamPolicy", 
-    "bigquery.tables.list", 
+    "bigquery.datasets.get",
+    "bigquery.datasets.getIamPolicy",
+    "bigquery.models.getData",
+    "bigquery.models.getMetadata",
+    "bigquery.models.list",
+    "bigquery.routines.get",
+    "bigquery.routines.list",
+    "bigquery.tables.get",
+    "bigquery.tables.getData",
+    "bigquery.tables.getIamPolicy",
+    "bigquery.tables.list",
     "resourcemanager.projects.get"
   ]
 }

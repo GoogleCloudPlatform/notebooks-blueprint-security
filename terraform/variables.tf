@@ -24,7 +24,7 @@ https://www.terraform.io/docs/configuration/variables.html
 // If you change the value to false, please uncomment the `perimeter_projects` variable below
 variable "enable_module_structure" {
   description = "Whether to create the Terraform structure module."
-  default = false
+  default     = false
 }
 
 # Note: These projects are dynamically created by this blueprint.  If you choose to not deploy the structure module,
@@ -48,13 +48,18 @@ variable "region" {
   type        = string
 }
 
+variable "resource_locations" {
+  description = "The locations used in org policy to limit where resources can be provisioned"
+  type        = list(string)
+}
+
 variable "region_trusted_network" {
-  description = "The region in which to create the notebook and data. such as us-central1-a"
+  description = "The region in which to create the notebook and data (ex: us-central1-a)"
   type        = string
 }
 
-variable "default_billing_project" {
-  description = "The name of the default billing and resource project in case one is not specified in the terraform"
+variable "default_billing_project_id" {
+  description = "The project ID used by the provider.  It specifies the default billing and project to create resource in case one is not specified in terraform"
   type        = string
 }
 
@@ -130,7 +135,7 @@ variable "billing_account" {
 # Add depends_on in all module
 variable "enable_services_data" {
   description = "The list of services to enable."
-  default     = [
+  default = [
     "cloudkms.googleapis.com",
     "storage.googleapis.com",
     "bigquery.googleapis.com",
@@ -140,7 +145,7 @@ variable "enable_services_data" {
 
 variable "enable_services_data_etl" {
   description = "The list of services to enable."
-  default     = [
+  default = [
     "cloudkms.googleapis.com",
     "cloudresourcemanager.googleapis.com",
   ]
@@ -148,8 +153,8 @@ variable "enable_services_data_etl" {
 
 variable "enable_services_analytics" {
   description = "The list of services to enable."
-  default     = [
-    "compute.googleapis.com", 
+  default = [
+    "compute.googleapis.com",
     "cloudkms.googleapis.com",
     "secretmanager.googleapis.com",
     "notebooks.googleapis.com",
@@ -163,8 +168,8 @@ variable "enable_services_analytics" {
 # likely the same project as the analytics, match the APIs
 variable "enable_services_networks" {
   description = "The list of services to enable."
-  default     = [
-    "compute.googleapis.com", 
+  default = [
+    "compute.googleapis.com",
     "cloudkms.googleapis.com",
     "secretmanager.googleapis.com",
     "notebooks.googleapis.com",
@@ -177,7 +182,7 @@ variable "enable_services_networks" {
 
 variable "enable_services_kms" {
   description = "The list of services to enable."
-  default     = [
+  default = [
     "cloudkms.googleapis.com",
     "secretmanager.googleapis.com",
     "cloudresourcemanager.googleapis.com",

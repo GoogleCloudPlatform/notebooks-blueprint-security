@@ -22,5 +22,9 @@ https://www.terraform.io/docs/configuration/variables.html
 
 variable "folder_trusted" {
   description = "Top level folder hosting PII data.  Format should be folder/1234567"
-  type        = string
+}
+
+variable "resource_locations" {
+  description = "The locations where resource can be provisioned"
+  type        = list(string)
 }

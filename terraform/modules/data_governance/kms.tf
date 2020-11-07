@@ -19,17 +19,23 @@ limitations under the License.
 # TODO add DLP
 # TODO add dataflow
 
-// create keyrings based on governance levels
-// 1. confid (highest)
-//
-// each key ring has 2 keys
-// 1. data (hardware backed)
-// 2. transitory (software backed)
+# create keyrings based on governance levels
+# 1. confid (highest)
+#
+# each key ring has 2 keys
+# 1. data (hardware backed)
+# 2. transitory (software backed)
 
-// https://www.terraform.io/docs/providers/google/r/kms_crypto_key.html
-// key ring that's regionalized
-resource "google_kms_key_ring" "kr_aaaa_p_confid" {
-  name     = "kr-aaaa-p-confid"
+# https://www.terraform.io/docs/providers/google/r/kms_crypto_key.html
+# key ring that's regionalized
+
+resource "random_string" "random" {
+  length = 4
+  special = false
+}
+
+resource "google_kms_key_ring" "kr_eeee_p_confid" {
+  name     = format("kr-eeee-p-confid-%s", random_string.random.result)
   location = var.region
   project  = var.project_kms
 }
@@ -45,6 +51,8 @@ resource "google_kms_crypto_key" "key_aaaa_p_confid_data" {
     protection_level = "HSM"
   }
 
+  # set to true to prevent terraform from destroying this key, especially if it's in use
+  # default is false to aid in testing
   lifecycle {
     prevent_destroy = false
   }
@@ -58,6 +66,8 @@ resource "google_kms_crypto_key" "key_aaaa_p_confid_etl" {
   key_ring        = google_kms_key_ring.kr_aaaa_p_confid.self_link
   rotation_period = "864000s"
 
+  # set to true to prevent terraform from destroying this key, especially if it's in use
+  # default is false to aid in testing
   lifecycle {
     prevent_destroy = false
   }

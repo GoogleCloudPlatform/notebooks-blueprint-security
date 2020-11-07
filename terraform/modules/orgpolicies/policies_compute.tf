@@ -16,20 +16,20 @@
 
 # Organizational Policies (applied at the folder level)
 #
-# These are the minimum policies
-#x - Disable all public IP:  constraint/compute.vmExternalIpAccess
-#x - No default network: constraints/compute.skipDefaultNetworkCreation
-#x - No Serial Port access: constraints/compute.disableSerialPortAccess
-#x - No serial port logging: constraints/compute.disableSerialPortLogging
-#x - Require OS login: constraints/compute.requireOsLogin
-#x - Require shielded VM: constraints/compute.requireShieldedVm
-#x - Restrict Shared VPC Subnets: constraints/compute.restrictSharedVpcSubnetworks
+# These are the policies defined
+# - Disable all public IP:  constraint/compute.vmExternalIpAccess
+# - No default network: constraints/compute.skipDefaultNetworkCreation
+# - No Serial Port access: constraints/compute.disableSerialPortAccess
+# - No serial port logging: constraints/compute.disableSerialPortLogging
+# - Require OS login: constraints/compute.requireOsLogin
 # 
 # (Optional policies)
+# - Require shielded VM: constraints/compute.requireShieldedVm
+# - Restrict Shared VPC Subnets: constraints/compute.restrictSharedVpcSubnetworks
 # none
 
 resource "google_folder_organization_policy" "external_ip_policy" {
-  folder     = google_folder.fldr_trusted.name
+  folder     = var.folder_trusted
   constraint = "compute.vmExternalIpAccess"
 
   list_policy {
@@ -40,7 +40,7 @@ resource "google_folder_organization_policy" "external_ip_policy" {
 }
 
 resource "google_folder_organization_policy" "network_policy" {
-  folder     = google_folder.fldr_trusted.name
+  folder     = var.folder_trusted
   constraint = "compute.skipDefaultNetworkCreation"
 
   boolean_policy {
@@ -49,7 +49,7 @@ resource "google_folder_organization_policy" "network_policy" {
 }
 
 resource "google_folder_organization_policy" "serial_port_access_policy" {
-  folder     = google_folder.fldr_trusted.name
+  folder     = var.folder_trusted
   constraint = "compute.disableSerialPortAccess"
 
   boolean_policy {
@@ -58,7 +58,7 @@ resource "google_folder_organization_policy" "serial_port_access_policy" {
 }
 
 resource "google_folder_organization_policy" "serial_port_logging_policy" {
-  folder     = google_folder.fldr_trusted.name
+  folder     = var.folder_trusted
   constraint = "compute.disableSerialPortLogging"
 
   boolean_policy {
@@ -67,7 +67,7 @@ resource "google_folder_organization_policy" "serial_port_logging_policy" {
 }
 
 resource "google_folder_organization_policy" "ssh_policy" {
-  folder     = google_folder.fldr_trusted.name
+  folder     = var.folder_trusted
   constraint = "compute.requireOsLogin"
 
   boolean_policy {
@@ -75,10 +75,11 @@ resource "google_folder_organization_policy" "ssh_policy" {
   }
 }
 
+# Optional
 # TODO CAIP APIs do not allow create VM with shielded_policy, so cannot enable.
 # For now, need to have a script that runs later to stop the VM and enable the policy
 # resource "google_folder_organization_policy" "shielded_policy" {
-#   folder     = google_folder.fldr_trusted.name
+#   folder     = var.folder_trusted
 #   constraint = "compute.requireShieldedVm"
 #   boolean_policy {
 #     enforced = true
@@ -90,14 +91,14 @@ resource "google_folder_organization_policy" "ssh_policy" {
 #  allowed_vpc_subnets = "under:${google_project.prj_trusted_analytics.id}"
 #}
 
-resource "google_folder_organization_policy" "vpc_subnet_policy" {
-  folder     = google_folder.fldr_trusted.name
-  constraint = "compute.restrictSharedVpcSubnetworks"
+# Optional:
+# resource "google_folder_organization_policy" "vpc_subnet_policy" {
+#   folder     = var.folder_trusted
+#   constraint = "compute.restrictSharedVpcSubnetworks"
 
-  // list_policy {
-  //   allow {
-  //     values = [local.allowed_vpc_subnets]
-  //   }
-  // }
-}
-
+#   list_policy {
+#     allow {
+#       values = [local.allowed_vpc_subnets]
+#     }
+#   }
+# }

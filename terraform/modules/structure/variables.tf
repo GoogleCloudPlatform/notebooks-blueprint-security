@@ -21,7 +21,12 @@ https://www.terraform.io/docs/configuration/variables.html
 */
 
 variable "parent_env" {
-  description = "configured for folder representing an environment"
+  description = "configured for folder representing a production environment"
+  type        = string
+}
+
+variable "bootstrap_env" {
+  description = "configured for folder representing sensitive bootstrap environment"
   type        = string
 }
 
@@ -54,4 +59,9 @@ variable "billing_account" {
   description = "Billing account required if creating structure. Otherwise, optional"
   type        = string
   default     = ""
+}
+
+variable "terraform_sa_email" {
+  description = "String for the email of the Terraform Service Account"
+  type        = string
 }

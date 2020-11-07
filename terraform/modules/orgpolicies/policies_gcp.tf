@@ -23,15 +23,14 @@
 # (Optional policies)
 # - none
 
-# TODO test if need to include "in"
 # TODO expose those in the top-level main file instead of being US based
 resource "google_folder_organization_policy" "drz_policy" {
-  folder     = google_folder.fldr_trusted.name
+  folder     = var.folder_trusted
   constraint = "gcp.resourceLocations"
 
   list_policy {
     allow {
-      values = ["in:us-locations"]
+      values = var.resource_locations
     }
   }
 }

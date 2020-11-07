@@ -23,6 +23,8 @@ resource "google_service_account" "sa_p_notebook_compute" {
   project      = var.project_trusted_analytics
   account_id   = "sa-p-notebook-compute"
   display_name = "Notebooks in trusted environment"
+
+  depends_on = [module.structure]
 }
 
 
@@ -58,21 +60,21 @@ resource "google_project_iam_member" "notebook_instance_compute" {
 // Note: resourcemanager.projects.list is not applicable at project level, but is assigned in the BQ DataViewer predefined role (org level)
 resource "google_project_iam_custom_role" "role_restricted_data_viewer" {
   project     = var.project_trusted_analytics
-  role_id     = "restricted_data_viewer"
+  role_id     = "eeee_restricted_data_viewer"
   title       = "Restricted Data Viewer"
   description = "BQ Data Viewer role with export removed"
   permissions = [
-    "bigquery.datasets.get", 
-    "bigquery.datasets.getIamPolicy", 
-    "bigquery.models.getData", 
-    "bigquery.models.getMetadata", 
-    "bigquery.models.list", 
-    "bigquery.routines.get", 
-    "bigquery.routines.list", 
-    "bigquery.tables.get", 
-    "bigquery.tables.getData", 
-    "bigquery.tables.getIamPolicy", 
-    "bigquery.tables.list", 
+    "bigquery.datasets.get",
+    "bigquery.datasets.getIamPolicy",
+    "bigquery.models.getData",
+    "bigquery.models.getMetadata",
+    "bigquery.models.list",
+    "bigquery.routines.get",
+    "bigquery.routines.list",
+    "bigquery.tables.get",
+    "bigquery.tables.getData",
+    "bigquery.tables.getIamPolicy",
+    "bigquery.tables.list",
     "resourcemanager.projects.get"
   ]
 }
@@ -89,7 +91,12 @@ resource "google_project_iam_member" "notebook_instance_bq_job" {
   member  = "serviceAccount:${google_service_account.sa_p_notebook_compute.email}"
 }
 
-//TODO do we need this role
+resource "google_project_iam_member" "notebook_instance_bq_session" {
+  project = var.project_trusted_analytics
+  role    = "roles/bigquery.readSessionUser"
+  member  = "serviceAccount:${google_service_account.sa_p_notebook_compute.email}"
+}
+
 resource "google_project_iam_member" "notebook_instance_caip" {
   project = var.project_trusted_analytics
   role    = "roles/notebooks.admin"

@@ -58,3 +58,15 @@ suites:
           backend: gcp
           controls:
             - gcp_perimeters
+  - name: orgpolicies
+    driver:
+      root_module_directory: test/fixtures/orgpolicies
+    verifier:
+      color: false
+      systems:
+        - name: inspec-gcp
+          backend: gcp
+          controls:
+            - gcp_compute_policy
+            - gcp_iam_policy
+            - gcp_policy

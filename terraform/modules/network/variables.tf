@@ -14,11 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-/*
-This file exposes module variables that can be overridden to customize the network
-configuration
-https://www.terraform.io/docs/configuration/variables.html
-*/
 
 variable "project_id" {
   description = "the project for this network"
@@ -28,7 +23,7 @@ variable "project_id" {
 variable "ip_range" {
   description = "Specifies the CIDR for the network's primary subnetwork"
   type        = string
-  default     = "10.10.32.0/22"
+  default     = "10.100.32.0/21"
 }
 
 variable "region" {

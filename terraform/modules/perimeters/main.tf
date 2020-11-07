@@ -21,45 +21,41 @@
 //   title  = "Trusted policy"
 // }
 
+resource "random_string" "random_al" {
+  length    = 4
+  min_lower = 4
+  special   = false
+}
+
 # Use existing default policy.
 resource "google_access_context_manager_service_perimeter" "higher_trusted_perimeter_resource" {
   parent = "accessPolicies/${var.policy_name}"
-  name   = "accessPolicies/${var.policy_name}/servicePerimeters/sp_p_higher_trust_analytics_eeee"
-  title  = "sp_p_higher_trust_analytics_eeee"
+  name   = format("accessPolicies/%s/servicePerimeters/sp_p_higher_trust_analytics_eeee_%s", var.policy_name, random_string.random_al.result)
+  title  = format("sp_p_higher_trust_analytics_eeee_%s", random_string.random_al.result)
   status {
-    restricted_services = [
-      "compute.googleapis.com",
-      "storage.googleapis.com",
-      "notebooks.googleapis.com",
-      "bigquery.googleapis.com",
-      "datacatalog.googleapis.com",
-      "dataflow.googleapis.com",
-      "dlp.googleapis.com",
-      "cloudkms.googleapis.com",
-      "secretmanager.googleapis.com"
-    ]
-    resources = var.resources
-    access_levels = [google_access_context_manager_access_level.trusted_access_level.id]
+    restricted_services = var.restricted_services
+    resources           = var.resources
+    access_levels       = [google_access_context_manager_access_level.trusted_access_level.id]
   }
 }
 
 # Enable additional conditions as needed with endpoint verification by uncommenting items below
 resource "google_access_context_manager_access_level" "trusted_access_level" {
   parent = "accessPolicies/${var.policy_name}"
-  name   = "accessPolicies/${var.policy_name}/accessLevels/alp_p_higher_trust_analytics_eeee"
-  title  = "alp_p_higher_trust_analytics_eeee"
+  name   = format("accessPolicies/%s/accessLevels/alp_p_higher_trust_analytics_eeee_%s", var.policy_name, random_string.random_al.result)
+  title  = format("alp_p_higher_trust_analytics_eeee_%s", random_string.random_al.result)
   basic {
     conditions {
-    #   device_policy {
-    #     require_screen_lock = true
-    #     require_corp_owned = true
-    #     allowed_encryption_statuses = [
-    #       "ENCRYPTED"
-    #     ]
-    #   }
-    #   regions = [upper(var.region)]
+      #   device_policy {
+      #     require_screen_lock = true
+      #     require_corp_owned = true
+      #     allowed_encryption_statuses = [
+      #       "ENCRYPTED"
+      #     ]
+      #   }
+      #   regions = [upper(var.region)]
       ip_subnetworks = var.ip_subnetworks
-      members = [format("serviceAccount:%s", var.terraform_sa_email)]
+      members        = [format("serviceAccount:%s", var.terraform_sa_email)]
     }
   }
 }

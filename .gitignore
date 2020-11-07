@@ -2,7 +2,7 @@
 .DS_Store
 # ignore virtual environments
 caip 
-*tfstate.*
+*tfstate*
 .terraform/
 terraform.tfvars
 run.sh

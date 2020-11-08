@@ -19,13 +19,15 @@ limitations under the License.
 # TODO add DLP
 # TODO add dataflow
 
-# create keyrings based on governance levels
+# create key rings based on governance levels
 # 1. confid (highest)
 #
 # each key ring has 2 keys
 # 1. data (hardware backed)
 # 2. transitory (software backed)
 
+# used to create a random resource name to help with subsequent applies,
+# since it's resource name cannot be deleted
 resource "random_string" "random_kr" {
   length    = 4
   min_lower = 4
@@ -39,12 +41,12 @@ resource "google_kms_key_ring" "kr_eeee_p_confid" {
   project  = var.project_kms
 }
 
-// confid key will encrypt any confid PII data such as BQ, GCS, or boot images
-// HSM key rotates every 45 days
+# confid key will encrypt any confid PII data such as BQ, GCS, or boot images
+# HSM key rotates every 45 days
 resource "google_kms_crypto_key" "key_eeee_p_confid_data" {
-  name            = "key-eeee-p-confid-data"
+  name            = format("kr-eeee-p-confid-data-%s", random_string.random_kr.result)
   key_ring        = google_kms_key_ring.kr_eeee_p_confid.self_link
-  rotation_period = "3888000s"
+  rotation_period = var.data_key_rotation_seconds
   version_template {
     algorithm        = "GOOGLE_SYMMETRIC_ENCRYPTION"
     protection_level = "HSM"
@@ -57,13 +59,13 @@ resource "google_kms_crypto_key" "key_eeee_p_confid_data" {
   }
 }
 
-// Transitory confid data will be protect by the ETL key
-// Software key rotates every 10 days
-// Although transitory, have a shorter crypto period due to volume of expected data ETL.
+# Transitory confid data will be protect by the ETL key
+# Software key rotates every 10 days
+# Although transitory, have a shorter crypto period due to volume of expected data ETL.
 resource "google_kms_crypto_key" "key_eeee_p_confid_etl" {
-  name            = "key-eeee-p-confid-etl"
+  name            = format("kr-eeee-p-confid-etl-%s", random_string.random_kr.result)
   key_ring        = google_kms_key_ring.kr_eeee_p_confid.self_link
-  rotation_period = "864000s"
+  rotation_period = var.etl_key_rotation_seconds
 
   # set to true to prevent terraform from destroying this key, especially if it's in use
   # default is false to aid in testing

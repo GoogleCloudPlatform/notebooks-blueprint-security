@@ -23,3 +23,15 @@ output "key_confid_etl" {
   description = "reference to the key used to protect etl pipeline"
   value       = google_kms_crypto_key.key_eeee_p_confid_etl.self_link
 }
+
+# externalized for testing
+output "key_ring_name" {
+  description = "key ring name"
+  value       = google_kms_key_ring.kr_eeee_p_confid.name
+}
+
+# externalized for testing
+output "secret_id" {
+  description = "secret id"
+  value       = google_secret_manager_secret.sk_c_ml_model_user.secret_id
+}

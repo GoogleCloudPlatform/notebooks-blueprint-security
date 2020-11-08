@@ -34,3 +34,15 @@ variable "region" {
   description = "The region in which to create the network"
   type        = string
 }
+
+variable "data_key_rotation_seconds" {
+  description = "The number of seconds to rotate the key used to protect data"
+  type        = string
+  default     = "3888000s"
+}
+
+variable "etl_key_rotation_seconds" {
+  description = "The number of seconds to rotate the key used to protect data etl"
+  type        = string
+  default     = "864000s"
+}

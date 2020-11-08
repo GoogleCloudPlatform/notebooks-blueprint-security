@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-
 resource "random_string" "random_sn" {
-  length = 4
-  special = false
+  length    = 4
+  min_lower = 4
+  special   = false
 }
 
 # handles storing service account key for on-prem applications to call prediction API

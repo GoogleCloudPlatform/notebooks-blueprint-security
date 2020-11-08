@@ -14,6 +14,19 @@
  * limitations under the License.
  */
 
-// Adding these outputs allows other modules as well as the calling
-// terraform script to access the attributes of these modules.
+# externalized for testing
+output "notebook_instance_names" {
+  description = "reference object of notebooks"
+  value = [
+    for instance in google_notebooks_instance.caip_nbk_p_eeee_confid :
+    chomp(instance.name)
+  ]
+}
 
+output "notebook_script_name" {
+  description = "reference object of notebooks"
+  value = [
+    for instance in google_notebooks_instance.caip_nbk_p_eeee_confid :
+    chomp(instance.post_startup_script)
+  ]
+}

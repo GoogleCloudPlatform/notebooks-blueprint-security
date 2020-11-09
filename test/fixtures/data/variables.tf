@@ -14,12 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-/*
-This file exposes module variables that can be overridden to customize the network
-configuration
-https://www.terraform.io/docs/configuration/variables.html
-*/
-
 variable "project_trusted_data" {
   description = "the project holding data used by notebooks"
   type        = string
@@ -35,8 +29,8 @@ variable "project_trusted_analytics" {
   type        = string
 }
 
-variable "project_bootstrap" {
-  description = "the project holding bootstrap items"
+variable "project_trusted_kms" {
+  description = "the project for kms"
   type        = string
 }
 
@@ -45,22 +39,23 @@ variable "region" {
   type        = string
 }
 
-variable "key_confid_data" {
-  description = "The key protecting confid data"
-  type        = string
-}
-
-variable "key_confid_etl" {
-  description = "The key protecting confid data in the ETL pipelie"
-  type        = string
-}
-
 variable "key_bq_confid_members" {
   description = "List of members for KMS key"
-  default     = []
+  default = []
 }
 
 variable "confid_users" {
   description = "The list of users that confid users."
-  default     = []
+  default = []
+}
+
+variable "terraform_sa_email" {
+  description = "String for the email of the Terraform Service Account"
+  type        = string
+}
+
+variable "table_num_rows" {
+  description = "total number of rows in sample data"
+  type        = string
+  default = 6
 }

@@ -21,6 +21,7 @@ ORGANIZATION=$2     # 123456789
 POLICY_NAME=$3      # 987654321
 BILLING_ACCOUNT=$4  # ABCD-2345-GHIJ
 SA_NAME="terraform"
+TERRAFORM_SA=${TERRAFORM_SA}                 # If this is set, it's most likely a SA used with the foundational blueprint and is a full email
 
 echo "Make sure that you enable a billing account for the project."
 
@@ -127,45 +128,25 @@ gcloud projects add-iam-policy-binding ${PROJECT} \
 --member serviceAccount:${SA_NAME}@${PROJECT}.iam.gserviceaccount.com \
 --role roles/notebooks.runner
 
-# Create local key for the Terraform service account
-client_id=$(cat /tmp/key.json | jq -r '.client_id') || key_sa=""
-unique_id=$(gcloud iam service-accounts describe ${SA_NAME}@${PROJECT}.iam.gserviceaccount.com  --format="value(uniqueId)")
 
-echo "client_id for the key is ${client_id}"
-echo "unique_id for the service account is ${unique_id}"
-
-if [[ "$client_id" != "${unique_id}" ]]; then
-  echo "IDs do not match, creates key file for ${SA_NAME}@${PROJECT}.iam.gserviceaccount.com in /tmp/key.json..."
-  
-  rm /tmp/key.json
-
-  gcloud iam service-accounts keys create /tmp/key.json \
-    --iam-account ${SA_NAME}@${PROJECT}.iam.gserviceaccount.com
-
-  # gcloud auth activate-service-account ${SA_NAME}@${PROJECT}.iam.gserviceaccount.com \
-  #   --key-file /tmp/key.json
+IMPERSONATION_SA=""
+if [[ -z ${TERRAFORM_SA} ]]; then
+    setup_using_new_terraform
+    IMPERSONATION_SA=${SA_NAME}@${DEPLOYMENT_PROJECT}.iam.gserviceaccount.com
+else
+    setup_using_foundation_terraform
+    IMPERSONATION_SA=${TERRAFORM_SA}
 fi
 
+# impersonnate with a token (use cloud identity to set the default time to 1 hr)
+# this uses oauth so that a SA key isn't needed
+gcloud config set auth/impersonate_service_account ${IMPERSONATION_SA}
+export GOOGLE_OAUTH_ACCESS_TOKEN=$(gcloud auth print-access-token)
+
 terraform init
-
-terraform import \
-  -var "org=organizations/${ORGANIZATION}" \
-  -var "default_policy_name=${POLICY_NAME}" \
-  -var "terraform_sa_email=${SA_NAME}@${PROJECT}.iam.gserviceaccount.com" \
-  -var "billing_account=${BILLING_ACCOUNT}" \
-  module.perimeters.google_access_context_manager_service_perimeter.trusted_perimeter_resource \
-  accessPolicies/${POLICY_NAME}/servicePerimeters/restrict_all
-
-terraform import  \
-  -var "org=organizations/${ORGANIZATION}" \
-  -var "default_policy_name=${POLICY_NAME}" \
-  -var "terraform_sa_email=${SA_NAME}@${PROJECT}.iam.gserviceaccount.com" \
-  -var "billing_account=${BILLING_ACCOUNT}" \
-  module.perimeters.google_access_context_manager_access_level.trusted_access_level \
-  accessPolicies/${POLICY_NAME}/accessLevels/trusted_corp
 
 terraform apply \
   -var "org=organizations/${ORGANIZATION}" \
   -var "default_policy_name=${POLICY_NAME}" \
-  -var "terraform_sa_email=${SA_NAME}@${PROJECT}.iam.gserviceaccount.com" \
+  -var "terraform_sa_email=${IMPERSONATION_SA}" \
   -var "billing_account=${BILLING_ACCOUNT}"

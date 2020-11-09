@@ -15,9 +15,14 @@
  */
 
 
+resource "random_string" "random_sn" {
+  length = 4
+  special = false
+}
+
 # handles storing service account key for on-prem applications to call prediction API
 resource "google_secret_manager_secret" "sk_c_ml_model_user" {
-  secret_id = "sk-c-ml-model-user"
+  secret_id = format("sk-c-ml-model-user-%s", random_string.random_sn.result)
   project   = var.project_secrets
   replication {
     user_managed {

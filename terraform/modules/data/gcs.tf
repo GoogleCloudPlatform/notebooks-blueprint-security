@@ -14,18 +14,23 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-// TODO fix the business unit 4 digit number
+# bucket names must be all lowercase
+resource "random_string" "random_bkt" {
+  length    = 4
+  min_lower = 4
+  special   = false
+}
 
 // TODO move the CAIP notebook startup script here
 // the GCS bucket should be in the boot environment so it cannot be altered
 
 // confid bucket is encrypted with CMEK key and with versioning
 resource "google_storage_bucket" "bkt_p_confid" {
-  name               = "${var.project_bootstrap}-bkt-0000-p-confid"
-  project            = var.project_trusted_data
-  location           = var.region
+  name                        = format("%s-bkt-eeee-p-config-%s", var.project_bootstrap, random_string.random_bkt.result)
+  project                     = var.project_trusted_data
+  location                    = var.region
   uniform_bucket_level_access = true
-  force_destroy      = true
+  force_destroy               = true
 
   versioning {
     enabled = true
@@ -37,11 +42,11 @@ resource "google_storage_bucket" "bkt_p_confid" {
 }
 
 resource "google_storage_bucket" "bkt_p_bootstrap_notebooks" {
-  name               = "${var.project_bootstrap}-bkt-0000-p-bootstrap-notebooks"
-  project            = var.project_bootstrap
-  location           = var.region
+  name                        = format("%s-bkt-eeee-p-bootstrap-notebooks-%s", var.project_bootstrap, random_string.random_bkt.result)
+  project                     = var.project_bootstrap
+  location                    = var.region
   uniform_bucket_level_access = true
-  force_destroy      = true
+  force_destroy               = true
 
   versioning {
     enabled = true
@@ -54,11 +59,11 @@ resource "google_storage_bucket" "bkt_p_bootstrap_notebooks" {
 
 // a temporary bucket for intake for data flow/DLP processing
 resource "google_storage_bucket" "bkt_p_data_etl" {
-  name               = "${var.project_bootstrap}-bkt-0000-p-data-etl"
-  project            = var.project_trusted_data_etl
-  location           = var.region
+  name                        = format("%s-bkt-eeee-p-data-etl-%s", var.project_trusted_data_etl, random_string.random_bkt.result)
+  project                     = var.project_trusted_data_etl
+  location                    = var.region
   uniform_bucket_level_access = true
-  force_destroy      = true
+  force_destroy               = true
 
 
   encryption {
@@ -77,7 +82,7 @@ resource "google_storage_bucket" "bkt_p_data_etl" {
 }
 
 resource "google_storage_bucket_object" "confid_data" {
-  name     = "confid_data.csv"
-  source   = "${path.module}/files/confid.csv"
-  bucket   = google_storage_bucket.bkt_p_data_etl.name
-} 
+  name   = "confid_data.csv"
+  source = "${path.module}/files/confid.csv"
+  bucket = google_storage_bucket.bkt_p_data_etl.name
+}

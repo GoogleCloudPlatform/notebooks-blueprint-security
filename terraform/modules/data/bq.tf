@@ -15,11 +15,17 @@
  */
 
 
-//=====================================================================
-// create datasets
-//=====================================================================
+#=====================================================================
+# create datasets
+#=====================================================================
+resource "random_string" "random_ds" {
+  length    = 4
+  min_lower = 4
+  special   = false
+}
+
 resource "google_bigquery_dataset" "bq_p_confid_dataset" {
-  dataset_id    = "bq_0000_p_confid_dataset"
+  dataset_id    = format("bq_eeee_p_confid_dataset_%s", random_string.random_ds.result)
   friendly_name = "confid data"
   description   = "Dataset holding tables with PII"
   project       = var.project_trusted_data
@@ -48,7 +54,7 @@ resource "google_bigquery_table" "confid_table" {
 }
 
 resource "google_bigquery_job" "confid_table_load" {
-  job_id     = "confid_table_load"
+  job_id = "confid_table_load"
 
   load {
     source_uris = [
@@ -61,10 +67,10 @@ resource "google_bigquery_job" "confid_table_load" {
       table_id   = google_bigquery_table.confid_table.table_id
     }
 
-    skip_leading_rows = 1
+    skip_leading_rows     = 1
     schema_update_options = ["ALLOW_FIELD_RELAXATION", "ALLOW_FIELD_ADDITION"]
 
     write_disposition = "WRITE_APPEND"
-    autodetect = true
+    autodetect        = true
   }
 }

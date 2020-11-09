@@ -17,16 +17,37 @@ limitations under the License.
 // Adding these outputs allows other modules as well as the calling
 // terraform script to access the attributes of these modules.
 
-// bucket used for ETL pipeline created by this module
 output "bkt_p_data_etl" {
-  value = google_storage_bucket.bkt_p_data_etl.self_link
+  description = "Bucket URI for data ETL"
+  value       = google_storage_bucket.bkt_p_data_etl.self_link
 }
 
+# externalized for testing
+output "bkt_p_data_etl_obj" {
+  description = "object reference for bucket used for data ETL"
+  value       = google_storage_bucket.bkt_p_data_etl
+}
+
+# externalized for testing
 output "bkt_p_bootstrap_notebook" {
-  value = google_storage_bucket.bkt_p_bootstrap_notebooks
+  description = "bucket containing the boot scripts for notebooks"
+  value       = google_storage_bucket.bkt_p_bootstrap_notebooks
 }
 
-// // provides the name to append to the gs:// in Notebook postscript metadata value
-// output "bkt_p_bootstrap_notebook-postscript" {
-//   value = google_storage_bucket_object.notebook-postscript.name
-// }
+# externalized for testing
+output "bkt_p_data" {
+  description = "object reference for bucket used for data"
+  value       = google_storage_bucket.bkt_p_confid
+}
+
+# externalized for testing
+output "bq_p_dataset_obj" {
+  description = "object reference for bigquery dataset"
+  value       = google_bigquery_dataset.bq_p_confid_dataset
+}
+
+# externalized for testing
+output "bq_p_table_obj" {
+  description = "object reference for bigquery table"
+  value       = google_bigquery_table.confid_table
+}

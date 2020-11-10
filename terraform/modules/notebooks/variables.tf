@@ -42,7 +42,7 @@ variable "caip_sa_email" {
   description = "SA email for notebooks."
 }
 
-# Notebook users must have iam.serviceAccounts.actAs on caip_sa service account
+# Notebook users must have iam permission to use a caip_sa service account
 variable "caip_users" {
   description = "The list of users that need an AI Platform Notebook."
   default     = []

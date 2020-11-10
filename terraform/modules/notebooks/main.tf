@@ -22,22 +22,30 @@ resource "google_storage_bucket_iam_member" "member" {
 }
 
 resource "google_storage_bucket_object" "postscript" {
-  # for_each = fileset("files", "**")
   name     = "post_startup_script.sh"
   source   = "${path.module}/files/post_startup_script.sh"
   bucket   = var.bucket_bootstrap.name
 } 
 
+# IAM policy for each Data Scientist
+resource "google_project_iam_member" "notebook_caip_user_iam" {
+  project = var.project_id
+  role    = "roles/notebooks.viewer"
+  for_each        = toset(var.caip_users)
+
+  member  = "user:${each.value}"
+}
+
 # Creates a confid notebook per relevant user that has file
 # download disabled. Although some values are hardcoded, you can
 # customize them using variables.
-resource "google_notebooks_instance" "caip_nbk_p_aaaa_confid" {
+resource "google_notebooks_instance" "caip_nbk_p_eeee_confid" {
   provider        = google-beta
   project         = var.project_id
   for_each        = toset(var.caip_users)
   service_account = var.caip_sa_email
 
-  name         = format("caip-nbk-aaaa-confid-%s", replace(each.value, "/[@._]/", "-"))
+  name         = format("caip-nbk-eeee-confid-%s", split("@", each.value)[0])
   location     = var.zone
   machine_type = "n1-standard-1"
 
@@ -79,13 +87,10 @@ resource "google_notebooks_instance" "caip_nbk_p_aaaa_confid" {
     notebook-disable-nbconvert  = "true"
   }
 
-  # TODO update once module no longer in beta
-  # allow idempotency
   lifecycle {
     prevent_destroy = false
     ignore_changes = [
-      # Ignore changes to location since auto corrects to lowercase
-      # Ignore changes to access because IAM will update as needed
+      # Ignore changes to the following attributes to allow idempotent re-deployment
       # TODO is there a bug when re-applying, where terraform cannot get the disk-encryption type even though it's already set to CMEK?
       create_time,
       disk_encryption,
@@ -97,10 +102,9 @@ resource "google_notebooks_instance" "caip_nbk_p_aaaa_confid" {
 }
 
 
-
-
-# add secure boot
-# TODO how to get the VM name?
+# future: add secure boot
+# TODO need VM names
+# TODO need debian10 for shielded support
 #   provisioner "local-exec" {
 #     command = "gcloud compute instances stop ${local.notebook_name} && \
 #         gcloud compute instances stop ${local.notebook_name} --shielded-secure-boot && \

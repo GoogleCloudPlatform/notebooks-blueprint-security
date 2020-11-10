@@ -56,11 +56,18 @@ import handlers
 c.ContentsManager.files_handler_class = 'handlers.ForbidFilesHandler'
 c.ContentsManager.files_handler_params = {}
 
+# prevent export/printing of calculated values that likely have PII
+c.TemplateExporter.exclude_input_prompt = True
+c.TemplateExporter.exclude_output = True
+
 END
 
 }
 
 function disable_nbconvert() {
+  #TODO startup changed such that nbconvert is installed later
+  # can manually log into notebook or use a golden image with it removed.
+  # Otherwise, the nbconvert configuration can be altered to prevent output from being stored locally/exported
   pip uninstall nbconvert
 }
 

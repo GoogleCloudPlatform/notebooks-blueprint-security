@@ -13,7 +13,7 @@ This repository provides an opinionated way to set up AI Platform Notebook in a 
         2.  the terraform state
         3.  the KMS keys
     4.  Your Access Context Manager policy used for VPC-SC configuration for your data scientists
-        1.  `# gcloud access-context-manager policies list --organization 423324658232 --format json | jq .[].name | sed 's/"//g' | awk '{split($0,a,"/"); print a[2]}'`
+        1.  `# gcloud access-context-manager policies list --organization ${ORGANIZATION_ID} --format json | jq .[].name | sed 's/"//g' | awk '{split($0,a,"/"); print a[2]}'`
         2.  Select your region from where you'd like data scientiests to access data (e.g US; see full list of [access context regions](https://cloud.google.com/access-context-manager/docs/access-level-attributes#regions))
     5.  Create and get tour IAM group and data scientists identities
     6.  Your VPC subnet (CIDR) where you want your notebooks deployed

@@ -14,25 +14,40 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# bash setup.sh PROJECT_ID ORGANIZATION_ID POLICY_NAME BILLING_ACCOUNT
 
-PROJECT=$1
-ORGANIZATION=$2     # 123456789
-POLICY_NAME=$3      # 987654321
-BILLING_ACCOUNT=$4  # ABCD-2345-GHIJ
-SA_NAME="terraform"
+# Example:
+# `source setup_variables.sh && ./setup.sh`
+
+
+DEPLOYMENT_PROJECT=${DEPLOYMENT_PROJECT_ID}  # 12346789
+PARENT_FOLDER=${PARENT_FOLDER}               # 11112222
+ORGANIZATION=${ORGANIZATION_ID}              # 33334444
+POLICY_NAME=${POLICY_NAME}                   # 987654321
+BILLING_ACCOUNT=${BILLING_ACCOUNT}           # ABCD-2345-GHIJ
 TERRAFORM_SA=${TERRAFORM_SA}                 # If this is set, it's most likely a SA used with the foundational blueprint and is a full email
+SA_NAME="notebook-blueprint-terraform-e"
 
-echo "Make sure that you enable a billing account for the project."
 
-gcloud projects create ${PROJECT} \
-  --organization ${ORGANIZATION} \
-  --billing-project ${PROJECT}
+# setup billing project if not deployed through foundational blueprint.
+if [[ -z ${TERRAFORM_SA} ]]; then
+  echo "Checking if billing project for deployment project is set."
 
-gcloud beta billing projects link ${PROJECT} \
-  --billing-account ${BILLING_ACCOUNT}
+  # only setup project billing, if it doesn't already exist
+  RESULT=$(gcloud beta billing projects list --billing-account ${BILLING_ACCOUNT} | grep ${DEPLOYMENT_PROJECT})
+  if [[ ${RESULT} == "" ]]; then
+    echo "Setting up billing for ${DEPLOYMENT_PROJECT} linked to ${BILLING_ACCOUNT}"
+    gcloud projects create ${DEPLOYMENT_PROJECT} \
+      --organization ${ORGANIZATION} \
+      --billing-project ${DEPLOYMENT_PROJECT}
 
-gcloud config set billing/quota_project $PROJECT
+    gcloud beta billing projects link ${DEPLOYMENT_PROJECT} \
+      --billing-account ${BILLING_ACCOUNT}
+
+    gcloud config set billing/quota_project $DEPLOYMENT_PROJECT
+  else
+    echo "billing is already setup"
+  fi
+fi
 
 function wait_service_enable() {
   service=""
@@ -40,7 +55,7 @@ function wait_service_enable() {
   sleeper=1
   while (( $attempt <  10 )); do
     echo "Attempt ${attempt} to test if service $1 is enabled..."
-    service=$(gcloud services list --project ${PROJECT} | grep $1)
+    service=$(gcloud services list --project ${DEPLOYMENT_PROJECT} | grep $1)
     echo "service is ${service}"
 
     if [ ! -z "$service" ]; then
@@ -60,74 +75,127 @@ function wait_service_enable() {
   fi
 }
 
-gcloud services enable iam.googleapis.com --project ${PROJECT}
-gcloud services enable cloudresourcemanager.googleapis.com --project ${PROJECT}
-gcloud services enable accesscontextmanager.googleapis.com --project ${PROJECT}
+gcloud services enable iam.googleapis.com --project ${DEPLOYMENT_PROJECT}
+gcloud services enable cloudresourcemanager.googleapis.com --project ${DEPLOYMENT_PROJECT}
+gcloud services enable accesscontextmanager.googleapis.com --project ${DEPLOYMENT_PROJECT}
+gcloud services enable cloudkms.googleapis.com --project ${DEPLOYMENT_PROJECT}
 
 wait_service_enable "iam.googleapis.com"
 wait_service_enable "cloudresourcemanager.googleapis.com"
 wait_service_enable "accesscontextmanager.googleapis.com"
+wait_service_enable "cloudkms.googleapis.com"
 
-exit 0
 
-gcloud iam service-accounts create terraform --display-name ${SA_NAME} --project ${PROJECT}
+function setup_using_foundation_terraform() {
+  # check if SA already exists
+  gcloud iam service-accounts list | grep -i ${TERRAFORM_SA}
+  if [[ $? -eq 1 ]]; then
+    echo "did not find an existing terraform.  Please determine if you used the foundational blueprint"
+    exit 1
+  fi
+}
 
-gcloud organizations add-iam-policy-binding ${ORGANIZATION} \
---member serviceAccount:${SA_NAME}@${PROJECT}.iam.gserviceaccount.com \
---role roles/accesscontextmanager.policyAdmin
+function setup_using_new_terraform() {
+  # check if SA already exists
+  gcloud iam service-accounts list | grep -i ${SA_NAME}
+  if [[ $? -eq 1 ]]; then
+    echo "Create the terraform SA to deploy the trusted environment"
+    gcloud iam service-accounts create ${SA_NAME} --display-name ${SA_NAME} --project ${DEPLOYMENT_PROJECT}
+  fi
 
-gcloud organizations add-iam-policy-binding ${ORGANIZATION} \
---member serviceAccount:${SA_NAME}@${PROJECT}.iam.gserviceaccount.com \
---role roles/resourcemanager.organizationAdmin
+  echo "Adding admin policies to the terraform SA...."
+  echo ""
 
-gcloud projects add-iam-policy-binding ${PROJECT} \
---member serviceAccount:${SA_NAME}@${PROJECT}.iam.gserviceaccount.com \
---role roles/serviceusage.serviceUsageAdmin
+  gcloud organizations add-iam-policy-binding ${ORGANIZATION} \
+  --member serviceAccount:${SA_NAME}@${DEPLOYMENT_PROJECT}.iam.gserviceaccount.com \
+  --role roles/iam.securityAdmin
+  echo "....Added security admin role"
 
-gcloud projects add-iam-policy-binding ${PROJECT} \
---member serviceAccount:${SA_NAME}@${PROJECT}.iam.gserviceaccount.com \
---role roles/secretmanager.admin
+  gcloud organizations add-iam-policy-binding ${ORGANIZATION} \
+  --member serviceAccount:${SA_NAME}@${DEPLOYMENT_PROJECT}.iam.gserviceaccount.com \
+  --role roles/billing.user
+  echo "....Added billing user role"
 
-gcloud projects add-iam-policy-binding ${PROJECT} \
---member serviceAccount:${SA_NAME}@${PROJECT}.iam.gserviceaccount.com \
---role roles/compute.admin
+  gcloud organizations add-iam-policy-binding ${ORGANIZATION} \
+  --member serviceAccount:${SA_NAME}@${DEPLOYMENT_PROJECT}.iam.gserviceaccount.com \
+  --role roles/accesscontextmanager.policyAdmin
+  echo "....Added access context manager admin role"
 
-gcloud projects add-iam-policy-binding ${PROJECT} \
---member serviceAccount:${SA_NAME}@${PROJECT}.iam.gserviceaccount.com \
---role roles/iam.securityAdmin
+  gcloud organizations add-iam-policy-binding ${ORGANIZATION} \
+  --member serviceAccount:${SA_NAME}@${DEPLOYMENT_PROJECT}.iam.gserviceaccount.com \
+  --role roles/resourcemanager.folderCreator
+  echo "....Added resource manager folder creator role"
 
-gcloud projects add-iam-policy-binding ${PROJECT} \
---member serviceAccount:${SA_NAME}@${PROJECT}.iam.gserviceaccount.com \
---role roles/iam.roleAdmin
+  gcloud organizations add-iam-policy-binding ${ORGANIZATION} \
+  --member serviceAccount:${SA_NAME}@${DEPLOYMENT_PROJECT}.iam.gserviceaccount.com \
+  --role roles/resourcemanager.projectCreator
+  echo "....Added resource manager project creator role"
 
-gcloud projects add-iam-policy-binding ${PROJECT} \
---member serviceAccount:${SA_NAME}@${PROJECT}.iam.gserviceaccount.com \
---role roles/iam.serviceAccountCreator
+  gcloud organizations add-iam-policy-binding ${ORGANIZATION} \
+  --member serviceAccount:${SA_NAME}@${DEPLOYMENT_PROJECT}.iam.gserviceaccount.com \
+  --role roles/orgpolicy.policyAdmin
+  echo "....Added org policy admin role"
 
-gcloud projects add-iam-policy-binding ${PROJECT} \
---member serviceAccount:${SA_NAME}@${PROJECT}.iam.gserviceaccount.com \
---role roles/iam.serviceAccountUser
+  gcloud organizations add-iam-policy-binding ${ORGANIZATION} \
+  --member serviceAccount:${SA_NAME}@${DEPLOYMENT_PROJECT}.iam.gserviceaccount.com \
+  --role roles/serviceusage.serviceUsageAdmin
+  echo "....Added service usage admin role"
 
-gcloud projects add-iam-policy-binding ${PROJECT} \
---member serviceAccount:${SA_NAME}@${PROJECT}.iam.gserviceaccount.com \
---role roles/bigquery.jobUser
+  gcloud organizations add-iam-policy-binding ${ORGANIZATION} \
+  --member serviceAccount:${SA_NAME}@${DEPLOYMENT_PROJECT}.iam.gserviceaccount.com \
+  --role roles/iam.serviceAccountCreator
+  echo "....Added service accout creator role"
 
-gcloud projects add-iam-policy-binding ${PROJECT} \
---member serviceAccount:${SA_NAME}@${PROJECT}.iam.gserviceaccount.com \
---role roles/cloudkms.admin
+  gcloud projects add-iam-policy-binding ${DEPLOYMENT_PROJECT} \
+  --member serviceAccount:${SA_NAME}@${DEPLOYMENT_PROJECT}.iam.gserviceaccount.com \
+  --role roles/editor
+  echo "....Added project editor role"
 
-gcloud projects add-iam-policy-binding ${PROJECT} \
---member serviceAccount:${SA_NAME}@${PROJECT}.iam.gserviceaccount.com \
---role roles/bigquery.user
+  gcloud projects add-iam-policy-binding ${DEPLOYMENT_PROJECT} \
+  --member serviceAccount:${SA_NAME}@${DEPLOYMENT_PROJECT}.iam.gserviceaccount.com \
+  --role roles/secretmanager.admin
+  echo "....Added secrets admin role"
 
-gcloud projects add-iam-policy-binding ${PROJECT} \
---member serviceAccount:${SA_NAME}@${PROJECT}.iam.gserviceaccount.com \
---role roles/storage.admin
+  gcloud projects add-iam-policy-binding ${DEPLOYMENT_PROJECT} \
+  --member serviceAccount:${SA_NAME}@${DEPLOYMENT_PROJECT}.iam.gserviceaccount.com \
+  --role roles/compute.admin
+  echo "....Added compute admin role"
 
-gcloud projects add-iam-policy-binding ${PROJECT} \
---member serviceAccount:${SA_NAME}@${PROJECT}.iam.gserviceaccount.com \
---role roles/notebooks.runner
+  gcloud projects add-iam-policy-binding ${DEPLOYMENT_PROJECT} \
+  --member serviceAccount:${SA_NAME}@${DEPLOYMENT_PROJECT}.iam.gserviceaccount.com \
+  --role roles/iam.securityAdmin
+  echo "....Added security admin role"
 
+  gcloud projects add-iam-policy-binding ${DEPLOYMENT_PROJECT} \
+  --member serviceAccount:${SA_NAME}@${DEPLOYMENT_PROJECT}.iam.gserviceaccount.com \
+  --role roles/iam.serviceAccountUser
+  echo "....Added service accout user role"
+
+  gcloud projects add-iam-policy-binding ${DEPLOYMENT_PROJECT} \
+  --member serviceAccount:${SA_NAME}@${DEPLOYMENT_PROJECT}.iam.gserviceaccount.com \
+  --role roles/bigquery.jobUser
+  echo "....Added service accout job role"
+
+  gcloud projects add-iam-policy-binding ${DEPLOYMENT_PROJECT} \
+  --member serviceAccount:${SA_NAME}@${DEPLOYMENT_PROJECT}.iam.gserviceaccount.com \
+  --role roles/cloudkms.admin
+  echo "....Added KMS admin role"
+
+  gcloud projects add-iam-policy-binding ${DEPLOYMENT_PROJECT} \
+  --member serviceAccount:${SA_NAME}@${DEPLOYMENT_PROJECT}.iam.gserviceaccount.com \
+  --role roles/bigquery.user
+  echo "....Added BigQuery user role"
+
+  gcloud projects add-iam-policy-binding ${DEPLOYMENT_PROJECT} \
+  --member serviceAccount:${SA_NAME}@${DEPLOYMENT_PROJECT}.iam.gserviceaccount.com \
+  --role roles/storage.admin
+  echo "....Added storage admin role"
+
+  gcloud projects add-iam-policy-binding ${DEPLOYMENT_PROJECT} \
+  --member serviceAccount:${SA_NAME}@${DEPLOYMENT_PROJECT}.iam.gserviceaccount.com \
+  --role roles/notebooks.runner
+  echo "....Added notebooks runner role"
+}
 
 IMPERSONATION_SA=""
 if [[ -z ${TERRAFORM_SA} ]]; then
@@ -146,6 +214,7 @@ export GOOGLE_OAUTH_ACCESS_TOKEN=$(gcloud auth print-access-token)
 terraform init
 
 terraform apply \
+  -var-file="terraform.template.tfvars" \
   -var "org=organizations/${ORGANIZATION}" \
   -var "default_policy_name=${POLICY_NAME}" \
   -var "terraform_sa_email=${IMPERSONATION_SA}" \

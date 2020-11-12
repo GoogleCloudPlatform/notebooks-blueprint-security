@@ -14,15 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-// Adding these outputs allows other modules as well as the calling
-// terraform script to access the attributes of these modules.
-
-// network_self_link can be used to reference the network created by this module
+# network_self_link can be used to reference the network created by this module
 output "vpc_trusted_private" {
   value = google_compute_network.vpc_trusted_private.self_link
 }
 
-// subnet_self_link can be used to reference the network created by this module
+# subnet_self_link can be used to reference the network created by this module
 output "subnet_trusted_private" {
   value = google_compute_subnetwork.subnet_trusted_private.self_link
 }

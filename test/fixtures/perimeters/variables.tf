@@ -14,18 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-/*
-This file exposes module variables that can be overridden to customize the network
-configuration
-https://www.terraform.io/docs/configuration/variables.html
-*/
-
-variable "org" {
+variable "organizations" {
   description = "The org ID for resource structure creation"
   type        = string
 }
 
-variable "policy_name" {
+variable "default_policy_name" {
   description = "The name of the policy to use for perimeters."
   type        = string
 }
@@ -35,12 +29,12 @@ variable "region" {
   type        = string
 }
 
-variable "resources" {
+variable "perimeter_projects" {
   description = "List of project resources to apply perimeter to."
   type        = list(string)
 }
 
-variable "ip_subnetworks" {
+variable "perimeters_ip_subnetworks" {
   description = "Networks allowed by perimeters."
   type        = list(string)
 }
@@ -62,11 +56,6 @@ variable "restricted_services" {
     "dataflow.googleapis.com",
     "dlp.googleapis.com",
     "cloudkms.googleapis.com",
-    "secretmanager.googleapis.com",
-    "cloudasset.googleapis.com",
-    "cloudfunctions.googleapis.com",
-    "pubsub.googleapis.com",
-    "monitoring.googleapis.com",
-    "logging.googleapis.com"
+    "secretmanager.googleapis.com"
   ]
 }

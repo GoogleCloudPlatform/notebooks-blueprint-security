@@ -46,6 +46,12 @@ export PRJ_HIGH_TRUST_KMS=""
 export TERRAFORM_SA=""
 export CAIP_COMPUTE_SA=""
 
+# Existing access policy ID number
+# 99998888
+# Note: only provide the numeric identifier from accessPolicies/<policyName>"
+# gcloud access-context-manager policies list --organization ${ORGANIZATION_ID} --format json | jq .[].name | sed 's/"//g' | awk '{split($0,a,"/"); print a[2]}'
+export POLICY_NAME=""
+
 # Kitchen-terraform variables
 export TF_VAR_organizations=${ORGANIZATION_ID}
 export TF_VAR_default_policy_name=${POLICY_NAME}
@@ -62,6 +68,7 @@ echo ""
 echo "Environment setup with values:"
 echo "==================================================="
 echo "Deployment project ID: ${DEPLOYMENT_PROJECT_ID:?}"
+echo "Policy name: ${POLICY_NAME:?}"
 echo "Parent Folder: ${PARENT_FOLDER:?}"
 echo "Organization: ${ORGANIZATION_ID:?}"
 echo "Project high trust analytics: ${PRJ_HIGH_TRUST_ANALYTICS:?}"

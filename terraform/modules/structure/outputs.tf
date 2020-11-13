@@ -14,19 +14,23 @@
  * limitations under the License.
  */
 
-# externalized for testing
-output "notebook_instance_names" {
-  description = "reference object of notebooks"
-  value = [
-    for instance in google_notebooks_instance.caip_nbk_p_eeee_confid :
-    chomp(instance.name)
-  ]
+// VPC-SC perimeter needs a list of projects to protect
+output "perimeter_project_trusted_data_number" {
+  value = google_project.prj_trusted_data.number
 }
 
-output "notebook_script_name" {
-  description = "reference object of notebooks"
-  value = [
-    for instance in google_notebooks_instance.caip_nbk_p_eeee_confid :
-    chomp(instance.post_startup_script)
-  ]
+output "perimeter_project_trusted_analytics_number" {
+  value = google_project.prj_trusted_analytics.number
+}
+
+output "perimeter_project_trusted_data_etl_number" {
+  value = google_project.prj_trusted_data_etl.number
+}
+
+output "perimeter_project_kms_number" {
+  value = google_project.prj_kms.number
+}
+
+output "high_trust_folder" {
+  value = google_folder.fldr_trusted.name
 }

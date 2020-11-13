@@ -28,7 +28,7 @@
 # TODO expose this at the top level
 # TODO debug how to only allow the company's domain
 #resource "google_folder_organization_policy" "domain_policy" {
-#  folder     = google_folder.fldr_trusted.name
+#  folder     = var.folder_trusted
 #  constraint = "iam.allowedPolicyMemberDomains"
 #
 #  list_policy {
@@ -39,7 +39,7 @@
 #}
 
 resource "google_folder_organization_policy" "service_account_policy" {
-  folder     = google_folder.fldr_trusted.name
+  folder     = var.folder_trusted
   constraint = "iam.disableServiceAccountCreation"
 
   boolean_policy {
@@ -47,19 +47,8 @@ resource "google_folder_organization_policy" "service_account_policy" {
   }
 }
 
-// TODO can the SA be in a separate project to be centrally managed?  For now, place into the Analytics folder
-// Override org policy to only allow service accounts in the analytics project
-resource "google_project_organization_policy" "service_account_policy" {
-  project    = google_project.prj_trusted_analytics.name
-  constraint = "iam.disableServiceAccountCreation"
-
-  boolean_policy {
-    enforced = false
-  }
-}
-
 resource "google_folder_organization_policy" "service_account_key_policy" {
-  folder     = google_folder.fldr_trusted.name
+  folder     = var.folder_trusted
   constraint = "iam.disableServiceAccountKeyCreation"
 
   boolean_policy {
@@ -68,7 +57,7 @@ resource "google_folder_organization_policy" "service_account_key_policy" {
 }
 
 resource "google_folder_organization_policy" "iam_grant_policy" {
-  folder     = google_folder.fldr_trusted.name
+  folder     = var.folder_trusted
   constraint = "iam.automaticIamGrantsForDefaultServiceAccounts"
 
   boolean_policy {

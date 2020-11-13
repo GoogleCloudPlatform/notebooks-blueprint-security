@@ -30,9 +30,21 @@ export DEPLOYMENT_PROJECT_ID=""
 # " elo-fldr-prod-trusted2"
 export PARENT_FOLDER=""
 
+# folder that has all the trusted projets (e.g folder/123456890)
+export TRUSTED_FOLDER_ID=""
+
+# Provide your billing account
+# gcloud beta billing accounts list
+# ABCDEF-234567-HIJKLM
+export BILLING_ACCOUNT=""  
+
 # Your organization ID
 # `glcoud organizations list`
 export ORGANIZATION_ID=""
+
+# Existing access policy ID number
+# 987654321
+export POLICY_NAME=""
 
 # Your project names defined in the terraform/terraform.template.tfvars file
 export PRJ_HIGH_TRUST_ANALYTICS=""
@@ -55,9 +67,10 @@ export POLICY_NAME=""
 # Kitchen-terraform variables
 export TF_VAR_organizations=${ORGANIZATION_ID}
 export TF_VAR_default_policy_name=${POLICY_NAME}
-export TF_VAR_terraform_sa_email=${IMPERSONATION_SA}
+export TF_VAR_terraform_sa_email=${TERRAFORM_SA}
 export TF_VAR_caip_compute_sa_email=${CAIP_COMPUTE_SA}
 export TF_VAR_billing_account=${BILLING_ACCOUNT}
+export TF_VAR_trusted_folder_id=${TRUSTED_FOLDER_ID}
 export TF_CLI_ARGS_apply="-var-file=$(pwd)/terraform/terraform.template.tfvars"
 export TF_CLI_ARGS_destroy="-var-file=$(pwd)/terraform/terraform.template.tfvars"
 
@@ -67,15 +80,18 @@ export TF_CLI_ARGS_destroy="-var-file=$(pwd)/terraform/terraform.template.tfvars
 echo ""
 echo "Environment setup with values:"
 echo "==================================================="
+echo "Billing account: ${BILLING_ACCOUNT:?}"
 echo "Deployment project ID: ${DEPLOYMENT_PROJECT_ID:?}"
 echo "Policy name: ${POLICY_NAME:?}"
-echo "Parent Folder: ${PARENT_FOLDER:?}"
+echo "Parent folder: ${PARENT_FOLDER:?}"
+echo "Trusted folder ID: ${TRUSTED_FOLDER_ID:?}"
 echo "Organization: ${ORGANIZATION_ID:?}"
+echo "Policy name: ${POLICY_NAME:?}"
 echo "Project high trust analytics: ${PRJ_HIGH_TRUST_ANALYTICS:?}"
 echo "Project high trust data: ${PRJ_HIGH_TRUST_DATA:?}"
 echo "Project high trust data ETL: ${PRJ_HIGH_TRUST_DATA_ETL:?}"
 echo "Project high trust kms: ${PRJ_HIGH_TRUST_KMS:?}"
-echo "Terraform Service Account: ${TERRAFORM_SA:?}"
+echo "Terraform service account: ${TERRAFORM_SA:?}"
 echo "CAIP compute Service Account: ${CAIP_COMPUTE_SA:?}"
 echo "==================================================="
 echo ""

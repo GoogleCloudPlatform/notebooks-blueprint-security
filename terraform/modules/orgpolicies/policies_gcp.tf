@@ -17,7 +17,7 @@
 # Organizational Policies (applied at the folder level)
 #
 # These are the minimum policies
-# - Resource location: gcp.resourceLocations
+# - Resource location: constraints/gcp.resourceLocations
 #     - references of valid value groups: https://cloud.google.com/resource-manager/docs/organization-policy/defining-locations#value_groups     
 #
 # (Optional policies)

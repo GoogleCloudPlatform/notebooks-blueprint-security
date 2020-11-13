@@ -26,25 +26,24 @@ limitations under the License.
 # 1. data (hardware backed)
 # 2. transitory (software backed)
 
-# https://www.terraform.io/docs/providers/google/r/kms_crypto_key.html
-# key ring that's regionalized
-
-resource "random_string" "random" {
-  length = 4
-  special = false
+resource "random_string" "random_kr" {
+  length    = 4
+  min_lower = 4
+  special   = false
 }
 
+# key ring that's regionalized
 resource "google_kms_key_ring" "kr_eeee_p_confid" {
-  name     = format("kr-eeee-p-confid-%s", random_string.random.result)
+  name     = format("kr-eeee-p-confid-%s", random_string.random_kr.result)
   location = var.region
   project  = var.project_kms
 }
 
 // confid key will encrypt any confid PII data such as BQ, GCS, or boot images
 // HSM key rotates every 45 days
-resource "google_kms_crypto_key" "key_aaaa_p_confid_data" {
-  name            = "key-aaaa-p-confid-data"
-  key_ring        = google_kms_key_ring.kr_aaaa_p_confid.self_link
+resource "google_kms_crypto_key" "key_eeee_p_confid_data" {
+  name            = "key-eeee-p-confid-data"
+  key_ring        = google_kms_key_ring.kr_eeee_p_confid.self_link
   rotation_period = "3888000s"
   version_template {
     algorithm        = "GOOGLE_SYMMETRIC_ENCRYPTION"
@@ -61,9 +60,9 @@ resource "google_kms_crypto_key" "key_aaaa_p_confid_data" {
 // Transitory confid data will be protect by the ETL key
 // Software key rotates every 10 days
 // Although transitory, have a shorter crypto period due to volume of expected data ETL.
-resource "google_kms_crypto_key" "key_aaaa_p_confid_etl" {
-  name            = "key-aaaa-p-confid-etl"
-  key_ring        = google_kms_key_ring.kr_aaaa_p_confid.self_link
+resource "google_kms_crypto_key" "key_eeee_p_confid_etl" {
+  name            = "key-eeee-p-confid-etl"
+  key_ring        = google_kms_key_ring.kr_eeee_p_confid.self_link
   rotation_period = "864000s"
 
   # set to true to prevent terraform from destroying this key, especially if it's in use

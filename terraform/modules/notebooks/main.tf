@@ -17,23 +17,29 @@
 # IAM for the CAIP service account to read the post startup script.
 resource "google_storage_bucket_iam_member" "member" {
   bucket = var.bucket_bootstrap.name
-  role = "roles/storage.objectViewer"
+  role   = "roles/storage.objectViewer"
   member = "serviceAccount:${var.caip_sa_email}"
 }
 
 resource "google_storage_bucket_object" "postscript" {
-  name     = "post_startup_script.sh"
-  source   = "${path.module}/files/post_startup_script.sh"
-  bucket   = var.bucket_bootstrap.name
-} 
+  name   = "post_startup_script.sh"
+  source = "${path.module}/files/post_startup_script.sh"
+  bucket = var.bucket_bootstrap.name
+}
 
 # IAM policy for each Data Scientist
 resource "google_project_iam_member" "notebook_caip_user_iam" {
-  project = var.project_id
-  role    = "roles/notebooks.viewer"
-  for_each        = toset(var.caip_users)
+  project  = var.project_id
+  role     = "roles/notebooks.viewer"
+  for_each = toset(var.caip_users)
 
-  member  = "user:${each.value}"
+  member = "user:${each.value}"
+}
+
+resource "random_string" "random_nbk" {
+  length    = 4
+  min_lower = 4
+  special   = false
 }
 
 # Creates a confid notebook per relevant user that has file
@@ -45,7 +51,7 @@ resource "google_notebooks_instance" "caip_nbk_p_eeee_confid" {
   for_each        = toset(var.caip_users)
   service_account = var.caip_sa_email
 
-  name         = format("caip-nbk-eeee-confid-%s", split("@", each.value)[0])
+  name         = format("caip-nbk-eeee-confid-%s-%s", split("@", each.value)[0], random_string.random_nbk.result)
   location     = var.zone
   machine_type = "n1-standard-1"
 
@@ -79,12 +85,12 @@ resource "google_notebooks_instance" "caip_nbk_p_eeee_confid" {
   }
 
   metadata = {
-    terraform                   = "true"
-    proxy-mode                  = "mail"
-    proxy-user-mail             = each.value
-    notebook-disable-root       = "true"
-    notebook-disable-downloads  = "true"
-    notebook-disable-nbconvert  = "true"
+    terraform                  = "true"
+    proxy-mode                 = "mail"
+    proxy-user-mail            = each.value
+    notebook-disable-root      = "true"
+    notebook-disable-downloads = "true"
+    notebook-disable-nbconvert = "true"
   }
 
   lifecycle {

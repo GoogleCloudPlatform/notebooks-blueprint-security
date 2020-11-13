@@ -21,9 +21,6 @@ resource "random_string" "random_bkt" {
   special   = false
 }
 
-// TODO move the CAIP notebook startup script here
-// the GCS bucket should be in the boot environment so it cannot be altered
-
 // confid bucket is encrypted with CMEK key and with versioning
 resource "google_storage_bucket" "bkt_p_confid" {
   name                        = format("%s-bkt-eeee-p-config-%s", var.project_bootstrap, random_string.random_bkt.result)

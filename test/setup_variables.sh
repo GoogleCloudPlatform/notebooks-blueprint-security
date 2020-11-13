@@ -44,11 +44,13 @@ export PRJ_HIGH_TRUST_KMS=""
 # This will likely be the same one used from the security foundational blueprint
 # otherwise, comment it out, so that one can be automatically generated
 export TERRAFORM_SA=""
+export CAIP_COMPUTE_SA=""
 
 # Kitchen-terraform variables
 export TF_VAR_organizations=${ORGANIZATION_ID}
 export TF_VAR_default_policy_name=${POLICY_NAME}
 export TF_VAR_terraform_sa_email=${IMPERSONATION_SA}
+export TF_VAR_caip_compute_sa_email=${CAIP_COMPUTE_SA}
 export TF_VAR_billing_account=${BILLING_ACCOUNT}
 export TF_CLI_ARGS_apply="-var-file=$(pwd)/terraform/terraform.template.tfvars"
 export TF_CLI_ARGS_destroy="-var-file=$(pwd)/terraform/terraform.template.tfvars"
@@ -67,6 +69,7 @@ echo "Project high trust data: ${PRJ_HIGH_TRUST_DATA:?}"
 echo "Project high trust data ETL: ${PRJ_HIGH_TRUST_DATA_ETL:?}"
 echo "Project high trust kms: ${PRJ_HIGH_TRUST_KMS:?}"
 echo "Terraform Service Account: ${TERRAFORM_SA:?}"
+echo "CAIP compute Service Account: ${CAIP_COMPUTE_SA:?}"
 echo "==================================================="
 echo ""
 echo "Please verify these environment variables are correct for your GCP Resources"

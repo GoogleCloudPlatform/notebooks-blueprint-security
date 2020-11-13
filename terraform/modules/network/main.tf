@@ -14,17 +14,23 @@
  * limitations under the License.
  */
 
+resource "random_string" "random_vpc" {
+  length = 4
+  min_lower = 4
+  special = false
+}
+
 // This file creates a custom VPC network and subnet to contain the notebooks
 // A network to hold trusted notebooks.
 resource "google_compute_network" "vpc_trusted_private" {
-  name                    = "vpc-p-shared-trusted-private"
+  name                    = format("vpc-p-shared-trusted-private-%s", random_string.random_vpc.result )
   project                 = var.project_id
   auto_create_subnetworks = false
 }
 
 // Subnetwork for the notebooks
 resource "google_compute_subnetwork" "subnet_trusted_private" {
-  name                     = "sb-p-shared-trusted-private-${var.region}"
+  name                     = format("sb-p-shared-trusted-private-%s-%s", var.region, random_string.random_vpc.result)
   project                  = var.project_id
   ip_cidr_range            = var.ip_range
   network                  = google_compute_network.vpc_trusted_private.self_link

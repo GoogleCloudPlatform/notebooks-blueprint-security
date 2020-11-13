@@ -29,7 +29,7 @@ platforms:
 suites:
   - name: data
     driver:
-      root_module_directory: test/fixtures/data/
+      root_module_directory: test/fixtures/data
     verifier:
       color: false
       systems:
@@ -38,3 +38,13 @@ suites:
           controls:
             - gcp_data_buckets
             - gcp_data_bigquery
+  - name: notebooks
+    driver:
+      root_module_directory: test/fixtures/notebooks
+    verifier:
+      color: false
+      systems:
+        - name: inspec-gcp
+          backend: gcp
+          controls:
+            - gcp_notebooks

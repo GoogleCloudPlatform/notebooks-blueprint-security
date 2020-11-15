@@ -25,6 +25,7 @@ provider "google" {
 
 provider "google-beta" {
   project = var.default_billing_project_id
+  zone    = var.zone
   version = ">= 3.33.0"
   billing_project = var.default_billing_project_id
   user_project_override = true

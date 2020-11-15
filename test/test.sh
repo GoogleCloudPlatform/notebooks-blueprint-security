@@ -53,3 +53,5 @@ kitchen converge
 kitchen verify
 
 kitchen destroy
+
+gcloud config unset auth/impersonate_service_account

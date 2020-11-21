@@ -21,9 +21,9 @@ resource "random_string" "random_bkt" {
   special   = false
 }
 
-// confid bucket is encrypted with CMEK key and with versioning
+# trusted data bucket is encrypted with CMEK key and with versioning
 resource "google_storage_bucket" "bkt_p_confid" {
-  name                        = format("%s-bkt-eeee-p-config-%s", var.project_bootstrap, random_string.random_bkt.result)
+  name                        = format("bkt-%s-%s-%s", var.project_bootstrap, var.trusted_data_bucket_name, random_string.random_bkt.result)
   project                     = var.project_trusted_data
   location                    = var.region
   uniform_bucket_level_access = true
@@ -38,8 +38,9 @@ resource "google_storage_bucket" "bkt_p_confid" {
   depends_on = [google_kms_crypto_key_iam_binding.iam_p_gcs_sa_confid_etl]
 }
 
+# bucket that holds bootstrap code for notebooks
 resource "google_storage_bucket" "bkt_p_bootstrap_notebooks" {
-  name                        = format("%s-bkt-eeee-p-bootstrap-notebooks-%s", var.project_bootstrap, random_string.random_bkt.result)
+  name                        = format("bkt-%s-%s", var.project_bootstrap, var.bootstrap_notebooks_bucket_name, random_string.random_bkt.result)
   project                     = var.project_bootstrap
   location                    = var.region
   uniform_bucket_level_access = true
@@ -54,19 +55,19 @@ resource "google_storage_bucket" "bkt_p_bootstrap_notebooks" {
   depends_on = [google_kms_crypto_key_iam_binding.iam_p_gcs_sa_confid_etl]
 }
 
-// a temporary bucket for intake for data flow/DLP processing
+# a temporary bucket for intake for data flow/DLP processing
 resource "google_storage_bucket" "bkt_p_data_etl" {
-  name                        = format("%s-bkt-eeee-p-data-etl-%s", var.project_trusted_data_etl, random_string.random_bkt.result)
+  name                        = format("bkt-%s-%s-%s", var.project_trusted_data_etl, var.trusted_data_etl_bucket_name, random_string.random_bkt.result)
   project                     = var.project_trusted_data_etl
   location                    = var.region
   uniform_bucket_level_access = true
   force_destroy               = true
 
-
   encryption {
     default_kms_key_name = var.key_confid_etl
   }
-  // create a bucket lifecycle policy to delete after 1 day
+
+  # create a bucket lifecycle policy to delete after 1 day
   lifecycle_rule {
     action {
       type = "Delete"

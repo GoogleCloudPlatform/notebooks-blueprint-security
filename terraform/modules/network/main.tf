@@ -15,22 +15,22 @@
  */
 
 resource "random_string" "random_vpc" {
-  length = 4
+  length    = 4
   min_lower = 4
-  special = false
+  special   = false
 }
 
 // This file creates a custom VPC network and subnet to contain the notebooks
 // A network to hold trusted notebooks.
 resource "google_compute_network" "vpc_trusted_private" {
-  name                    = format("vpc-p-shared-trusted-private-%s", random_string.random_vpc.result )
+  name                    = format("vpc-%s-%s", var.trusted_vpc_name, random_string.random_vpc.result)
   project                 = var.project_id
   auto_create_subnetworks = false
 }
 
 // Subnetwork for the notebooks
 resource "google_compute_subnetwork" "subnet_trusted_private" {
-  name                     = format("sb-p-shared-trusted-private-%s-%s", var.region, random_string.random_vpc.result)
+  name                     = format("sbn-%s-%s-%s", var.trusted_subnet_name, var.region, random_string.random_vpc.result)
   project                  = var.project_id
   ip_cidr_range            = var.ip_range
   network                  = google_compute_network.vpc_trusted_private.self_link

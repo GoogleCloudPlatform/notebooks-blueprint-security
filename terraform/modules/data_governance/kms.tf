@@ -36,7 +36,7 @@ resource "random_string" "random_kr" {
 
 # key ring that's regionalized
 resource "google_kms_key_ring" "kr_eeee_p_confid" {
-  name     = format("kr-eeee-p-confid-%s", random_string.random_kr.result)
+  name     = format("kr-%s-%s", var.keyring_name, random_string.random_kr.result)
   location = var.region
   project  = var.project_kms
 }
@@ -44,7 +44,7 @@ resource "google_kms_key_ring" "kr_eeee_p_confid" {
 # confid key will encrypt any confid PII data such as BQ, GCS, or boot images
 # HSM key rotates every 45 days
 resource "google_kms_crypto_key" "key_eeee_p_confid_data" {
-  name            = format("kr-eeee-p-confid-data-%s", random_string.random_kr.result)
+  name            = format("key-%s-%s", var.trusted_data_key_name, random_string.random_kr.result)
   key_ring        = google_kms_key_ring.kr_eeee_p_confid.self_link
   rotation_period = var.data_key_rotation_seconds
   version_template {
@@ -63,7 +63,7 @@ resource "google_kms_crypto_key" "key_eeee_p_confid_data" {
 # Software key rotates every 10 days
 # Although transitory, have a shorter crypto period due to volume of expected data ETL.
 resource "google_kms_crypto_key" "key_eeee_p_confid_etl" {
-  name            = format("kr-eeee-p-confid-etl-%s", random_string.random_kr.result)
+  name            = format("key-%s-%s", var.trusted_data_etl_key_name, random_string.random_kr.result)
   key_ring        = google_kms_key_ring.kr_eeee_p_confid.self_link
   rotation_period = var.etl_key_rotation_seconds
 

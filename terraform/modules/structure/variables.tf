@@ -14,12 +14,6 @@
  * limitations under the License.
  */
 
-/*
-This file exposes module variables that can be overridden to customize the network
-configuration
-https://www.terraform.io/docs/configuration/variables.html
-*/
-
 variable "parent_env" {
   description = "configured for folder representing a production environment"
   type        = string
@@ -36,7 +30,7 @@ variable "folder_trusted" {
 }
 
 variable "project_trusted_analytics" {
-  description = "The trusted project for analytics activies and data scientists"
+  description = "The trusted project for analytics activities and data scientists"
   type        = string
 }
 
@@ -51,7 +45,7 @@ variable "project_trusted_data_etl" {
 }
 
 variable "project_trusted_kms" {
-  description = "The trusted project in the boot enviroment that contains encryption keys"
+  description = "The trusted project in the boot environment that contains encryption keys"
   type        = string
 }
 

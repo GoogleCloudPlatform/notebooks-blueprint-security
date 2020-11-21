@@ -42,16 +42,16 @@ resource "random_string" "random_nbk" {
   special   = false
 }
 
-# Creates a confid notebook per relevant user that has file
+# Creates a trusted notebook per relevant user that has file
 # download disabled. Although some values are hardcoded, you can
 # customize them using variables.
-resource "google_notebooks_instance" "caip_nbk_p_eeee_confid" {
+resource "google_notebooks_instance" "caip_nbk_p_trusted" {
   provider        = google-beta
   project         = var.project_id
   for_each        = toset(var.caip_users)
   service_account = var.caip_sa_email
 
-  name         = format("caip-nbk-eeee-confid-%s-%s", split("@", each.value)[0], random_string.random_nbk.result)
+  name         = format("caip-nbk-%s-%s-%s", var.notebook_name, split("@", each.value)[0], random_string.random_nbk.result)
   location     = var.zone
   machine_type = "n1-standard-1"
 

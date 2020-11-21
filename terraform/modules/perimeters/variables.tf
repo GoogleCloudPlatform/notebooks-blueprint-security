@@ -14,11 +14,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-/*
-This file exposes module variables that can be overridden to customize the network
-configuration
-https://www.terraform.io/docs/configuration/variables.html
-*/
+variable "access_level_name" {
+  description = "Access level name"
+  type        = string
+  default     = "higher_trust_analytic"
+}
+
+variable "service_perimeter_name" {
+  description = "service perimeter name"
+  type        = string
+  default     = "higher_trust_analytics"
+}
+
 
 variable "org" {
   description = "The org ID for resource structure creation"

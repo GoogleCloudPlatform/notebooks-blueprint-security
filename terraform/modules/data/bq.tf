@@ -25,8 +25,8 @@ resource "random_string" "random_ds" {
 }
 
 resource "google_bigquery_dataset" "bq_p_confid_dataset" {
-  dataset_id    = format("bq_eeee_p_confid_dataset_%s", random_string.random_ds.result)
-  friendly_name = "confid data"
+  dataset_id    = format("bq_%s_%s", var.dataset_name, random_string.random_ds.result)
+  friendly_name = "sample trusted data"
   description   = "Dataset holding tables with PII"
   project       = var.project_trusted_data
   location      = var.region

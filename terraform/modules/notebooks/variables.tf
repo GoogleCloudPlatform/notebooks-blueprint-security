@@ -14,6 +14,12 @@
  * limitations under the License.
  */
 
+variable "notebook_name" {
+  description = "name for notebooks"
+  type        = string
+  default     = "trusted_sample"
+}
+
 variable "project_id" {
   description = "Project restricted to hold confid notebooks."
 }

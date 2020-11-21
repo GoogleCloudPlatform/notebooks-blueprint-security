@@ -16,10 +16,10 @@
 
 # Uncomment if do not have an access policy already defined
 # Consider using dry-run mode to enforce the VPC-SC
-// resource "google_access_context_manager_access_policy" "trusted_policy" {
-//   parent = var.org
-//   title  = "Trusted policy"
-// }
+# resource "google_access_context_manager_access_policy" "trusted_policy" {
+#   parent = var.org
+#   title  = "Trusted policy"
+# }
 
 resource "random_string" "random_al" {
   length    = 4
@@ -30,7 +30,7 @@ resource "random_string" "random_al" {
 # Use existing default policy.
 resource "google_access_context_manager_service_perimeter" "higher_trusted_perimeter_resource" {
   parent = "accessPolicies/${var.policy_name}"
-  name   = format("accessPolicies/%s/servicePerimeters/sp_p_higher_trust_analytics_eeee_%s", var.policy_name, random_string.random_al.result)
+  name   = format("accessPolicies/%s/servicePerimeters/sp_%s_%s", var.policy_name, var.service_perimeter_name, random_string.random_al.result)
   title  = format("sp_p_higher_trust_analytics_eeee_%s", random_string.random_al.result)
   status {
     restricted_services = var.restricted_services
@@ -39,10 +39,11 @@ resource "google_access_context_manager_service_perimeter" "higher_trusted_perim
   }
 }
 
-# Enable additional conditions as needed with endpoint verification by uncommenting items below
+# Uncomment items below to enable additional conditions as needed
+# Note: requires [endpoint verification](https://cloud.google.com/endpoint-verification/docs/overview)
 resource "google_access_context_manager_access_level" "trusted_access_level" {
   parent = "accessPolicies/${var.policy_name}"
-  name   = format("accessPolicies/%s/accessLevels/alp_p_higher_trust_analytics_eeee_%s", var.policy_name, random_string.random_al.result)
+  name   = format("accessPolicies/%s/accessLevels/alp_%s_%s", var.policy_name, var.access_level_name, random_string.random_al.result)
   title  = format("alp_p_higher_trust_analytics_eeee_%s", random_string.random_al.result)
   basic {
     conditions {

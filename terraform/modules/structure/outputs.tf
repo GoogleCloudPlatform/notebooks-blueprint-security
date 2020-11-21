@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-// VPC-SC perimeter needs a list of projects to protect
+# VPC-SC perimeter needs a list of projects to protect
 output "perimeter_project_trusted_data_number" {
   value = google_project.prj_trusted_data.number
 }

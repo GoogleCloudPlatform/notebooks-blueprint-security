@@ -14,9 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-// Adding these outputs allows other modules as well as the calling
-// terraform script to access the attributes of these modules.
-
 output "bkt_p_data_etl" {
   description = "Bucket URI for data ETL"
   value       = google_storage_bucket.bkt_p_data_etl.self_link

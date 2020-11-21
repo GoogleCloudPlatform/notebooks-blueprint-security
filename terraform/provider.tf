@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-// Configures the default project and zone for underlying Google Cloud API calls
+# Configures the default project and zone for underlying Google Cloud API calls
 provider "google" {
   project = var.default_billing_project_id
   zone    = var.zone

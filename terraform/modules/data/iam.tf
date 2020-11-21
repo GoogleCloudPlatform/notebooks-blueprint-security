@@ -63,16 +63,16 @@ data "google_compute_default_service_account" "gce_default_account_analytics" {
 // }
 
 data "google_project" "project_analytics" {
-  project_id    = var.project_trusted_analytics
+  project_id = var.project_trusted_analytics
 }
 
-//=====================================================================
-// Grant access to KMS to support CMEK for data services
-// This is fine grain limited to only the single key.
-// 
-// need the trusted scientists
-// need the CAIP service's identity granted access
-//=====================================================================
+#=====================================================================
+# Grant access to KMS to support CMEK for data services
+# This is fine grain limited to only the single key.
+# 
+# need the trusted scientists
+# need the CAIP service's identity granted access
+#=====================================================================
 resource "google_kms_crypto_key_iam_binding" "iam_p_bq_sa_confid" {
   crypto_key_id = var.key_confid_data
   role          = "roles/cloudkms.cryptoKeyEncrypterDecrypter"

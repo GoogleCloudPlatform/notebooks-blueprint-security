@@ -14,6 +14,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+variable "trusted_vpc_name" {
+  description = "higher trust VPC name"
+  type        = string
+  default     = "higher_trust_vpc_private"
+}
+
+variable "trusted_subnet_name" {
+  description = "higher trust VPC name"
+  type        = string
+  default     = "higher_trust_private"
+}
 
 variable "project_id" {
   description = "the project for this network"

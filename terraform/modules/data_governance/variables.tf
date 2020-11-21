@@ -14,11 +14,30 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-/*
-This file exposes module variables that can be overridden to customize the network
-configuration
-https://www.terraform.io/docs/configuration/variables.html
-*/
+variable "keyring_name" {
+  description = "the keyring name that holds keys protecting trusted data"
+  type        = string
+  default     = "trusted_keys"
+}
+
+
+variable "trusted_data_key_name" {
+  description = "name of the key that protects trusted data"
+  type        = string
+  default     = "trusted_data"
+}
+
+variable "trusted_data_etl_key_name" {
+  description = "name of the key that protects trusted data ETL"
+  type        = string
+  default     = "trusted_data_etl"
+}
+
+variable "sample_secret_name" {
+  description = "name of the sample secret"
+  type        = string
+  default     = "trusted_sample"
+}
 
 variable "project_kms" {
   description = "the project for kms"

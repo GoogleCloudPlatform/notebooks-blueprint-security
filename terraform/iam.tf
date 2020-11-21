@@ -17,7 +17,7 @@
 # The notebook-compute-sa provides the underlying policies that the compute uses to access other resources
 # within the project for the data scientist.  
 #
-# The data scientiest should not be given the ability to become an SA.  Instead, they should be given
+# The data scientist should not be given the ability to become an SA.  Instead, they should be given
 # OSLogin role and SSH into the notebook
 resource "google_service_account" "sa_p_notebook_compute" {
   project      = var.project_trusted_analytics
@@ -60,7 +60,7 @@ resource "google_project_iam_member" "notebook_instance_compute" {
 // Note: resourcemanager.projects.list is not applicable at project level, but is assigned in the BQ DataViewer predefined role (org level)
 resource "google_project_iam_custom_role" "role_restricted_data_viewer" {
   project     = var.project_trusted_analytics
-  role_id     = "eeee_restricted_data_viewer"
+  role_id     = "blueprint_restricted_data_viewer"
   title       = "Restricted Data Viewer"
   description = "BQ Data Viewer role with export removed"
   permissions = [
@@ -105,7 +105,7 @@ resource "google_project_iam_member" "notebook_instance_caip" {
 
 #TODO add pub/sub role
 
-# (optional) uncomment this block, if you desire your data scientest to have code within their notebooks
+# (optional) uncomment this block, if you desire your data scientist to have code within their notebooks
 # that can create a temporary gcs bucket
 # resource "google_project_iam_member" "notebook-instance-gcs" {
 #   project = var.project

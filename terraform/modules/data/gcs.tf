@@ -40,7 +40,7 @@ resource "google_storage_bucket" "bkt_p_confid" {
 
 # bucket that holds bootstrap code for notebooks
 resource "google_storage_bucket" "bkt_p_bootstrap_notebooks" {
-  name                        = format("bkt-%s-%s", var.project_bootstrap, var.bootstrap_notebooks_bucket_name, random_string.random_bkt.result)
+  name                        = format("bkt-%s-%s-%s", var.project_bootstrap, var.bootstrap_notebooks_bucket_name, random_string.random_bkt.result)
   project                     = var.project_bootstrap
   location                    = var.region
   uniform_bucket_level_access = true

@@ -22,4 +22,3 @@ variable "resource_locations" {
   description = "region for resource constraint"
   type        = list(string)
 }
-

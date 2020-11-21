@@ -31,7 +31,7 @@ module "structure" {
 
 module "orgpolicies" {
   source             = "./modules/orgpolicies"
-  folder_trusted     = module.structure.high_trust_folder
+  folder_trusted     = var.folder_trusted
   resource_locations = var.resource_locations
 
   # only configure org policies after all SA's have been created

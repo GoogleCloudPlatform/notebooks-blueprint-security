@@ -34,9 +34,9 @@ export PARENT_FOLDER=""
 export ORGANIZATION_ID=""
 
 # Existing access policy ID number
-# 99998888
+# e.g. 99998888
 # Note: only provide the numeric identifier from accessPolicies/<policyName>"
-# gcloud access-context-manager policies list --organization 423324658232 --format json | jq .[].name | sed 's/"//g' | awk '{split($0,a,"/"); print a[2]}'
+# gcloud access-context-manager policies list --organization <orgID> --format json | jq .[].name | sed 's/"//g' | awk '{split($0,a,"/"); print a[2]}'
 export POLICY_NAME=""
 
 # Provide your billing account

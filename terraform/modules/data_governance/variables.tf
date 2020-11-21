@@ -36,13 +36,13 @@ variable "region" {
 }
 
 variable "data_key_rotation_seconds" {
-  description = "The number of seconds to rotate the key used to protect data"
+  description = "The number of seconds to rotate the key used to protect data (i.e 45 days)"
   type        = string
   default     = "3888000s"
 }
 
 variable "etl_key_rotation_seconds" {
-  description = "The number of seconds to rotate the key used to protect data etl"
+  description = "The number of seconds to rotate the key used to protect data etl (i.e 10 days)"
   type        = string
   default     = "864000s"
 }

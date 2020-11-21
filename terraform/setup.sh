@@ -219,3 +219,5 @@ terraform apply \
   -var "default_policy_name=${POLICY_NAME}" \
   -var "terraform_sa_email=${IMPERSONATION_SA}" \
   -var "billing_account=${BILLING_ACCOUNT}"
+
+gcloud config unset auth/impersonate_service_account

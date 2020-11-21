@@ -10,3 +10,4 @@ run.sh
 # tests
 *scan*
 .kitchen/
+*tfplan*

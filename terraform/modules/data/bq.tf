@@ -51,10 +51,19 @@ resource "google_bigquery_dataset" "bq_p_confid_dataset" {
 resource "google_bigquery_table" "confid_table" {
   dataset_id = google_bigquery_dataset.bq_p_confid_dataset.dataset_id
   table_id   = "confid_table"
+  project       = var.project_trusted_data
+
+  lifecycle {
+    prevent_destroy = false
+    ignore_changes = [
+      # Ignore changes to encryption key, since seems to not be detected
+      encryption_configuration,
+    ]
+  }
 }
 
 resource "google_bigquery_job" "confid_table_load" {
-  job_id = "confid_table_load"
+  job_id = format("confid_table_load_%s", formatdate("YYYYMMMDD_hhmmss", timestamp()))
 
   load {
     source_uris = [
@@ -73,4 +82,6 @@ resource "google_bigquery_job" "confid_table_load" {
     write_disposition = "WRITE_APPEND"
     autodetect        = true
   }
+
+  depends_on = [google_bigquery_table.confid_table]
 }

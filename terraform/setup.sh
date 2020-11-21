@@ -90,7 +90,7 @@ function setup_using_foundation_terraform() {
   # check if SA already exists
   gcloud iam service-accounts list | grep -i ${TERRAFORM_SA}
   if [[ $? -eq 1 ]]; then
-    echo "did not find an existing terraform.  Please determine if you used the foundational blueprint"
+    echo "did not find an existing terraform service account.  Please determine if you deployed the security foundation blueprint"
     exit 1
   fi
 }
@@ -211,10 +211,12 @@ fi
 gcloud config set auth/impersonate_service_account ${IMPERSONATION_SA}
 export GOOGLE_OAUTH_ACCESS_TOKEN=$(gcloud auth print-access-token)
 
+exit 1
+
 terraform init
 
 terraform apply \
-  -var-file="terraform.template.tfvars" \
+  -var-file="terraform.tfvars" \
   -var "org=organizations/${ORGANIZATION}" \
   -var "default_policy_name=${POLICY_NAME}" \
   -var "terraform_sa_email=${IMPERSONATION_SA}" \

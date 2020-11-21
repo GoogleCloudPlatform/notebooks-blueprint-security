@@ -17,11 +17,11 @@
 variable "notebook_name" {
   description = "name for notebooks"
   type        = string
-  default     = "trusted_sample"
+  default     = "trusted-sample"
 }
 
 variable "project_id" {
-  description = "Project restricted to hold confid notebooks."
+  description = "Project restricted to hold trusted notebooks."
 }
 
 variable "zone" {
@@ -41,7 +41,7 @@ variable "sb_trusted_private" {
 }
 
 variable "key_confid_data" {
-  description = "KMS key used for confid data"
+  description = "KMS key used for trusted data"
 }
 
 variable "caip_sa_email" {

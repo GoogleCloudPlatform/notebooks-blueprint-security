@@ -34,7 +34,7 @@ export PARENT_FOLDER=""
 export ORGANIZATION_ID=""
 
 # Existing access policy ID number
-# e.g. 99998888
+# ex: 99998888
 # Note: only provide the numeric identifier from accessPolicies/<policyName>"
 # gcloud access-context-manager policies list --organization <orgID> --format json | jq .[].name | sed 's/"//g' | awk '{split($0,a,"/"); print a[2]}'
 export POLICY_NAME=""
@@ -47,7 +47,7 @@ export BILLING_ACCOUNT=""
 # Provide your privileged service account used by terraform.
 # This will likely be the same one used from the security foundational blueprint
 # otherwise, comment it out, so that one can be automatically generated
-# ex: org-terraform@cft-seed-c2e3.iam.gserviceaccount.com
+# ex: org-terraform@<projectName>.iam.gserviceaccount.com
 # Note: use the below command to pick the correct terraform, if using the foundational blueprint
 # `gcloud iam service-accounts list | grep terraform`
 export TERRAFORM_SA=""

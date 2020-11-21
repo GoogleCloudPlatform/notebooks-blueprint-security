@@ -17,13 +17,13 @@ limitations under the License.
 variable "trusted_vpc_name" {
   description = "higher trust VPC name"
   type        = string
-  default     = "higher_trust_vpc_private"
+  default     = "higher-trust-private"
 }
 
 variable "trusted_subnet_name" {
   description = "higher trust VPC name"
   type        = string
-  default     = "higher_trust_private"
+  default     = "higher-trust-private"
 }
 
 variable "project_id" {

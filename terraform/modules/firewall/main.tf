@@ -45,8 +45,28 @@ resource "google_compute_firewall" "iap_fw" {
   direction     = "INGRESS"
   project       = var.project_id
   source_ranges = ["35.235.240.0/20"]
+  log_config {
+    metadata = "INCLUDE_ALL_METADATA"
+  }
 
   allow {
     protocol = "tcp"
+    ports    = ["22", "3389"]
+  }
+}
+
+resource "google_compute_firewall" "deny_egress" {
+  name               = "fw-deny-egress"
+  network            = var.vpc_name
+  priority           = 10000
+  direction          = "EGRESS"
+  project            = var.project_id
+  destination_ranges = ["0.0.0.0/0"]
+  log_config {
+    metadata = "INCLUDE_ALL_METADATA"
+  }
+
+  allow {
+    protocol = "all"
   }
 }

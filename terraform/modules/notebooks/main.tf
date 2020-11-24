@@ -91,6 +91,8 @@ resource "google_notebooks_instance" "caip_nbk_p_trusted" {
     notebook-disable-root      = "true"
     notebook-disable-downloads = "true"
     notebook-disable-nbconvert = "true"
+    serial-port-enable         = "FALSE"
+    block-project-ssh-keys     = "TRUE"
   }
 
   lifecycle {

@@ -20,7 +20,6 @@ variable "keyring_name" {
   default     = "trusted_keys"
 }
 
-
 variable "trusted_data_key_name" {
   description = "name of the key that protects trusted data"
   type        = string

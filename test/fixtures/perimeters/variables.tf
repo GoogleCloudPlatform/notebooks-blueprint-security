@@ -14,6 +14,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+variable "access_level_name" {
+  description = "Access level name"
+  type        = string
+  default     = "higher_trust_analytic"
+}
+
+variable "service_perimeter_name" {
+  description = "service perimeter name"
+  type        = string
+  default     = "higher_trust_analytics"
+}
+
 variable "organizations" {
   description = "The org ID for resource structure creation"
   type        = string

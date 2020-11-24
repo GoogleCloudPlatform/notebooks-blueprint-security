@@ -14,6 +14,48 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+variable "keyring_name" {
+  description = "the keyring name that holds keys protecting trusted data"
+  type        = string
+  default     = "trusted_keys"
+}
+
+variable "trusted_data_key_name" {
+  description = "name of the key that protects trusted data"
+  type        = string
+  default     = "trusted_data"
+}
+
+variable "trusted_data_etl_key_name" {
+  description = "name of the key that protects trusted data ETL"
+  type        = string
+  default     = "trusted_data_etl"
+}
+
+variable "dataset_name" {
+  description = "dataset name holding trusted data"
+  type        = string
+  default     = "sample_pii_data"
+}
+
+variable "trusted_data_bucket_name" {
+  description = "bucket name holding trusted data"
+  type        = string
+  default     = "sample_pii_data"
+}
+
+variable "bootstrap_notebooks_bucket_name" {
+  description = "bucket name holding bootstrap scripts for notebooks"
+  type        = string
+  default     = "notebook_bootstrap"
+}
+
+variable "trusted_data_etl_bucket_name" {
+  description = "bucket name holding etl data "
+  type        = string
+  default     = "data_etl"
+}
+
 variable "project_trusted_data" {
   description = "the project holding data used by notebooks"
   type        = string

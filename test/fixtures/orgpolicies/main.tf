@@ -33,8 +33,8 @@ data "google_folder" "fldr_trusted_test" {
 
 module "orgpolicies" {
   source             = "../../../terraform/modules/orgpolicies"
-  folder_trusted     = google_folder.fldr_trusted_test.name
+  folder_trusted     = data.google_folder.fldr_trusted_test.name
   resource_locations = var.resource_locations
 
-  depends_on = [google_folder.fldr_trusted_test]
+  #depends_on = [google_folder.fldr_trusted_test]
 }

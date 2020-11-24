@@ -15,7 +15,7 @@
 # limitations under the License.
 #
 
-# `source setup_variables.sh && ./test.sh`
+# `source test/setup_variables.sh && ./test/test.sh`
 
 
 IMPERSONATION_SA=""
@@ -53,5 +53,7 @@ kitchen converge
 kitchen verify
 
 kitchen destroy
+
+gcloud config unset auth/impersonate_service_account
 
 gcloud config unset auth/impersonate_service_account

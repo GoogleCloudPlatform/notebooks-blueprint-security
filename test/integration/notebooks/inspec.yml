@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 
-name: data
+name: notebooks
 depends:
   - name: inspec-gcp
     git: https://github.com/inspec/inspec-gcp.git

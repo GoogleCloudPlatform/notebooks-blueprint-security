@@ -14,6 +14,23 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+variable "keyring_name" {
+  description = "the keyring name that holds keys protecting trusted data"
+  type        = string
+  default     = "trusted_keys"
+}
+
+variable "trusted_data_key_name" {
+  description = "name of the key that protects trusted data"
+  type        = string
+  default     = "trusted_data"
+}
+
+variable "trusted_data_etl_key_name" {
+  description = "name of the key that protects trusted data ETL"
+  type        = string
+  default     = "trusted_data_etl"
+}
 
 variable "project_trusted_kms" {
   description = "the project for kms"

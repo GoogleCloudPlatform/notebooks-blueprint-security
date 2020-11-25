@@ -59,7 +59,7 @@ resource "google_project_iam_member" "notebook_instance_compute" {
 // create custom role from dataViewer that doesn't allow export
 // Note: resourcemanager.projects.list is not applicable at project level, but is assigned in the BQ DataViewer predefined role (org level)
 resource "google_project_iam_custom_role" "role_restricted_data_viewer" {
-  project     = var.project_trusted_analytics
+  project     = var.project_trusted_data
   role_id     = "blueprint_restricted_data_viewer"
   title       = "Restricted Data Viewer"
   description = "BQ Data Viewer role with export removed"
@@ -79,12 +79,6 @@ resource "google_project_iam_custom_role" "role_restricted_data_viewer" {
   ]
 }
 
-resource "google_project_iam_member" "notebook_instance_bq" {
-  project = var.project_trusted_analytics
-  role    = google_project_iam_custom_role.role_restricted_data_viewer.name
-  member  = "serviceAccount:${google_service_account.sa_p_notebook_compute.email}"
-}
-
 resource "google_project_iam_member" "notebook_instance_bq_job" {
   project = var.project_trusted_analytics
   role    = "roles/bigquery.jobUser"
@@ -102,8 +96,6 @@ resource "google_project_iam_member" "notebook_instance_caip" {
   role    = "roles/notebooks.admin"
   member  = "serviceAccount:${google_service_account.sa_p_notebook_compute.email}"
 }
-
-#TODO add pub/sub role
 
 # (optional) uncomment this block, if you desire your data scientist to have code within their notebooks
 # that can create a temporary gcs bucket

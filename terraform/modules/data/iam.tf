@@ -14,53 +14,42 @@
  * limitations under the License.
  */
 
-#====
-#IAM - add group binding for scientists.  the notebook's VM SA will already have access
-#TODO expose the group name from CIP
-#TODO do we move into an IAM specific module?
-#====
+# IAM - add group binding for scientists.  the notebook's VM SA will already have access
 resource "google_bigquery_dataset_iam_binding" "iam_bq_confid_viewer" {
   dataset_id = google_bigquery_dataset.bq_p_confid_dataset.dataset_id
-  role       = "roles/bigquery.dataViewer"
-  project    = var.project_trusted_data
+  #role       = "roles/bigquery.dataViewer"
+  role    = var.restricted_viewer_role
+  project = var.project_trusted_data
 
-  members = var.confid_users
+  members = concat(var.confid_users, var.key_bq_confid_members)
 }
 
-//=====================================================================
-// Get Service Accounts for all data services
-//=====================================================================
+#=====================================================================
+# Get Service Accounts for all data services
+#=====================================================================
 data "google_bigquery_default_service_account" "bq_default_account" {
   project = var.project_trusted_data
 }
 
-// get the GCS default service account for the data project
+# get the GCS default service account for the data project
 data "google_storage_project_service_account" "gcs_default_account_data" {
   project = var.project_trusted_data
 }
 
-// get the GCS default service account for the ETL project
+# get the GCS default service account for the ETL project
 data "google_storage_project_service_account" "gcs_default_account_etl" {
   project = var.project_trusted_data_etl
 }
 
-// get the GCS default service account for the bootstrap project
+# get the GCS default service account for the bootstrap project
 data "google_storage_project_service_account" "gcs_default_account_bootstrap" {
   project = var.project_bootstrap
 }
 
-# TODO somehow need to get the SA used by CAIP service's identity used to create compute
-# // get the GCS default service account for the bootstrap project
+# get the GCS default service account for the bootstrap project
 data "google_compute_default_service_account" "gce_default_account_analytics" {
   project = var.project_trusted_analytics
 }
-
-// get the notebook service account
-//TODO remove hardcoded SA account name (have to split the @ out)
-// data "google_service_account" "sa_notebook" {
-//   account_id = "sa-p-notebook-compute"
-//   project    = var.project_trusted_analytics
-// }
 
 data "google_project" "project_analytics" {
   project_id = var.project_trusted_analytics

@@ -14,11 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-# TODO add data catalog
-# TODO add column level
-# TODO add DLP
-# TODO add dataflow
-
 # create key rings based on governance levels
 # 1. confid (highest)
 #

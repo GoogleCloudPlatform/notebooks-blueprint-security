@@ -50,14 +50,5 @@ control 'gcp_kms' do
     its('next_rotation_time') { should be > Time.now + 864000 - 6*60*60}
     its('version_template.protection_level') { should eq 'SOFTWARE'}
   end
-
-  # validate IAM bindings
-  # depends on data module being deployed to create the IAM policy, since the binding is at the key level
-  # and requires access from the various Google service accounts as well as trusted scientists
-  # TODO to add module dependency
-  # describe google_kms_crypto_key_iam_binding(project: "project", location: "location", key_ring_name: "key_ring_name", crypto_key_name: "crypto_key_name", role: "roles/editor") do
-  #   it { should exist }
-  #   its('members') { should include 'user:testuser@example.com' }
-  # end
 end
 

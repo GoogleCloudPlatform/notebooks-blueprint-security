@@ -14,31 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-// https://www.terraform.io/docs/providers/google/r/compute_firewall.html
-// Need a firewall rule so that the bastion host is accessible, a smaller range (/32?) would be better,
-// but for now, this will suffice.
-
-#TODO expose corp network (or data scientist IP)
-# only allow SSH to the notebooks
-# resource "google_compute_firewall" "scientists-fw" {
-#   name          = "gke-demo-bastion-fw"
-#   network       = var.vpc_name
-#   direction     = "INGRESS"
-#   project       = var.project
-#   source_ranges = ["104.14.156.165/32"]
-
-#   allow {
-#     protocol = "tcp"
-#     ports    = ["22"]
-#   }
-
-#   target_service_accounts = [
-#     ${google_service_account.notebook-compute-sa.email}
-#   ]
-# }
-
-# TODO check port 80 is enough for
-# https://cloud.google.com/iap/docs/tutorial-gce#configure_your_firewall
+# Allow IAP. Note Access Context Manager policy is an additional layer of endpoint protection that is enabled in this environment.
 resource "google_compute_firewall" "iap_fw" {
   name          = "fw-iap-trusted-notebooks"
   network       = var.vpc_name
@@ -52,21 +28,5 @@ resource "google_compute_firewall" "iap_fw" {
   allow {
     protocol = "tcp"
     ports    = ["22", "3389"]
-  }
-}
-
-resource "google_compute_firewall" "deny_egress" {
-  name               = "fw-deny-egress"
-  network            = var.vpc_name
-  priority           = 10000
-  direction          = "EGRESS"
-  project            = var.project_id
-  destination_ranges = ["0.0.0.0/0"]
-  log_config {
-    metadata = "INCLUDE_ALL_METADATA"
-  }
-
-  allow {
-    protocol = "all"
   }
 }

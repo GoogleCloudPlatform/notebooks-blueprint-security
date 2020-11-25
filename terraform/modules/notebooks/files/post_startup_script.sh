@@ -65,9 +65,7 @@ END
 }
 
 function disable_nbconvert() {
-  #TODO startup changed such that nbconvert is installed later
-  # can manually log into notebook or use a golden image with it removed.
-  # Otherwise, the nbconvert configuration can be altered to prevent output from being stored locally/exported
+  # nbconvert configuration can be altered to prevent output from being stored locally/exported
   pip uninstall nbconvert
 }
 

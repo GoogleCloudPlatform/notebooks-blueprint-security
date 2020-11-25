@@ -99,7 +99,7 @@ resource "google_notebooks_instance" "caip_nbk_p_trusted" {
     prevent_destroy = false
     ignore_changes = [
       # Ignore changes to the following attributes to allow idempotent re-deployment
-      # TODO is there a bug when re-applying, where terraform cannot get the disk-encryption type even though it's already set to CMEK?
+      # when re-applying, terraform cannot get the disk-encryption type even though it's already set to CMEK
       create_time,
       disk_encryption,
       kms_key,

@@ -41,12 +41,7 @@ control 'gcp_notebooks' do
       its('metadata_keys') { should include 'serial-port-enable' }
       its('metadata_values') { should include 'FALSE' }
       its('metadata_keys') { should include 'block-project-ssh-keys' }
-      its('metadata_values') { should include 'TRUE' }
-     
-      # TODO add additional checks
-      #its('disks.disk_encryption_key.kms_key_name') { should be kms_key_name }
-      #its('first_network_interface_nat_ip_exists'){ should_not exist }
-      #its('service_accounts.email') { should include caip_sa_email }
+      its('metadata_values') { should include 'TRUE' }    
     end
   end
 end

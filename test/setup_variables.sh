@@ -66,13 +66,14 @@ export POLICY_NAME=""
 
 # Kitchen-terraform variables
 export TF_VAR_organizations=${ORGANIZATION_ID}
+export TF_VAR_org=organziations/${ORGANIZATION_ID}
 export TF_VAR_default_policy_name=${POLICY_NAME}
 export TF_VAR_terraform_sa_email=${TERRAFORM_SA}
 export TF_VAR_caip_compute_sa_email=${CAIP_COMPUTE_SA}
 export TF_VAR_billing_account=${BILLING_ACCOUNT}
 export TF_VAR_trusted_folder_id=${TRUSTED_FOLDER_ID}
-export TF_CLI_ARGS_apply="-var-file=$(pwd)/terraform/terraform.template.tfvars"
-export TF_CLI_ARGS_destroy="-var-file=$(pwd)/terraform/terraform.template.tfvars"
+export TF_CLI_ARGS_apply="-var-file=$(pwd)/terraform/terraform.tfvars"
+export TF_CLI_ARGS_destroy="-var-file=$(pwd)/terraform/terraform.tfvars"
 
 #===============================================================
 # Output for visual inspection

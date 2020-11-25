@@ -211,8 +211,6 @@ fi
 gcloud config set auth/impersonate_service_account ${IMPERSONATION_SA}
 export GOOGLE_OAUTH_ACCESS_TOKEN=$(gcloud auth print-access-token)
 
-exit 1
-
 terraform init
 
 terraform apply \

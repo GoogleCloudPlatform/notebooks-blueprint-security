@@ -26,7 +26,6 @@ variable "service_perimeter_name" {
   default     = "higher_trust_analytics"
 }
 
-
 variable "org" {
   description = "The org ID for resource structure creation"
   type        = string

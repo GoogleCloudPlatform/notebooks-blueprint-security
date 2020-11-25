@@ -14,6 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+variable "notebook_name" {
+  description = "name for notebooks"
+  type        = string
+  default     = "trusted-sample"
+}
+
 variable "project_networks" {
   description = "Contains all networks."
   type        = string

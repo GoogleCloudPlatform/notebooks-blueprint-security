@@ -38,6 +38,17 @@ suites:
           controls:
             - gcp_data_buckets
             - gcp_data_bigquery
+  - name: data_governance
+    driver:
+      root_module_directory: test/fixtures/data_governance
+    verifier:
+      color: false
+      systems:
+        - name: inspec-gcp
+          backend: gcp
+          controls:
+            - gcp_kms
+            - gcp_secrets
   - name: notebooks
     driver:
       root_module_directory: test/fixtures/notebooks
@@ -48,16 +59,6 @@ suites:
           backend: gcp
           controls:
             - gcp_notebooks
-  - name: perimeters
-    driver:
-      root_module_directory: test/fixtures/perimeters
-    verifier:
-      color: false
-      systems:
-        - name: inspec-gcp
-          backend: gcp
-          controls:
-            - gcp_perimeters
   - name: orgpolicies
     driver:
       root_module_directory: test/fixtures/orgpolicies
@@ -70,14 +71,3 @@ suites:
             - gcp_compute_policy
             - gcp_iam_policy
             - gcp_policy
-  - name: data_governance
-    driver:
-      root_module_directory: test/fixtures/data_governance
-    verifier:
-      color: false
-      systems:
-        - name: inspec-gcp
-          backend: gcp
-          controls:
-            - gcp_kms
-            - gcp_secrets

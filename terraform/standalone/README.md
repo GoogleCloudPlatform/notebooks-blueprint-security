@@ -1,15 +1,6 @@
-# Cloud AI Platform Notebook Security Blueprint
+# AI Platform Notebooks Blueprint (standalone)
 
-This repository provides an opinionated way to set up AI Platform Notebook that use PII data from an existing data warehouse.
-
-# Deploying
-You have 2 deployment options
-*  On top of the security foundation blueprint (recommended)
-    * You should have already deployed the [security foundation blueprint](https://github.com/terraform-google-modules/terraform-example-foundation).
-* standalone
-    * If you would like to deploy standalone follow the [standalone README](./terraform/standalone/README.md) in the `./terraform/standlone` directory
-
-**IMPORTANT: The rest of the instructions are for deployments on top of the security foundation blueprint.**
+These instructions allow you to deploy the AI Platform Notebook blueprint in standalone mode on top of your existing deployments.
 
 ## Pre Work
 Gather the following information:
@@ -40,8 +31,7 @@ cp terraform.template.tfvars terraform.tfvars
 ## setup
 1.  Setup appropriate environment variables
 ```
-cd terraform
-source setup_variables.sh
+source standalone_setup_variables.sh
 ```
 
 2.  log in with a privileged account that can assigned the noted roles
@@ -60,7 +50,7 @@ gcloud auth login <privilegeId>
 1.  Run the setup script
 ```
 # IMPORTANT:  Please run this setup script from a privilege system that normally provisions resources for your production environment
-./setup.sh
+./standalone_setup.sh
 ```
 2. Access your AI Platform Notebook
     * Note:  The VPC-SC perimeter prevents access through the GCP console.

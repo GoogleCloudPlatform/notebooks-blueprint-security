@@ -32,6 +32,9 @@ parent_env = "YOUR_PARENT_FOLDER" # e.g. "folders/123456789"
 # This creates a folder in your parent_env (e.g production environment) that will hold all projects with higher trust data
 folder_trusted = "YOUR_FOLDER_NUMBER" # "folder-abc-def"
 
+# This is the privileged environment where KMS will be created
+bootstrap_env             = "YOUR_FOLDER"    # "folders/12345678"
+
 # These are the individual project names for resources that touch higher trust data.
 # These will be used by the structure module to create the projects.
 project_trusted_analytics = "YOUR_PROJECT" # "abcd"
@@ -56,7 +59,3 @@ trusted_scientists = [] # ["user:trusted1@example.com", "user:trusted2@example.c
 
 # List of CIDRs allowed to access VPC-SC perimeter for your data scientists
 perimeters_ip_subnetworks = [] # ["10.10.1.0/24"] should be your internal and trusted network
-
-# List of projects to include within a trusted VPC-SC perimeter
-# (optional) only uncomment if did not deploy the module.structure  This terraform will auto create all the necessary projects for you.
-perimeter_projects        = []   ["projects/123456", "projects/789456"]

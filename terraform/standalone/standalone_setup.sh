@@ -18,36 +18,40 @@
 # Example:
 # `source setup_variables.sh && ./setup.sh`
 
+set -x
 
-DEPLOYMENT_PROJECT=${DEPLOYMENT_PROJECT_ID}  # 12346789
-PARENT_FOLDER=${PARENT_FOLDER}               # 11112222
-ORGANIZATION=${ORGANIZATION_ID}              # 33334444
-POLICY_NAME=${POLICY_NAME}                   # 987654321
-BILLING_ACCOUNT=${BILLING_ACCOUNT}           # ABCD-2345-GHIJ
-TERRAFORM_SA=${TERRAFORM_SA}                 # If this is set, it's most likely a SA used with the foundational blueprint and is a full email
-SA_NAME="notebook-blueprint-terraform-iiii"
+DEPLOYMENT_PROJECT=${DEPLOYMENT_PROJECT_ID}  # ex: 12346789
+PARENT_FOLDER=${PARENT_FOLDER}               # ex: 11112222
+ORGANIZATION=${ORGANIZATION_ID}              # ex: 33334444
+POLICY_NAME=${POLICY_NAME}                   # ex: 987654321
+BILLING_ACCOUNT=${BILLING_ACCOUNT}           # ex: ABCD-2345-GHIJ
+TERRAFORM_SA=${TERRAFORM_SA}                 # this should not be set, it's most likely a SA used with the foundational blueprint and is a full email
+SA_NAME=${SA_NAME}                           # ex: my-sa-name
 
 
 # setup billing project if not deployed through foundational blueprint.
-if [[ -z ${TERRAFORM_SA} ]]; then
-  echo "Checking if billing project for deployment project is set."
+# if [[ -z ${TERRAFORM_SA} ]]; then
+#   echo "Checking if billing project for deployment project is set."
 
-  # only setup project billing, if it doesn't already exist
-  RESULT=$(gcloud beta billing projects list --billing-account ${BILLING_ACCOUNT} | grep ${DEPLOYMENT_PROJECT})
-  if [[ ${RESULT} == "" ]]; then
-    echo "Setting up billing for ${DEPLOYMENT_PROJECT} linked to ${BILLING_ACCOUNT}"
-    gcloud projects create ${DEPLOYMENT_PROJECT} \
-      --organization ${ORGANIZATION} \
-      --billing-project ${DEPLOYMENT_PROJECT}
+#   # only setup project billing, if it doesn't already exist
+#   RESULT=$(gcloud beta billing projects list --billing-account ${BILLING_ACCOUNT} | grep ${DEPLOYMENT_PROJECT})
+#   if [[ ${RESULT} == "" ]]; then
+#     echo "Setting up billing for ${DEPLOYMENT_PROJECT} linked to ${BILLING_ACCOUNT}"
+#     gcloud projects create ${DEPLOYMENT_PROJECT} \
+#       --organization ${ORGANIZATION} \
+#       --billing-project ${DEPLOYMENT_PROJECT}
 
-    gcloud beta billing projects link ${DEPLOYMENT_PROJECT} \
-      --billing-account ${BILLING_ACCOUNT}
+#     gcloud beta billing projects link ${DEPLOYMENT_PROJECT} \
+#       --billing-account ${BILLING_ACCOUNT}
 
-    gcloud config set billing/quota_project $DEPLOYMENT_PROJECT
-  else
-    echo "billing is already setup"
-  fi
-fi
+#     gcloud config set billing/quota_project $DEPLOYMENT_PROJECT
+#   else
+#     echo "billing is already setup"
+#   fi
+# else
+#   echo "detected an existing TERRAFORM SA, so cannot run in standalone"
+#   exit 1
+# fi
 
 function wait_service_enable() {
   service=""
@@ -79,21 +83,13 @@ gcloud services enable iam.googleapis.com --project ${DEPLOYMENT_PROJECT}
 gcloud services enable cloudresourcemanager.googleapis.com --project ${DEPLOYMENT_PROJECT}
 gcloud services enable accesscontextmanager.googleapis.com --project ${DEPLOYMENT_PROJECT}
 gcloud services enable cloudkms.googleapis.com --project ${DEPLOYMENT_PROJECT}
+gcloud services enable cloudbilling.googleapis.com --project ${DEPLOYMENT_PROJECT}
 
 wait_service_enable "iam.googleapis.com"
 wait_service_enable "cloudresourcemanager.googleapis.com"
 wait_service_enable "accesscontextmanager.googleapis.com"
 wait_service_enable "cloudkms.googleapis.com"
-
-
-function setup_using_foundation_terraform() {
-  # check if SA already exists
-  gcloud iam service-accounts list | grep -i ${TERRAFORM_SA}
-  if [[ $? -eq 1 ]]; then
-    echo "did not find an existing terraform service account.  Please determine if you deployed the security foundation blueprint"
-    exit 1
-  fi
-}
+wait_service_enable "cloudbilling.googleapis.com"
 
 function setup_using_new_terraform() {
   # check if SA already exists
@@ -203,14 +199,8 @@ function setup_using_new_terraform() {
   echo "....Added notebooks runner role"
 }
 
-IMPERSONATION_SA=""
-if [[ -z ${TERRAFORM_SA} ]]; then
-    setup_using_new_terraform
-    IMPERSONATION_SA=${SA_NAME}@${DEPLOYMENT_PROJECT}.iam.gserviceaccount.com
-else
-    setup_using_foundation_terraform
-    IMPERSONATION_SA=${TERRAFORM_SA}
-fi
+setup_using_new_terraform
+IMPERSONATION_SA=${SA_NAME}@${DEPLOYMENT_PROJECT}.iam.gserviceaccount.com
 
 # impersonate with a token (use cloud identity to set the default time to 1 hr)
 # this uses OAuth so that a SA key isn't needed
@@ -229,3 +219,5 @@ terraform apply \
 # explicit grant of AI Platform Notebook service account into trusted data scientist group.
 # This step allows the Notebook access to PII data
 gcloud identity groups memberships add --group-email ${GRP_TRUSTED_DATA_SCIENTISTS} --member-email = sa-p-notebook-compute@<proj>.iam.gserviceaccount.com
+
+gcloud config set auth/impersonate_service_account ${IMPERSONATION_SA}

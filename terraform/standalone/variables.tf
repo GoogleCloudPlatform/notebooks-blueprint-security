@@ -14,18 +14,6 @@
  * limitations under the License.
  */
 
-// Determine whether or not the resource structure should be deployed as is or
-// use existing hierarchy.
-variable "enable_module_structure" {
-  description = "Whether to create the Terraform structure module."
-  default     = false
-}
-
-variable "perimeter_projects" {
-  description = "Projects to add to the vpc-sc perimeter."
-  type        = list(string)
-}
-
 /*
 Required Variables
 These must be provided at runtime.
@@ -126,6 +114,7 @@ variable "billing_account" {
 variable "enable_services_data" {
   description = "The list of services to enable."
   default = [
+    "serviceusage.googleapis.com",
     "cloudkms.googleapis.com",
     "storage.googleapis.com",
     "bigquery.googleapis.com",
@@ -136,6 +125,7 @@ variable "enable_services_data" {
 variable "enable_services_data_etl" {
   description = "The list of services to enable."
   default = [
+    "serviceusage.googleapis.com",
     "cloudkms.googleapis.com",
     "cloudresourcemanager.googleapis.com",
   ]
@@ -144,6 +134,7 @@ variable "enable_services_data_etl" {
 variable "enable_services_analytics" {
   description = "The list of services to enable."
   default = [
+    "serviceusage.googleapis.com",
     "compute.googleapis.com",
     "cloudkms.googleapis.com",
     "secretmanager.googleapis.com",
@@ -160,6 +151,7 @@ variable "enable_services_analytics" {
 variable "enable_services_networks" {
   description = "The list of services to enable."
   default = [
+    "serviceusage.googleapis.com",
     "compute.googleapis.com",
     "cloudkms.googleapis.com",
     "secretmanager.googleapis.com",
@@ -174,6 +166,7 @@ variable "enable_services_networks" {
 variable "enable_services_kms" {
   description = "The list of services to enable."
   default = [
+    "serviceusage.googleapis.com",
     "cloudkms.googleapis.com",
     "secretmanager.googleapis.com",
     "cloudresourcemanager.googleapis.com",

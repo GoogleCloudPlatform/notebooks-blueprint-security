@@ -109,10 +109,23 @@ resource "google_notebooks_instance" "caip_nbk_p_trusted" {
   }
 }
 
+resource "google_iap_tunnel_instance_iam_binding" "datascientist_iap_binding" {
+  project  = var.project_id
+  zone     = var.zone
+  for_each = toset(var.caip_users)
+
+  instance = format("caip-nbk-%s-%s-%s", var.notebook_name, split("@", each.value)[0], random_string.random_nbk.result)
+  role     = "roles/iap.tunnelResourceAccessor"
+  members = [
+    format("user:%s", each.value)
+  ]
+
+  # create IAP bindings after last notebook created
+  depends_on = [google_notebooks_instance.caip_nbk_p_trusted]
+}
 
 # future: add secure boot
-# TODO need VM names
-# TODO need debian10 for shielded support
+# need debian10 for shielded support
 #   provisioner "local-exec" {
 #     command = "gcloud compute instances stop ${local.notebook_name} && \
 #         gcloud compute instances stop ${local.notebook_name} --shielded-secure-boot && \

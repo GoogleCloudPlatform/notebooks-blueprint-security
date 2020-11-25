@@ -15,20 +15,20 @@
  */
 
 # VPC-SC perimeter needs a list of projects to protect
-output "perimeter_project_trusted_data_number" {
-  value = google_project.prj_trusted_data.number
+output "perimeter_project_trusted_data_name" {
+  value = format("projects/%s", google_project.prj_trusted_data.number)
 }
 
-output "perimeter_project_trusted_analytics_number" {
-  value = google_project.prj_trusted_analytics.number
+output "perimeter_project_trusted_analytics_name" {
+  value = format("projects/%s", google_project.prj_trusted_analytics.number)
 }
 
-output "perimeter_project_trusted_data_etl_number" {
-  value = google_project.prj_trusted_data_etl.number
+output "perimeter_project_trusted_data_etl_name" {
+  value = format("projects/%s", google_project.prj_trusted_data_etl.number)
 }
 
-output "perimeter_project_kms_number" {
-  value = google_project.prj_kms.number
+output "perimeter_project_kms_name" {
+  value = format("projects/%s", google_project.prj_kms.number)
 }
 
 output "high_trust_folder" {

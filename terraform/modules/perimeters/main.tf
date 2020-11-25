@@ -31,7 +31,7 @@ resource "random_string" "random_al" {
 resource "google_access_context_manager_service_perimeter" "higher_trusted_perimeter_resource" {
   parent = "accessPolicies/${var.policy_name}"
   name   = format("accessPolicies/%s/servicePerimeters/sp_%s_%s", var.policy_name, var.service_perimeter_name, random_string.random_al.result)
-  title  = format("sp_p_higher_trust_analytics_eeee_%s", random_string.random_al.result)
+  title  = format("sp_%s_%s",  var.service_perimeter_name, random_string.random_al.result)
   status {
     restricted_services = var.restricted_services
     resources           = var.resources
@@ -44,7 +44,7 @@ resource "google_access_context_manager_service_perimeter" "higher_trusted_perim
 resource "google_access_context_manager_access_level" "trusted_access_level" {
   parent = "accessPolicies/${var.policy_name}"
   name   = format("accessPolicies/%s/accessLevels/alp_%s_%s", var.policy_name, var.access_level_name, random_string.random_al.result)
-  title  = format("alp_p_higher_trust_analytics_eeee_%s", random_string.random_al.result)
+  title  = format("alp_%s_%s", var.access_level_name, random_string.random_al.result)
   basic {
     conditions {
       #   device_policy {

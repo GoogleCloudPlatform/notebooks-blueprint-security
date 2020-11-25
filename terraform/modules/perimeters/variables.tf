@@ -43,7 +43,6 @@ variable "region" {
 
 variable "resources" {
   description = "List of project resources to apply perimeter to."
-  type        = list(string)
 }
 
 variable "ip_subnetworks" {

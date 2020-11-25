@@ -14,27 +14,13 @@
  * limitations under the License.
  */
 
-# resource "random_string" "random_fldr" {
-#   length    = 4
-#   min_lower = 4
-#   special   = false
-# }
-
 data "google_folder" "fldr_trusted_test" {
   folder              = var.trusted_folder_id
   lookup_organization = false
 }
 
-# make a temporary trusted folder
-# resource "google_folder" "fldr_trusted_test" {
-#   display_name = format("eeee-%s-%s", var.folder_trusted, random_string.random_fldr.result)
-#   parent       = var.parent_env
-# }
-
 module "orgpolicies" {
   source             = "../../../terraform/modules/orgpolicies"
   folder_trusted     = data.google_folder.fldr_trusted_test.name
   resource_locations = var.resource_locations
-
-  #depends_on = [google_folder.fldr_trusted_test]
 }

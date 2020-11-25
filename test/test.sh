@@ -25,7 +25,7 @@ else
     IMPERSONATION_SA=${TERRAFORM_SA}
 fi
 
-# impersonnate with a 1 hr token (the default time)
+# Impersonnate with a token
 gcloud config set auth/impersonate_service_account ${IMPERSONATION_SA}
 export GOOGLE_OAUTH_ACCESS_TOKEN=$(gcloud auth print-access-token)
 
@@ -37,13 +37,13 @@ PROJECT_LIST=(
   ${PRJ_HIGH_TRUST_KMS}
 )
 
-# TODO select specific tests that are relevent from benchmark
+# Run CIS on all projects created
 for PRJ in "${PROJECT_LIST[@]}"
 do
   inspec exec https://github.com/GoogleCloudPlatform/inspec-gcp-cis-benchmark.git -t gcp:// --input gcp_project_id=${PRJ} --reporter cli json:${PRJ}_scan.json
 done
 
-# run all kitchen-terraform tests
+# Run all kitchen-terraform tests
 kitchen destroy
 
 kitchen create

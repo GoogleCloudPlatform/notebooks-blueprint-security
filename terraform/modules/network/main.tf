@@ -20,15 +20,15 @@ resource "random_string" "random_vpc" {
   special   = false
 }
 
-// This file creates a custom VPC network and subnet to contain the notebooks
-// A network to hold trusted notebooks.
+# This file creates a custom VPC network and subnet to contain the notebooks
+# A network to hold trusted notebooks.
 resource "google_compute_network" "vpc_trusted_private" {
   name                    = format("vpc-%s-%s", var.trusted_vpc_name, random_string.random_vpc.result)
   project                 = var.project_id
   auto_create_subnetworks = false
 }
 
-// Subnetwork for the notebooks
+# Subnetwork for the notebooks
 resource "google_compute_subnetwork" "subnet_trusted_private" {
   name                     = format("sbn-%s-%s-%s", var.trusted_subnet_name, var.region, random_string.random_vpc.result)
   project                  = var.project_id
@@ -37,5 +37,3 @@ resource "google_compute_subnetwork" "subnet_trusted_private" {
   region                   = var.region
   private_ip_google_access = true
 }
-
-#TODO add NAT and separate subnet for nat access.  there is a set of notebook that cannot use NAT.

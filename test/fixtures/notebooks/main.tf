@@ -42,6 +42,7 @@ module "data" {
   key_bq_confid_members = [
     "serviceAccount:${var.terraform_sa_email}"
   ]
+  restricted_viewer_role    = var.restricted_viewer_role
   depends_on = [
     module.data_governance,
   ]

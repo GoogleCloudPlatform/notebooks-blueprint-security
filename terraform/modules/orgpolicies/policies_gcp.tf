@@ -23,7 +23,6 @@
 # (Optional policies)
 # - none
 
-# TODO expose those in the top-level main file instead of being US based
 resource "google_folder_organization_policy" "drz_policy" {
   folder     = var.folder_trusted
   constraint = "gcp.resourceLocations"

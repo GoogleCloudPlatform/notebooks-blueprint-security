@@ -30,8 +30,7 @@ module "structure" {
 }
 
 module "orgpolicies" {
-  source             = "./modules/orgpolicies"
-  #folder_trusted     = module.structure.high_trust_folder
+  source = "./modules/orgpolicies"
   folder_trusted     = var.folder_trusted
   resource_locations = var.resource_locations
 
@@ -126,6 +125,7 @@ module "data" {
   key_bq_confid_members = [
     "serviceAccount:${google_service_account.sa_p_notebook_compute.email}"
   ]
+  restricted_viewer_role = google_project_iam_custom_role.role_restricted_data_viewer.name
   depends_on = [
     module.network,
   ]

@@ -38,17 +38,4 @@ resource "google_secret_manager_secret" "sk_c_ml_model_user" {
       }
     }
   }
-  # TODO add CMEK
 }
-
-# TODO determine which secrets group (maybe common?)
-# TODO fix group
-# TODO fix the role
-#resource "google_secret_manager_secret_iam_binding" "binding" {
-#  project = google_secret_manager_secret.secret-basic.project
-#  secret_id = google_secret_manager_secret.secret-basic.secret_id
-#  role = "roles/viewer"
-#  members = [
-#    "group:ml-prediction-group@example.com",
-#  ]
-#}

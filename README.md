@@ -46,6 +46,21 @@ gcloud auth login <privilegeId>
 ./setup.sh
 ```
 
+4. Access your AI Platform Notebook
+    * establish an [SSH tunnel](https://cloud.google.com/ai-platform/notebooks/docs/ssh-access) from your device to your AI Platform Notebook
+    * in your browser, visit `http://localhost:8080` to access your AI Platform Notebook
+
+5. Access your PII data from BigQuery
+Be sure to specify your projectName and datasetName below, which should match your terraform.tfvars file.
+
+```
+%%bigquery
+SELECT
+  *
+FROM ‘<projectName>.<datasetName>.confid_table’
+LIMIT 10
+```
+
 ## Post script
 1.  You may need to add service accounts the appropriate IAM high trust data scientist group.
 ```

@@ -83,3 +83,8 @@ variable "caip_compute_sa_email" {
   description = "String for the email of the compute Service Account used by CAIP"
   type        = string
 }
+
+variable "restricted_viewer_role" {
+  description = "custom role to access PII data"
+  type        = string
+}

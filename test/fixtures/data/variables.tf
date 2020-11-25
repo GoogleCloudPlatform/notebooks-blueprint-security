@@ -83,12 +83,12 @@ variable "region" {
 
 variable "key_bq_confid_members" {
   description = "List of members for KMS key"
-  default = []
+  default     = []
 }
 
 variable "confid_users" {
   description = "The list of users that confid users."
-  default = []
+  default     = []
 }
 
 variable "terraform_sa_email" {
@@ -99,5 +99,10 @@ variable "terraform_sa_email" {
 variable "table_num_rows" {
   description = "total number of rows in sample data"
   type        = string
-  default = 6
+  default     = 6
+}
+
+variable "restricted_viewer_role" {
+  description = "custom role to access PII data"
+  type        = string
 }

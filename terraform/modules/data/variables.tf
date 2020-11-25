@@ -82,3 +82,8 @@ variable "confid_users" {
   description = "The list of users that confid users."
   default     = []
 }
+
+variable "restricted_viewer_role" {
+  description = "custom role to access PII data"
+  type        = string
+}

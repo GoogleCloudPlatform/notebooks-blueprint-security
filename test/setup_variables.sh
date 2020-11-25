@@ -30,7 +30,7 @@ export DEPLOYMENT_PROJECT_ID=""
 # " elo-fldr-prod-trusted2"
 export PARENT_FOLDER=""
 
-# folder that has all the trusted projets (e.g folder/123456890)
+# folder that has all the trusted projects (e.g folder/123456890)
 export TRUSTED_FOLDER_ID=""
 
 # Provide your billing account
@@ -64,6 +64,10 @@ export CAIP_COMPUTE_SA=""
 # gcloud access-context-manager policies list --organization ${ORGANIZATION_ID} --format json | jq .[].name | sed 's/"//g' | awk '{split($0,a,"/"); print a[2]}'
 export POLICY_NAME=""
 
+# Provide the full resource name of the custom role created for BigQuery restricted viewer
+export CUSTOM_ROLE_RESTRICTED_VIEWER=""
+
+
 # Kitchen-terraform variables
 export TF_VAR_organizations=${ORGANIZATION_ID}
 export TF_VAR_org=organziations/${ORGANIZATION_ID}
@@ -72,6 +76,7 @@ export TF_VAR_terraform_sa_email=${TERRAFORM_SA}
 export TF_VAR_caip_compute_sa_email=${CAIP_COMPUTE_SA}
 export TF_VAR_billing_account=${BILLING_ACCOUNT}
 export TF_VAR_trusted_folder_id=${TRUSTED_FOLDER_ID}
+export TF_VAR_restricted_viewer_role=${CUSTOM_ROLE_RESTRICTED_VIEWER}
 export TF_CLI_ARGS_apply="-var-file=$(pwd)/terraform/terraform.tfvars"
 export TF_CLI_ARGS_destroy="-var-file=$(pwd)/terraform/terraform.tfvars"
 
@@ -88,6 +93,7 @@ echo "Parent folder: ${PARENT_FOLDER:?}"
 echo "Trusted folder ID: ${TRUSTED_FOLDER_ID:?}"
 echo "Organization: ${ORGANIZATION_ID:?}"
 echo "Policy name: ${POLICY_NAME:?}"
+echo "Restricted viewer role: ${CUSTOM_ROLE_RESTRICTED_VIEWER:?}"
 echo "Project high trust analytics: ${PRJ_HIGH_TRUST_ANALYTICS:?}"
 echo "Project high trust data: ${PRJ_HIGH_TRUST_DATA:?}"
 echo "Project high trust data ETL: ${PRJ_HIGH_TRUST_DATA_ETL:?}"

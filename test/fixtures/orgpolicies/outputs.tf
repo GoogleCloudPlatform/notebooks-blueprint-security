@@ -23,3 +23,8 @@ output "included_regions" {
   description = "list of allowed regions where resources can be deployed"
   value       = var.resource_locations
 }
+
+output "included_vpc_subnet_projects" {
+  description = "list of projects under which the subnets can be used"
+  value       = ["under:projects/${var.project_trusted_analytics}"]
+}

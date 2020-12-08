@@ -30,9 +30,10 @@ module "structure" {
 }
 
 module "orgpolicies" {
-  source = "./modules/orgpolicies"
-  folder_trusted     = var.folder_trusted
-  resource_locations = var.resource_locations
+  source                       = "./modules/orgpolicies"
+  folder_trusted               = var.folder_trusted
+  resource_locations           = var.resource_locations
+  vpc_subnets_projects_allowed = ["under:projects/${var.project_trusted_analytics}"]
 
   # only configure org policies after all SA's have been created
   depends_on = [google_service_account.sa_p_notebook_compute]

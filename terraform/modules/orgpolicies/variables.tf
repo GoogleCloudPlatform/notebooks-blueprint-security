@@ -22,3 +22,8 @@ variable "resource_locations" {
   description = "region for resource constraint"
   type        = list(string)
 }
+
+variable "vpc_subnets_projects_allowed" {
+  description = "list of projects with allowed vpc subnets for the notebooks; defined with the under constraint format (e.g. under:projects/project_id)"
+  type        = list(string)
+}

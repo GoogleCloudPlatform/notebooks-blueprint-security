@@ -20,6 +20,7 @@ skip_default_network_creation = 'constraints/compute.skipDefaultNetworkCreation'
 disable_serial_port_access = 'constraints/compute.disableSerialPortAccess'
 disable_serial_port_logging = 'constraints/compute.disableSerialPortLogging'
 require_os_login = 'constraints/compute.requireOsLogin'
+restrict_shared_vpc_subnetworks = 'constraints/compute.restrictSharedVpcSubnetworks'
 
 
 control 'gcp_compute_policy' do
@@ -53,6 +54,12 @@ control 'gcp_compute_policy' do
     it { should exist }
     its('constraint') { should eq require_os_login }
     its('boolean_policy.enforced') { should be true }
+  end
+
+  describe google_organization_policy(organization_name: folder, constraint: restrict_shared_vpc_subnetworks ) do
+    it { should exist }
+    its('constraint') { should eq restrict_shared_vpc_subnetworks }
+    its('list_policy.allowed_values') { should include included_vpc_subnet_projects }
   end
 
 end

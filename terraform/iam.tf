@@ -75,7 +75,8 @@ resource "google_project_iam_custom_role" "role_restricted_data_viewer" {
     "bigquery.tables.getData",
     "bigquery.tables.getIamPolicy",
     "bigquery.tables.list",
-    "resourcemanager.projects.get"
+    "resourcemanager.projects.get",
+    "resourcemanager.projects.list"
   ]
 }
 

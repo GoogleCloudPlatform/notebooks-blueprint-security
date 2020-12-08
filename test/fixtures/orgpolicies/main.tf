@@ -23,4 +23,5 @@ module "orgpolicies" {
   source             = "../../../terraform/modules/orgpolicies"
   folder_trusted     = data.google_folder.fldr_trusted_test.name
   resource_locations = var.resource_locations
+  vpc_subnets_projects_allowed = ["under:projects/${var.project_trusted_analytics}"]
 }

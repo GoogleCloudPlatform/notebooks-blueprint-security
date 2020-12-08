@@ -28,3 +28,8 @@ variable "parent_env" {
   description = "The parent env folder for trusted environment"
   type        = string
 }
+
+variable "project_trusted_analytics" {
+  description = "Project containing VPC subnets used for notebooks"
+  type        = string
+}

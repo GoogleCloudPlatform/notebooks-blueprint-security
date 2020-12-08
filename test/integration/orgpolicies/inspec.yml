@@ -26,3 +26,6 @@ attributes:
   - name: included_regions
     required: true
     type: array
+  - name: included_vpc_subnet_projects
+    required: true
+    type: array

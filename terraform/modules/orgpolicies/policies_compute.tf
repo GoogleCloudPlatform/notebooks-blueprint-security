@@ -75,6 +75,17 @@ resource "google_folder_organization_policy" "ssh_policy" {
   }
 }
 
+resource "google_folder_organization_policy" "protocol_forwarding_creation" {
+  folder     = var.folder_trusted
+  constraint = "compute.restrictProtocolForwardingCreationForTypes"
+
+  list_policy {
+    allow {
+      values = ["is:INTERNAL"]
+    }
+  }
+}
+
 resource "google_folder_organization_policy" "vpc_subnet_policy" {
   folder     = var.folder_trusted
   constraint = "compute.restrictSharedVpcSubnetworks"

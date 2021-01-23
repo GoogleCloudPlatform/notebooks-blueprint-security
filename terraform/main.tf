@@ -89,21 +89,6 @@ resource "google_project_service" "enable_services_trusted_kms" {
   depends_on                 = [module.structure]
 }
 
-# Configure the networks for the CAIP Notebooks
-module "network" {
-  source     = "./modules/network"
-  project_id = var.project_networks
-  region     = var.region_trusted_network
-}
-
-# Configures the firewall rules in the higher trust environment
-module "firewall" {
-  source     = "./modules/firewall"
-  project_id = var.project_networks
-  vpc_name   = module.network.vpc_trusted_private
-  depends_on = [module.network]
-}
-
 # Provides data governance controls such as KMS and secrets
 module "data_governance" {
   source          = "./modules/data_governance"
@@ -134,15 +119,15 @@ module "data" {
 
 # Configures the notebooks as well as startup scripts
 module "notebooks" {
-  source              = "./modules/notebooks"
-  project_id          = var.project_trusted_analytics
-  zone                = var.zone
-  caip_users          = var.caip_users
-  caip_sa_email       = google_service_account.sa_p_notebook_compute.email
-  bucket_bootstrap    = module.data.bkt_p_bootstrap_notebook
-  vpc_trusted_private = module.network.vpc_trusted_private
-  sb_trusted_private  = module.network.subnet_trusted_private
-  key_confid_data     = module.data_governance.key_confid_data
+  source                  = "./modules/notebooks"
+  project_id              = var.project_trusted_analytics
+  zone                    = var.zone
+  caip_users              = var.caip_users
+  caip_sa_email           = google_service_account.sa_p_notebook_compute.email
+  bucket_bootstrap        = module.data.bkt_p_bootstrap_notebook
+  trusted_private_network = var.trusted_private_network
+  trusted_private_subnet  = var.trusted_private_subnet
+  key_confid_data         = module.data_governance.key_confid_data
   depends_on = [
     module.data
   ]

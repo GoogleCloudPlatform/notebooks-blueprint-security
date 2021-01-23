@@ -77,8 +77,8 @@ resource "google_notebooks_instance" "caip_nbk_p_trusted" {
   # If true, forces to use an SSH tunnel.
   no_proxy_access = false
 
-  network = var.vpc_trusted_private
-  subnet  = var.sb_trusted_private
+  network = var.trusted_private_network
+  subnet  = var.trusted_private_subnet
 
   labels = {
     blueprint = "security"

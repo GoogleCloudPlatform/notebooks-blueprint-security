@@ -71,9 +71,14 @@ gcloud identity groups memberships add --group-email grp-trusted-data-scientists
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
+|------|-------------|:----:|:-----:|:-----:|
 | trusted_private_network | The URI of the private network where you want your Notebooks.  This would be the restricted_network_self_link from the foundational security blueprint terraform  | `string` | `any` | yes |
 | trusted_private_subnet | The URI of the private subnet where you want your Notebooks. This would be the restricted_subnets_self_link from the foundational security blueprint terraform | `string` | `any` | yes |
+| default\_policy\_id | The parent of this AccessPolicy in the Cloud Resource Hierarchy. As of now, only organization are accepted as parent. | string | n/a | yes |
+| vpc\_perimeter\_policy\_name | The perimeter policy's name. | string | n/a | yes |
+| vpc\_perimeter\_ip\_subnetworks | IP subnets allowed to access the higher trust perimeters. | list(strong) | n/a | yes |
+| vpc\_perimeter\_projects | Project IDs within the higher trust boundary/ | list(string) | n/a | yes |
+| vpc\_perimeter\_regions | 2 letter identifier for regions allowed for VPC access. A valid ISO 3166-1 alpha-2 code. | list(string) | n/a | yes |
 
 ## Outputs
 

@@ -133,15 +133,50 @@ module "notebooks" {
   ]
 }
 
-# Creates a VPC service perimeter.  Should enable at the end after notebooks are configured
-module "perimeters" {
-  source             = "./modules/perimeters"
-  org                = var.org
-  policy_name        = var.default_policy_name
-  region             = var.region
-  resources          = var.perimeter_projects
-  ip_subnetworks     = var.perimeters_ip_subnetworks
-  terraform_sa_email = var.terraform_sa_email
+# Create a VPC service control perimeter.  Enable at the end after notebooks are configured.
+module "org_policy" {
+  source      = "terraform-google-modules/vpc-service-controls/google"
+  parent_id   = var.default_policy_id
+  policy_name = var.vpc_perimeter_policy_name
+}
+
+module "access_level_members_higher_trust" {
+  source                      = "terraform-google-modules/vpc-service-controls/google//modules/access_level"
+  policy                      = module.org_policy.policy_id
+  name                        = "higher_trust_notebooks_members"
+  members                     = [format("serviceAccount:%s", var.terraform_sa_email)]
+  ip_subnetworks              = var.vpc_perimeter_ip_subnetworks
+
+  # Note: Below are additional policy attributes you should configure based on your security policies, which are additional context information part of endpoint verification configuration.
+  # regions                     = var.vpc_perimeter_regions
+  # allowed_encryption_statuses = ["ENCRYPTED"]
+  # require_corp_owned          = true
+  # require_screen_lock         = true
+}
+
+module "regular_service_perimeter_higher_trust" {
+  source         = "terraform-google-modules/vpc-service-controls/google//modules/regular_service_perimeter"
+  policy         = module.org_policy.policy_id
+  perimeter_name = "higher_trust_notebooks"
+  description    = "Perimeter shielding Notebook projects with PII data"
+  resources      = var.vpc_perimeter_projects
+  access_levels  = [module.access_level_members_higher_trust.name]
+  restricted_services = [
+    "compute.googleapis.com",
+    "storage.googleapis.com",
+    "notebooks.googleapis.com",
+    "bigquery.googleapis.com",
+    "datacatalog.googleapis.com",
+    "dataflow.googleapis.com",
+    "dlp.googleapis.com",
+    "cloudkms.googleapis.com",
+    "secretmanager.googleapis.com",
+    "cloudasset.googleapis.com",
+    "cloudfunctions.googleapis.com",
+    "pubsub.googleapis.com",
+    "monitoring.googleapis.com",
+    "logging.googleapis.com"
+  ]
 
   depends_on = [
     module.notebooks

@@ -22,10 +22,23 @@ variable "enable_module_structure" {
   default     = false
 }
 
-# Note: These projects are dynamically created by this blueprint.  If you choose to not deploy the structure module,
-# please uncomment and provide the project names in your tfvars file.
-variable "perimeter_projects" {
+variable "vpc_perimeter_projects" {
   description = "Projects to add to perimeter."
+  type        = list(string)
+}
+
+variable "vpc_perimeter_regions" {
+  description = "2 letter identifier for regions allowed for VPC access. A valid ISO 3166-1 alpha-2 code."
+  type        = list(string)
+}
+
+variable "vpc_perimeter_policy_name" {
+  description = "Policy name for VPC service control perimeter."
+  type        = string
+}
+
+variable "vpc_perimeter_ip_subnetworks" {
+  description = "IP subnets for perimeters"
   type        = list(string)
 }
 
@@ -63,8 +76,8 @@ variable "org" {
   type        = string
 }
 
-variable "default_policy_name" {
-  description = "The name of the default org policy."
+variable "default_policy_id" {
+  description = "The id of the default org policy."
   type        = string
 }
 
@@ -190,12 +203,6 @@ variable "enable_services_kms" {
     "secretmanager.googleapis.com",
     "cloudresourcemanager.googleapis.com",
   ]
-}
-
-
-variable "perimeters_ip_subnetworks" {
-  description = "IP subnets for perimeters"
-  type        = list(string)
 }
 
 variable "terraform_sa_email" {

@@ -53,9 +53,13 @@ confid_users = [] # ["group:group-confid1@example.com", "user:confid1@example.co
 caip_users         = [] # ["user1@example.com", "user2@example.com"]
 trusted_scientists = [] # ["user:trusted1@example.com", "user:trusted2@example.com"]
 
+vpc_perimeter_policy_name = "YOUR_POLICY_NAME" # e.g. "higher_trust_analytics"
+
 # List of CIDRs allowed to access VPC-SC perimeter for your data scientists
-perimeters_ip_subnetworks = [] # ["10.10.1.0/24"] should be your internal and trusted network
+vpc_perimeters_ip_subnetworks = [] # ["10.10.1.0/24"] should be your internal and trusted network
 
 # List of projects to include within a trusted VPC-SC perimeter
 # (optional) only uncomment if did not deploy the module.structure  This terraform will auto create all the necessary projects for you.
-#perimeter_projects        = []   ["projects/123456", "projects/789456"]
+vpc_ perimeter_projects        = []   ["projects/123456", "projects/789456"]
+
+vpc_perimeter_regions         = [] # e.g ["US", "DE"]

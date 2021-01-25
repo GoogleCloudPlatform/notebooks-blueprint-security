@@ -32,11 +32,11 @@ variable "bucket_bootstrap" {
   description = "Restricted bucket in a bootstrap bucket"
 }
 
-variable "vpc_trusted_private" {
+variable "trusted_private_network" {
   description = "VPC with only private IPs for notebooks"
 }
 
-variable "sb_trusted_private" {
+variable "trusted_private_subnet" {
   description = "subnet fir private IPs for notebooks"
 }
 

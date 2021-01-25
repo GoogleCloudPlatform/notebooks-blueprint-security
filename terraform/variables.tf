@@ -108,6 +108,16 @@ variable "project_networks" {
   type        = string
 }
 
+variable "trusted_private_network" {
+  description = "network for Notebooks.  Should be a restricted private VPC."
+  type        = string
+}
+
+variable "trusted_private_subnet" {
+  description = "subnet for Notebooks.  Should be part of a restricted private network"
+  type        = string
+}
+
 variable "caip_users" {
   description = "The list of users that need an AI Platform Notebook."
 }

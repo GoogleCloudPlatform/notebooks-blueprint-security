@@ -21,7 +21,9 @@ zone                       = "YOUR_ZONE"       # e.g. "us-central1-a"
 region                     = "YOUR_GEO"        # e.g. "us"
 
 # Used for network creation.  Use location names for the networking resource
-region_trusted_network = "YOUR_REGION" # e.g. "us-central1"
+region_trusted_network  = "YOUR_REGION"  # e.g. "us-central1"
+trusted_private_network = "YOUR_NETWORK" # e.g URI for private VPC
+trusted_private_subnet  = "YOUR_SUBNET"  # e.g URI for private VPC subnet 
 
 # parent_env is a top level environment folder such as production where you'd like the `folder_trusted` to be created under
 parent_env = "YOUR_PARENT_FOLDER" # e.g. "folders/123456789"

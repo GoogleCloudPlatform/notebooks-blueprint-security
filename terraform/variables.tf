@@ -209,3 +209,15 @@ variable "terraform_sa_email" {
   description = "String for the email of the Terraform Service Account"
   type        = string
 }
+
+variable "data_key_name" {
+  description = "Data key used to protect PII data"
+  type        = string
+  default     = "trusted-data-key"
+}
+
+variable "data_etl_key_name" {
+  description = "Ephemeral key used to protect data while being transformed"
+  type        = string
+  default     = "trusted-data-etl-key"
+}

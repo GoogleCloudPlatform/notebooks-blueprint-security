@@ -89,12 +89,29 @@ resource "google_project_service" "enable_services_trusted_kms" {
   depends_on                 = [module.structure]
 }
 
-# Provides data governance controls such as KMS and secrets
-module "data_governance" {
-  source          = "./modules/data_governance"
-  project_kms     = var.project_trusted_kms
-  project_secrets = var.project_trusted_kms
-  region          = var.region
+# The key ring holds data keys that encrypt any PII data at rest such as BQ, GCS, or boot images
+# Initial key is HSM backed key rotates every 45 days
+module "kms_data" {
+  source               = "terraform-google-modules/kms/google"
+  project_id           = var.project_trusted_kms
+  location             = var.region
+  keyring              = "trusted-data-keyring"
+  keys                 = [var.data_key_name]
+  key_protection_level = "HSM"
+  key_rotation_period  = "3888000s" # 45 days
+}
+
+# The key ring holds ephemeral keys that protect transitory data as it is being transformed.
+# Initial key is software backed key rotates every 10 days
+# These keys have a shorter rotation period due to volume of expected data.
+module "kms_ephemeral" {
+  source               = "terraform-google-modules/kms/google"
+  project_id           = var.project_trusted_kms
+  location             = var.region
+  keyring              = "trusted-ephemeral-keyring"
+  keys                 = [var.data_etl_key_name]
+  key_protection_level = "HSM"
+  key_rotation_period  = "864000s" # 10 days
 }
 
 # Configures data resources holding PII information
@@ -105,8 +122,8 @@ module "data" {
   project_bootstrap         = var.project_trusted_kms
   project_trusted_analytics = var.project_trusted_analytics
   region                    = var.region
-  key_confid_data           = module.data_governance.key_confid_data
-  key_confid_etl            = module.data_governance.key_confid_etl
+  key_confid_data           = module.kms_data.keys[var.data_key_name]
+  key_confid_etl            = module.kms_ephemeral.keys[var.data_etl_key_name]
   confid_users              = var.confid_users
   key_bq_confid_members = [
     "serviceAccount:${google_service_account.sa_p_notebook_compute.email}"
@@ -127,7 +144,7 @@ module "notebooks" {
   bucket_bootstrap        = module.data.bkt_p_bootstrap_notebook
   trusted_private_network = var.trusted_private_network
   trusted_private_subnet  = var.trusted_private_subnet
-  key_confid_data         = module.data_governance.key_confid_data
+  key_confid_data         = module.kms_data.keys[var.data_key_name]
   depends_on = [
     module.data
   ]

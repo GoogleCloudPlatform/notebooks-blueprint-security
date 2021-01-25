@@ -1,7 +1,0 @@
-name,id,email,country,gender
-a,123,a@example.com,FR,M
-b,234,b@example.com,US,F
-c,345,c@example.com,US,M
-d,456,d@example.com,UK,U
-e,567,e@example.com,PT,F
-f,678,f@example.com,CA,F

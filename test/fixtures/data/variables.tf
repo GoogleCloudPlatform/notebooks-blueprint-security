@@ -38,12 +38,6 @@ variable "dataset_name" {
   default     = "sample_pii_data"
 }
 
-variable "trusted_data_bucket_name" {
-  description = "bucket name holding trusted data"
-  type        = string
-  default     = "sample_pii_data"
-}
-
 variable "bootstrap_notebooks_bucket_name" {
   description = "bucket name holding bootstrap scripts for notebooks"
   type        = string
@@ -81,7 +75,7 @@ variable "region" {
   type        = string
 }
 
-variable "key_bq_confid_members" {
+variable "google_managed_members" {
   description = "List of members for KMS key"
   default     = []
 }

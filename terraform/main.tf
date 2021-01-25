@@ -93,17 +93,14 @@ module "kms_ephemeral" {
 module "data" {
   source                    = "./modules/data"
   project_trusted_data      = var.project_trusted_data
-  project_trusted_data_etl  = var.project_trusted_data_etl
   project_bootstrap         = var.project_trusted_kms
   project_trusted_analytics = var.project_trusted_analytics
   region                    = local.region
-  key_confid_data           = module.kms_data.keys[var.data_key_name]
-  key_confid_etl            = module.kms_ephemeral.keys[var.data_etl_key_name]
+  data_key                  = module.kms_data.keys[var.data_key_name]
   confid_users              = var.confid_users
-  key_bq_confid_members = [
+  google_managed_members = [
     "serviceAccount:${google_service_account.sa_p_notebook_compute.email}"
   ]
-  restricted_viewer_role = google_project_iam_custom_role.role_restricted_data_viewer.name
   depends_on = [
     module.kms_data,
   ]

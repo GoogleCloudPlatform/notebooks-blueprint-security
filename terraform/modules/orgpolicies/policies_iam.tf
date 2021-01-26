@@ -38,29 +38,29 @@
 #  }
 #}
 
-resource "google_folder_organization_policy" "service_account_policy" {
-  folder     = var.folder_trusted
-  constraint = "iam.disableServiceAccountCreation"
-
-  boolean_policy {
-    enforced = true
-  }
+module "service_account_policy" {
+  source      = "terraform-google-modules/org-policy/google"
+  policy_for  = "folder"
+  folder_id   = var.folder_trusted
+  constraint  = "iam.disableServiceAccountCreation"
+  policy_type = "boolean"
+  enforce     = true
 }
 
-resource "google_folder_organization_policy" "service_account_key_policy" {
-  folder     = var.folder_trusted
-  constraint = "iam.disableServiceAccountKeyCreation"
-
-  boolean_policy {
-    enforced = true
-  }
+module "service_account_key_policy" {
+  source      = "terraform-google-modules/org-policy/google"
+  policy_for  = "folder"
+  folder_id   = var.folder_trusted
+  constraint  = "iam.disableServiceAccountKeyCreation"
+  policy_type = "boolean"
+  enforce     = true
 }
 
-resource "google_folder_organization_policy" "iam_grant_policy" {
-  folder     = var.folder_trusted
-  constraint = "iam.automaticIamGrantsForDefaultServiceAccounts"
-
-  boolean_policy {
-    enforced = true
-  }
+module "iam_grant_policy" {
+  source      = "terraform-google-modules/org-policy/google"
+  policy_for  = "folder"
+  folder_id   = var.folder_trusted
+  constraint  = "iam.automaticIamGrantsForDefaultServiceAccounts"
+  policy_type = "boolean"
+  enforce     = true
 }

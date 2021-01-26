@@ -15,18 +15,15 @@ limitations under the License.
 */
 
 # Configures the default project and zone for underlying Google Cloud API calls
+# >= 3.51.0 where notebook resources GA
 provider "google" {
-  project = var.default_billing_project_id
-  zone    = var.zone
-  version = ">= 3.33.0"
+  version = "~> 3.51.0"
   billing_project = var.default_billing_project_id
   user_project_override = true
 }
 
 provider "google-beta" {
-  project = var.default_billing_project_id
-  zone    = var.zone
-  version = ">= 3.33.0"
+  version = "~> 3.51.0"
   billing_project = var.default_billing_project_id
   user_project_override = true
 }

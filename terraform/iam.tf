@@ -23,8 +23,6 @@ resource "google_service_account" "sa_p_notebook_compute" {
   project      = var.project_trusted_analytics
   account_id   = "sa-p-notebook-compute"
   display_name = "Notebooks in trusted environment"
-
-  depends_on = [module.structure]
 }
 
 # We are giving privileges to the notebook-compute service account

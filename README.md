@@ -22,6 +22,19 @@ This repository provides an opinionated way to set up AI Platform Notebook in a 
 3.  Update the `terraform.template.tfvars` file with your GCP specific resource information from step 1
 
 ## setup
+
+Within your Org's prod environment, create a folder to hold your trusted projects and centrally managed your policies for Notebooks that use PII data.
+Note: the `fldr-prod` is created by the foundation blueprint.  Create folders by using the [project factory](https://github.com/terraform-google-modules/terraform-google-project-factory)
+
+```
+fldr-prod
+└── fldr-trusted
+    ├── trusted-data
+    ├── trusted-analytics
+    ├── trusted-data
+    └── trusted-kms
+```
+
 1.  Setup appropriate environment variables
 ```
 cd terraform

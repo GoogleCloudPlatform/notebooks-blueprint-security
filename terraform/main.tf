@@ -14,14 +14,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+locals {
+  region = split("-", var.zone)[0]
+}
+
 # Provides resource manager, folder structure, and org level settings
 module "structure" {
   source                    = "./modules/structure"
-  for_each                  = tobool(var.enable_module_structure) == true ? toset(["1"]) : toset([])
   parent_env                = var.parent_env
   bootstrap_env             = var.bootstrap_env
   billing_account           = var.billing_account
-  folder_trusted            = var.folder_trusted
+  folder_trusted            = "folders/${data.google_project.trusted_analytics.folder_id}"
   project_trusted_analytics = var.project_trusted_analytics
   project_trusted_data      = var.project_trusted_data
   project_trusted_data_etl  = var.project_trusted_data_etl
@@ -31,7 +34,7 @@ module "structure" {
 
 module "orgpolicies" {
   source                       = "./modules/orgpolicies"
-  folder_trusted               = var.folder_trusted
+  folder_trusted               = "folders/${data.google_project.trusted_analytics.folder_id}"
   resource_locations           = var.resource_locations
   vpc_subnets_projects_allowed = ["under:projects/${var.project_trusted_analytics}"]
 
@@ -69,16 +72,6 @@ resource "google_project_service" "enable_services_trusted_analytics" {
   depends_on                 = [module.structure]
 }
 
-resource "google_project_service" "enable_services_trusted_networks" {
-  project  = var.project_networks
-  for_each = toset(var.enable_services_networks)
-  service  = each.value
-
-  disable_dependent_services = false
-  disable_on_destroy         = false
-  depends_on                 = [module.structure]
-}
-
 resource "google_project_service" "enable_services_trusted_kms" {
   project  = var.project_trusted_kms
   for_each = toset(var.enable_services_kms)
@@ -94,7 +87,7 @@ resource "google_project_service" "enable_services_trusted_kms" {
 module "kms_data" {
   source               = "terraform-google-modules/kms/google"
   project_id           = var.project_trusted_kms
-  location             = var.region
+  location             = local.region
   keyring              = "trusted-data-keyring"
   keys                 = [var.data_key_name]
   key_protection_level = "HSM"
@@ -107,7 +100,7 @@ module "kms_data" {
 module "kms_ephemeral" {
   source               = "terraform-google-modules/kms/google"
   project_id           = var.project_trusted_kms
-  location             = var.region
+  location             = local.region
   keyring              = "trusted-ephemeral-keyring"
   keys                 = [var.data_etl_key_name]
   key_protection_level = "HSM"
@@ -121,7 +114,7 @@ module "data" {
   project_trusted_data_etl  = var.project_trusted_data_etl
   project_bootstrap         = var.project_trusted_kms
   project_trusted_analytics = var.project_trusted_analytics
-  region                    = var.region
+  region                    = local.region
   key_confid_data           = module.kms_data.keys[var.data_key_name]
   key_confid_etl            = module.kms_ephemeral.keys[var.data_etl_key_name]
   confid_users              = var.confid_users
@@ -130,7 +123,7 @@ module "data" {
   ]
   restricted_viewer_role = google_project_iam_custom_role.role_restricted_data_viewer.name
   depends_on = [
-    module.network,
+    module.kms_data,
   ]
 }
 
@@ -158,11 +151,11 @@ module "org_policy" {
 }
 
 module "access_level_members_higher_trust" {
-  source                      = "terraform-google-modules/vpc-service-controls/google//modules/access_level"
-  policy                      = module.org_policy.policy_id
-  name                        = "higher_trust_notebooks_members"
-  members                     = [format("serviceAccount:%s", var.terraform_sa_email)]
-  ip_subnetworks              = var.vpc_perimeter_ip_subnetworks
+  source         = "terraform-google-modules/vpc-service-controls/google//modules/access_level"
+  policy         = module.org_policy.policy_id
+  name           = "higher_trust_notebooks_members"
+  members        = [format("serviceAccount:%s", var.terraform_sa_email)]
+  ip_subnetworks = var.vpc_perimeter_ip_subnetworks
 
   # Note: Below are additional policy attributes you should configure based on your security policies, which are additional context information part of endpoint verification configuration.
   # regions                     = var.vpc_perimeter_regions
@@ -171,13 +164,34 @@ module "access_level_members_higher_trust" {
   # require_screen_lock         = true
 }
 
+data "google_project" "trusted_data" {
+  project_id = var.project_trusted_data
+}
+
+data "google_project" "trusted_analytics" {
+  project_id = var.project_trusted_analytics
+}
+
+data "google_project" "trusted_data_etl" {
+  project_id = var.project_trusted_data_etl
+}
+
+data "google_project" "trusted_kms" {
+  project_id = var.project_trusted_kms
+}
+
 module "regular_service_perimeter_higher_trust" {
   source         = "terraform-google-modules/vpc-service-controls/google//modules/regular_service_perimeter"
   policy         = module.org_policy.policy_id
   perimeter_name = "higher_trust_notebooks"
   description    = "Perimeter shielding Notebook projects with PII data"
-  resources      = var.vpc_perimeter_projects
-  access_levels  = [module.access_level_members_higher_trust.name]
+  resources = [
+    "projects/${data.google_project.trusted_data.number}",
+    "projects/${data.google_project.trusted_analytics.number}",
+    "projects/${data.google_project.trusted_data_etl.number}",
+    "projects/${data.google_project.trusted_kms.number}",
+  ]
+  access_levels = [module.access_level_members_higher_trust.name]
   restricted_services = [
     "compute.googleapis.com",
     "storage.googleapis.com",

@@ -18,12 +18,10 @@ limitations under the License.
 # >= 3.51.0 where notebook resources GA
 provider "google" {
   version = "~> 3.51.0"
-  billing_project = var.default_billing_project_id
   user_project_override = true
 }
 
 provider "google-beta" {
   version = "~> 3.51.0"
-  billing_project = var.default_billing_project_id
   user_project_override = true
 }

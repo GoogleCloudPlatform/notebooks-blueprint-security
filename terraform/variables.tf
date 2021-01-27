@@ -14,19 +14,6 @@
  * limitations under the License.
  */
 
-// Determine whether or not the resource structure should be deployed as is or
-// use existing hierarchy.
-// If you change the value to false, please uncomment the `perimeter_projects` variable below
-variable "enable_module_structure" {
-  description = "Whether to create the Terraform structure module."
-  default     = false
-}
-
-variable "vpc_perimeter_projects" {
-  description = "Projects to add to perimeter."
-  type        = list(string)
-}
-
 variable "vpc_perimeter_regions" {
   description = "2 letter identifier for regions allowed for VPC access. A valid ISO 3166-1 alpha-2 code."
   type        = list(string)
@@ -35,6 +22,7 @@ variable "vpc_perimeter_regions" {
 variable "vpc_perimeter_policy_name" {
   description = "Policy name for VPC service control perimeter."
   type        = string
+  default     = "higher_trust_perimeter_policy"
 }
 
 variable "vpc_perimeter_ip_subnetworks" {
@@ -42,33 +30,15 @@ variable "vpc_perimeter_ip_subnetworks" {
   type        = list(string)
 }
 
-/*
-Required Variables
-These must be provided at runtime.
-*/
 variable "zone" {
   description = "The zone in which to create the secured notebook. Must match the region"
-  type        = string
-}
-
-variable "region" {
-  description = "The region 2 letter identifier for keys, storage, vpc-sc, etc."
   type        = string
 }
 
 variable "resource_locations" {
   description = "The locations used in org policy to limit where resources can be provisioned"
   type        = list(string)
-}
-
-variable "region_trusted_network" {
-  description = "The region in which to create the notebook and data (ex: us-central1-a)"
-  type        = string
-}
-
-variable "default_billing_project_id" {
-  description = "The project ID used by the provider.  It specifies the default billing and project to create resource in case one is not specified in terraform"
-  type        = string
+  default     = ["in:us-locations", "in:eu-locations"]
 }
 
 variable "org" {
@@ -81,13 +51,8 @@ variable "default_policy_id" {
   type        = string
 }
 
-variable "folder_trusted" {
-  description = "Top level folder hosting PII data.  Format should be folder/1234567"
-  type        = string
-}
-
 variable "project_trusted_analytics" {
-  description = "The trusted project for analytics activies and data scientists"
+  description = "The trusted project for analytics activities and data scientists"
   type        = string
 }
 
@@ -113,11 +78,6 @@ variable "bootstrap_env" {
 
 variable "project_trusted_kms" {
   description = "Top level trusted environment folder that will house the encryption keys"
-  type        = string
-}
-
-variable "project_networks" {
-  description = "Contains all networks."
   type        = string
 }
 

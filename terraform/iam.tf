@@ -27,16 +27,6 @@ resource "google_service_account" "sa_p_notebook_compute" {
   depends_on = [module.structure]
 }
 
-
-# grant trusted data scientists the ability to access notebooks thru UI
-# established through IAP.
-resource "google_service_account_iam_binding" "iam_trusted_scientists" {
-  service_account_id = google_service_account.sa_p_notebook_compute.name
-  role               = "roles/iam.serviceAccountUser"
-
-  members = var.trusted_scientists
-}
-
 # We are giving privileges to the notebook-compute service account
 # Compute: compute.instanceAdmin
 #    - gce instance adminsitration, shieldedVM, osLogin
@@ -56,8 +46,8 @@ resource "google_project_iam_member" "notebook_instance_compute" {
   member  = "serviceAccount:${google_service_account.sa_p_notebook_compute.email}"
 }
 
-// create custom role from dataViewer that doesn't allow export
-// Note: resourcemanager.projects.list is not applicable at project level, but is assigned in the BQ DataViewer predefined role (org level)
+# create custom role from dataViewer that doesn't allow export
+# Note: resourcemanager.projects.list is not applicable at project level, but is assigned in the BQ DataViewer predefined role (org level)
 resource "google_project_iam_custom_role" "role_restricted_data_viewer" {
   project     = var.project_trusted_data
   role_id     = "blueprint_restricted_data_viewer"
@@ -97,11 +87,3 @@ resource "google_project_iam_member" "notebook_instance_caip" {
   role    = "roles/notebooks.admin"
   member  = "serviceAccount:${google_service_account.sa_p_notebook_compute.email}"
 }
-
-# (optional) uncomment this block, if you desire your data scientist to have code within their notebooks
-# that can create a temporary gcs bucket
-# resource "google_project_iam_member" "notebook-instance-gcs" {
-#   project = var.project
-#   role    = "roles/storage.objectAdmin"
-#   member  = "serviceAccount:${google_service_account.notebook-compute-sa.email}"
-# }

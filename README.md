@@ -68,6 +68,10 @@ LIMIT 10
 gcloud identity groups memberships add --group-email grp-trusted-data-scientists@example.com --member-email = sa-p-notebook-compute@<proj>.iam.gserviceaccount.com
 ```
 
+## Accessing Notebooks
+Use ssh to access your notebook.  Notebooks have no external IP and users should not impersonate the Notebook service account.
+Learn how to open an ssh tunnel to launch JuptyerLab, by reading the [SSH to access JupyterLab article](https://cloud.google.com/ai-platform/notebooks/docs/ssh-access).
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -89,4 +93,4 @@ gcloud identity groups memberships add --group-email grp-trusted-data-scientists
 
 | Name | Description |
 |------|-------------|
-| keys | map of KMS keys for each kms module.  Lookup by key's name (string) which has a value of the key's self link (string) |
+| none | none |

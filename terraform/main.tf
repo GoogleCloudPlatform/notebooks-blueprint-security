@@ -18,20 +18,6 @@ locals {
   region = split("-", var.zone)[0]
 }
 
-# Provides resource manager, folder structure, and org level settings
-module "structure" {
-  source                    = "./modules/structure"
-  parent_env                = var.parent_env
-  bootstrap_env             = var.bootstrap_env
-  billing_account           = var.billing_account
-  folder_trusted            = "folders/${data.google_project.trusted_analytics.folder_id}"
-  project_trusted_analytics = var.project_trusted_analytics
-  project_trusted_data      = var.project_trusted_data
-  project_trusted_data_etl  = var.project_trusted_data_etl
-  project_trusted_kms       = var.project_trusted_kms
-  terraform_sa_email        = var.terraform_sa_email
-}
-
 module "orgpolicies" {
   source                       = "./modules/orgpolicies"
   folder_trusted               = "folders/${data.google_project.trusted_analytics.folder_id}"
@@ -49,7 +35,6 @@ resource "google_project_service" "enable_services_trusted_data" {
 
   disable_dependent_services = false
   disable_on_destroy         = false
-  depends_on                 = [module.structure]
 }
 
 resource "google_project_service" "enable_services_trusted_data_etl" {
@@ -59,7 +44,6 @@ resource "google_project_service" "enable_services_trusted_data_etl" {
 
   disable_dependent_services = false
   disable_on_destroy         = false
-  depends_on                 = [module.structure]
 }
 
 resource "google_project_service" "enable_services_trusted_analytics" {
@@ -69,7 +53,6 @@ resource "google_project_service" "enable_services_trusted_analytics" {
 
   disable_dependent_services = false
   disable_on_destroy         = false
-  depends_on                 = [module.structure]
 }
 
 resource "google_project_service" "enable_services_trusted_kms" {
@@ -79,7 +62,6 @@ resource "google_project_service" "enable_services_trusted_kms" {
 
   disable_dependent_services = false
   disable_on_destroy         = false
-  depends_on                 = [module.structure]
 }
 
 # The key ring holds data keys that encrypt any PII data at rest such as BQ, GCS, or boot images

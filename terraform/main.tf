@@ -28,42 +28,6 @@ module "orgpolicies" {
   depends_on = [google_service_account.sa_p_notebook_compute]
 }
 
-resource "google_project_service" "enable_services_trusted_data" {
-  project  = var.project_trusted_data
-  for_each = toset(var.enable_services_data)
-  service  = each.value
-
-  disable_dependent_services = false
-  disable_on_destroy         = false
-}
-
-resource "google_project_service" "enable_services_trusted_data_etl" {
-  project  = var.project_trusted_data_etl
-  for_each = toset(var.enable_services_data_etl)
-  service  = each.value
-
-  disable_dependent_services = false
-  disable_on_destroy         = false
-}
-
-resource "google_project_service" "enable_services_trusted_analytics" {
-  project  = var.project_trusted_analytics
-  for_each = toset(var.enable_services_analytics)
-  service  = each.value
-
-  disable_dependent_services = false
-  disable_on_destroy         = false
-}
-
-resource "google_project_service" "enable_services_trusted_kms" {
-  project  = var.project_trusted_kms
-  for_each = toset(var.enable_services_kms)
-  service  = each.value
-
-  disable_dependent_services = false
-  disable_on_destroy         = false
-}
-
 # The key ring holds data keys that encrypt any PII data at rest such as BQ, GCS, or boot images
 # Initial key is HSM backed key rotates every 45 days
 module "kms_data" {

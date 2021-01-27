@@ -49,43 +49,6 @@ if [[ -z ${TERRAFORM_SA} ]]; then
   fi
 fi
 
-function wait_service_enable() {
-  service=""
-  attempt=0
-  sleeper=1
-  while (( $attempt <  10 )); do
-    echo "Attempt ${attempt} to test if service $1 is enabled..."
-    service=$(gcloud services list --project ${DEPLOYMENT_PROJECT} | grep $1)
-    echo "service is ${service}"
-
-    if [ ! -z "$service" ]; then
-      echo "Service $1 is enabled."
-      break
-    else
-      echo "Service $1 is still not enabled..."
-      attempt=$(( attempt + 1 ))
-      sleeper=$(( sleeper * 2 ))
-    fi
-    sleep ${sleeper}
-    echo $attempt
-  done
-
-  if [ -z "$service" ];then
-    echo "Failed to enabled $1."
-  fi
-}
-
-gcloud services enable iam.googleapis.com --project ${DEPLOYMENT_PROJECT}
-gcloud services enable cloudresourcemanager.googleapis.com --project ${DEPLOYMENT_PROJECT}
-gcloud services enable accesscontextmanager.googleapis.com --project ${DEPLOYMENT_PROJECT}
-gcloud services enable cloudkms.googleapis.com --project ${DEPLOYMENT_PROJECT}
-
-wait_service_enable "iam.googleapis.com"
-wait_service_enable "cloudresourcemanager.googleapis.com"
-wait_service_enable "accesscontextmanager.googleapis.com"
-wait_service_enable "cloudkms.googleapis.com"
-
-
 function setup_using_foundation_terraform() {
   # check if SA already exists
   gcloud iam service-accounts list | grep -i ${TERRAFORM_SA}
@@ -206,7 +169,7 @@ else
     IMPERSONATION_SA=${TERRAFORM_SA}
 fi
 
-# impersonnate with a token (use cloud identity to set the default time to 1 hr)
+# impersonate with a token (use cloud identity to set the default time to 1 hr)
 # this uses oauth so that a SA key isn't needed
 gcloud config set auth/impersonate_service_account ${IMPERSONATION_SA}
 export GOOGLE_OAUTH_ACCESS_TOKEN=$(gcloud auth print-access-token)

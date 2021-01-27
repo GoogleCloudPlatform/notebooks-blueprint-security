@@ -14,67 +14,79 @@
  * limitations under the License.
  */
 
+locals {
+  sample_csv_name = "CCRecords_1564602825.csv"
+}
 
-#=====================================================================
-# create datasets
-#=====================================================================
 resource "random_string" "random_ds" {
   length    = 4
   min_lower = 4
   special   = false
 }
 
-resource "google_bigquery_dataset" "bq_p_confid_dataset" {
-  dataset_id    = format("bq_%s_%s", var.dataset_name, random_string.random_ds.result)
-  friendly_name = "sample trusted data"
-  description   = "Dataset holding tables with PII"
-  project       = var.project_trusted_data
+module "bigquery" {
+  source                     = "terraform-google-modules/bigquery/google"
+  dataset_id                 = format("bq_%s_%s", var.dataset_name, random_string.random_ds.result)
+  dataset_name               = var.dataset_name
+  description                = "Dataset holds tables with PII"
+  project_id                 = var.project_trusted_data
+  location                   = var.region
+  encryption_key             = var.data_key
+  delete_contents_on_destroy = true
+  tables = [
+    {
+      table_id          = "${var.pii_table_id}",
+      schema            = "empty_schema.json",
+      clustering        = [],
+      expiration_time   = null,
+      time_partitioning = null,
+      labels = {
+        env = "prod"
+      },
+    }
+  ]
+}
+
+# Sample data is created from a public compressed csv file.  To unload it into BQ, the happens:
+# 1. create a tmp bucket
+# 2. unzip the sample csv file and upload it as an object into the tmp bucket
+# 3. use BQ job load to import the csv file from the bucket into a BQ table.
+module "tmp_data" {
+  source        = "terraform-google-modules/cloud-storage/google//modules/simple_bucket"
+  project_id    = var.project_trusted_data
+  name          = format("tmp_sample_data_%s", random_string.random_ds.result)
   location      = var.region
-
-  default_encryption_configuration {
-    kms_key_name = var.key_confid_data
-  }
-
-  lifecycle {
-    prevent_destroy = false
-    ignore_changes = [
-      # Ignore changes to location since auto corrects to lowercase
-      # Ignore changes to access because IAM will update as needed
-      location,
-      access,
-    ]
-  }
-
-  depends_on = [google_kms_crypto_key_iam_binding.iam_p_bq_sa_confid]
-}
-
-resource "google_bigquery_table" "confid_table" {
-  dataset_id = google_bigquery_dataset.bq_p_confid_dataset.dataset_id
-  table_id   = "confid_table"
-  project    = var.project_trusted_data
-
-  lifecycle {
-    prevent_destroy = false
-    ignore_changes = [
-      # Ignore changes to encryption key, since seems to not be detected
-      encryption_configuration,
-    ]
+  force_destroy = true
+  encryption = {
+    default_kms_key_name = var.data_key
   }
 }
 
-resource "google_bigquery_job" "confid_table_load" {
-  job_id  = format("confid_table_load_%s", formatdate("YYYYMMMDD_hhmmss", timestamp()))
+resource "null_resource" "download_sample_cc_into_gcs" {
+  provisioner "local-exec" {
+    command = <<EOF
+    curl -X GET -o "sample_data_scripts.tar.gz" "http://storage.googleapis.com/dataflow-dlp-solution-sample-data/sample_data_scripts.tar.gz"
+    tar -zxvf sample_data_scripts.tar.gz
+    rm sample_data_scripts.tar.gz
+    gsutil cp solution-test/${local.sample_csv_name}  ${module.tmp_data.bucket.url}
+    rm -fr solution-test/
+    EOF
+  }
+}
+
+resource "google_bigquery_job" "table_load" {
+  job_id  = format("sample_table_load_%s", formatdate("YYYYMMMDD_hhmmss", timestamp()))
   project = var.project_trusted_data
 
   load {
     source_uris = [
-      "${google_storage_bucket.bkt_p_data_etl.url}/${google_storage_bucket_object.confid_data.name}",
+      "${module.tmp_data.bucket.url}/${local.sample_csv_name}",
     ]
 
     destination_table {
       project_id = var.project_trusted_data
-      dataset_id = google_bigquery_dataset.bq_p_confid_dataset.dataset_id
-      table_id   = google_bigquery_table.confid_table.table_id
+      dataset_id = module.bigquery.bigquery_dataset.dataset_id
+      table_id   = "${var.pii_table_id}"
     }
 
     skip_leading_rows     = 1
@@ -84,5 +96,8 @@ resource "google_bigquery_job" "confid_table_load" {
     autodetect        = true
   }
 
-  depends_on = [google_bigquery_table.confid_table]
+  depends_on = [
+    module.bigquery,
+    null_resource.download_sample_cc_into_gcs,
+  ]
 }

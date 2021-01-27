@@ -33,7 +33,7 @@ module "data" {
   key_confid_data           = module.data_governance.key_confid_data
   key_confid_etl            = module.data_governance.key_confid_etl
   confid_users              = var.confid_users
-  key_bq_confid_members = [
+  google_managed_members = [
     "serviceAccount:${var.terraform_sa_email}"
   ]
   restricted_viewer_role = var.restricted_viewer_role

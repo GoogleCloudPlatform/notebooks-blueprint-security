@@ -20,31 +20,14 @@ variable "dataset_name" {
   default     = "sample_pii_data"
 }
 
-variable "trusted_data_bucket_name" {
-  description = "bucket name holding trusted data"
-  type        = string
-  default     = "sample_pii_data"
-}
-
 variable "bootstrap_notebooks_bucket_name" {
   description = "bucket name holding bootstrap scripts for notebooks"
   type        = string
   default     = "notebook_bootstrap"
 }
 
-variable "trusted_data_etl_bucket_name" {
-  description = "bucket name holding etl data "
-  type        = string
-  default     = "data_etl"
-}
-
 variable "project_trusted_data" {
   description = "the project holding data used by notebooks"
-  type        = string
-}
-
-variable "project_trusted_data_etl" {
-  description = "the project holding temporary data in the ETL pipeline used by data"
   type        = string
 }
 
@@ -63,27 +46,23 @@ variable "region" {
   type        = string
 }
 
-variable "key_confid_data" {
-  description = "The key protecting confid data"
+variable "data_key" {
+  description = "KMS/HSM key protecting pii data"
   type        = string
 }
 
-variable "key_confid_etl" {
-  description = "The key protecting confid data in the ETL pipelie"
-  type        = string
-}
-
-variable "key_bq_confid_members" {
+variable "google_managed_members" {
   description = "List of members for KMS key"
   default     = []
 }
 
 variable "confid_users" {
-  description = "The list of users that confid users."
+  description = "The list of groups with privileged users that can access PII data."
   default     = []
 }
 
-variable "restricted_viewer_role" {
-  description = "custom role to access PII data"
+variable "pii_table_id" {
+  description = "Table that contains PII data used by data scientists"
   type        = string
+  default     = "sample_pii_table"
 }

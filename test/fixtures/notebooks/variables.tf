@@ -64,7 +64,7 @@ variable "region" {
   type        = string
 }
 
-variable "key_bq_confid_members" {
+variable "google_managed_members" {
   description = "List of members for KMS key"
   default     = []
 }

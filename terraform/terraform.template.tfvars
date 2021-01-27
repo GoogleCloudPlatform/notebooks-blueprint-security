@@ -16,7 +16,6 @@
 # thus no default values are specified here.  Any defaults would be specified in the variables.tf file
 # Once all the values are provided, the trusted environment can be deployed
 
-default_billing_project_id = "YOUR_PROJECT_ID" # "123456789" default projectID in case resources do not have a project specified
 zone                       = "YOUR_ZONE"       # e.g. "us-central1-a"
 region                     = "YOUR_GEO"        # e.g. "us"
 
@@ -28,16 +27,12 @@ trusted_private_subnet  = "YOUR_SUBNET"  # e.g URI for private VPC subnet
 # parent_env is a top level environment folder such as production where you'd like the `folder_trusted` to be created under
 parent_env = "YOUR_PARENT_FOLDER" # e.g. "folders/123456789"
 
-# This creates a folder in your parent_env (e.g production environment) that will hold all projects with higher trust data
-folder_trusted = "YOUR_FOLDER_NUMBER" # "folder-abc-def"
-
 # These are the individual project names for resources that touch higher trust data.
 # These will be used by the structure module to create the projects.
 project_trusted_analytics = "YOUR_PROJECT" # "abcd"
 project_trusted_data      = "YOUR_PROJECT" # "efgh"
 project_trusted_data_etl  = "YOUR_PROJECT" # "ijkl"
 project_trusted_kms       = "YOUR_PROJECT" # "mnop"
-project_networks          = "YOUR_PROJECT" # "qrst" This is likely the same as your project_trusted_analytics project name
 
 # These identities are assigned a customer view data role in BigQuery (i.e the dataViewer role)
 # It is preferred to create and use a group for data scientist that can access higher trust data
@@ -60,6 +55,6 @@ vpc_perimeters_ip_subnetworks = [] # ["10.10.1.0/24"] should be your internal an
 
 # List of projects to include within a trusted VPC-SC perimeter
 # (optional) only uncomment if did not deploy the module.structure  This terraform will auto create all the necessary projects for you.
-vpc_ perimeter_projects        = []   ["projects/123456", "projects/789456"]
+vpc_ perimeter_projects        = []  # ["projects/123456", "projects/789456"]
 
 vpc_perimeter_regions         = [] # e.g ["US", "DE"]

@@ -1,5 +1,5 @@
 /*
-Copyright 2020 Google LLC
+Copyright 2021 Google LLC
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -17,13 +17,6 @@ limitations under the License.
 variable "dataset_name" {
   description = "dataset name holding trusted data"
   type        = string
-  default     = "sample_pii_data"
-}
-
-variable "bootstrap_notebooks_bucket_name" {
-  description = "bucket name holding bootstrap scripts for notebooks"
-  type        = string
-  default     = "notebook_bootstrap"
 }
 
 variable "project_trusted_data" {
@@ -36,11 +29,6 @@ variable "project_trusted_analytics" {
   type        = string
 }
 
-variable "project_bootstrap" {
-  description = "the project holding bootstrap items"
-  type        = string
-}
-
 variable "region" {
   description = "The region in which to create the data resources"
   type        = string
@@ -49,11 +37,6 @@ variable "region" {
 variable "data_key" {
   description = "KMS/HSM key protecting pii data"
   type        = string
-}
-
-variable "google_managed_members" {
-  description = "List of members for KMS key"
-  default     = []
 }
 
 variable "confid_users" {

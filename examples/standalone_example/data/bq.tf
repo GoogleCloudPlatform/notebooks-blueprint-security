@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 Google LLC
+ * Copyright 2021 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,15 +18,9 @@ locals {
   sample_csv_name = "CCRecords_1564602825.csv"
 }
 
-resource "random_string" "random_ds" {
-  length    = 4
-  min_lower = 4
-  special   = false
-}
-
 module "bigquery" {
   source                     = "terraform-google-modules/bigquery/google"
-  dataset_id                 = format("bq_%s_%s", var.dataset_name, random_string.random_ds.result)
+  dataset_id                 = var.dataset_name
   dataset_name               = var.dataset_name
   description                = "Dataset holds tables with PII"
   project_id                 = var.project_trusted_data
@@ -47,6 +41,11 @@ module "bigquery" {
   ]
 }
 
+resource "random_string" "tmp_name" {
+  length    = 4
+  min_lower = 4
+  special   = false
+}
 # Sample data is created from a public compressed csv file.  To unload it into BQ, the happens:
 # 1. create a tmp bucket
 # 2. unzip the sample csv file and upload it as an object into the tmp bucket
@@ -54,7 +53,7 @@ module "bigquery" {
 module "tmp_data" {
   source        = "terraform-google-modules/cloud-storage/google//modules/simple_bucket"
   project_id    = var.project_trusted_data
-  name          = format("tmp_sample_data_%s", random_string.random_ds.result)
+  name          = format("tmp_sample_data_%s", random_string.tmp_name.result)
   location      = var.region
   force_destroy = true
   encryption = {

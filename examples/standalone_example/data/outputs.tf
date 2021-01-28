@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 Google LLC
+ * Copyright 2021 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,7 @@
  * limitations under the License.
  */
 
-variable "folder_trusted" {
-  description = "Top level folder hosting PII data.  Format should be folder/1234567"
-}
-
-variable "resource_locations" {
-  description = "region for resource constraint"
-  type        = list(string)
-}
-
-variable "vpc_subnets_projects_allowed" {
-  description = "list of projects with allowed vpc subnets for the notebooks; defined with the under constraint format (e.g. under:projects/project_id)"
-  type        = list(string)
+output dataset_id {
+  description = "BigQuery dataset id"
+  value       = module.bigquery.bigquery_dataset.dataset_id
 }

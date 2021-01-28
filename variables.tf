@@ -41,11 +41,6 @@ variable "resource_locations" {
   default     = ["in:us-locations", "in:eu-locations"]
 }
 
-variable "org" {
-  description = "The org ID for resource structure creation"
-  type        = string
-}
-
 variable "default_policy_id" {
   description = "The id of the default org policy."
   type        = string
@@ -61,19 +56,10 @@ variable "project_trusted_data" {
   type        = string
 }
 
-variable "project_trusted_data_etl" {
-  description = "The trusted project for ingestion, processing, and de-identification of data"
+variable "bootstrap_notebooks_bucket_name" {
+  description = "bucket name holding bootstrap scripts for notebooks"
   type        = string
-}
-
-variable "parent_env" {
-  description = "Top level environment folder that will house the notebook"
-  type        = string
-}
-
-variable "bootstrap_env" {
-  description = "environment folder that has bootstrap resources"
-  type        = string
+  default     = "notebook_bootstrap"
 }
 
 variable "project_trusted_kms" {
@@ -93,35 +79,32 @@ variable "trusted_private_subnet" {
 
 variable "caip_users" {
   description = "The list of users that need an AI Platform Notebook."
+  type        = list(string)
 }
 
 variable "confid_users" {
-  description = "The list of confid users."
+  description = "The list of groups allowed to access PII data."
+  type        = list(string)
 }
 
 variable "trusted_scientists" {
   description = "The list of trusted users."
+  type        = list(string)
 }
 
-variable "billing_account" {
-  description = "Billing account required if creating structure. Otherwise, optional"
-  type        = string
-  default     = ""
-}
-
-variable "terraform_sa_email" {
-  description = "String for the email of the Terraform Service Account"
-  type        = string
-}
-
-variable "data_key_name" {
-  description = "Data key used to protect PII data"
+variable "notebook_key_name" {
+  description = "HSM key used to protect PII data in Notebooks."
   type        = string
   default     = "trusted-data-key"
 }
 
-variable "data_etl_key_name" {
-  description = "Ephemeral key used to protect data while being transformed"
+variable "dataset_id" {
+  description = "BigQuery dataset ID with PII data that your scientists need to access from their Notebook"
   type        = string
-  default     = "trusted-data-etl-key"
+}
+
+variable "notebook_name_prefix" {
+  description = "Prefix for notebooks indicating in higher trusted environment."
+  type        = string
+  default     = "trusted-sample"
 }

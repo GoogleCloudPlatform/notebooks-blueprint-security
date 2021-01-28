@@ -30,7 +30,7 @@ module "external_ip_policy" {
   source      = "terraform-google-modules/org-policy/google"
   constraint  = "compute.vmExternalIpAccess"
   policy_for  = "folder"
-  folder_id   = var.folder_trusted
+  folder_id   = local.folder_trusted
   policy_type = "list"
   enforce     = true
 }
@@ -38,7 +38,7 @@ module "external_ip_policy" {
 module "network_policy" {
   source      = "terraform-google-modules/org-policy/google"
   policy_for  = "folder"
-  folder_id   = var.folder_trusted
+  folder_id   = local.folder_trusted
   constraint  = "compute.skipDefaultNetworkCreation"
   policy_type = "boolean"
   enforce     = true
@@ -47,7 +47,7 @@ module "network_policy" {
 module "serial_port_access_policy" {
   source      = "terraform-google-modules/org-policy/google"
   policy_for  = "folder"
-  folder_id   = var.folder_trusted
+  folder_id   = local.folder_trusted
   constraint  = "compute.disableSerialPortAccess"
   policy_type = "boolean"
   enforce     = true
@@ -56,7 +56,7 @@ module "serial_port_access_policy" {
 module "serial_port_logging_policy" {
   source      = "terraform-google-modules/org-policy/google"
   policy_for  = "folder"
-  folder_id   = var.folder_trusted
+  folder_id   = local.folder_trusted
   constraint  = "compute.disableSerialPortLogging"
   policy_type = "boolean"
   enforce     = true
@@ -65,7 +65,7 @@ module "serial_port_logging_policy" {
 module "ssh_policy" {
   source      = "terraform-google-modules/org-policy/google"
   policy_for  = "folder"
-  folder_id   = var.folder_trusted
+  folder_id   = local.folder_trusted
   constraint  = "compute.requireOsLogin"
   policy_type = "boolean"
   enforce     = true
@@ -75,7 +75,7 @@ module "protocol_forwarding_creation" {
   source            = "terraform-google-modules/org-policy/google"
   constraint        = "compute.restrictProtocolForwardingCreationForTypes"
   policy_for        = "folder"
-  folder_id         = var.folder_trusted
+  folder_id         = local.folder_trusted
   policy_type       = "list"
   allow             = ["is:INTERNAL"]
   allow_list_length = 1
@@ -85,8 +85,8 @@ module "vpc_subnet_policy" {
   source            = "terraform-google-modules/org-policy/google"
   constraint        = "compute.restrictSharedVpcSubnetworks"
   policy_for        = "folder"
-  folder_id         = var.folder_trusted
+  folder_id         = local.folder_trusted
   policy_type       = "list"
-  allow             = var.vpc_subnets_projects_allowed
+  allow             = ["under:projects/${split("/", var.trusted_private_subnet)[1]}"]
   allow_list_length = 1
 }

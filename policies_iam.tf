@@ -28,7 +28,7 @@
 # TODO expose this at the top level
 # TODO debug how to only allow the company's domain
 #resource "google_folder_organization_policy" "domain_policy" {
-#  folder     = var.folder_trusted
+#  folder     = local.folder_trusted
 #  constraint = "iam.allowedPolicyMemberDomains"
 #
 #  list_policy {
@@ -41,16 +41,18 @@
 module "service_account_policy" {
   source      = "terraform-google-modules/org-policy/google"
   policy_for  = "folder"
-  folder_id   = var.folder_trusted
+  folder_id   = local.folder_trusted
   constraint  = "iam.disableServiceAccountCreation"
   policy_type = "boolean"
   enforce     = true
+
+  depends_on  = [google_service_account.sa_p_notebook_compute]
 }
 
 module "service_account_key_policy" {
   source      = "terraform-google-modules/org-policy/google"
   policy_for  = "folder"
-  folder_id   = var.folder_trusted
+  folder_id   = local.folder_trusted
   constraint  = "iam.disableServiceAccountKeyCreation"
   policy_type = "boolean"
   enforce     = true
@@ -59,7 +61,7 @@ module "service_account_key_policy" {
 module "iam_grant_policy" {
   source      = "terraform-google-modules/org-policy/google"
   policy_for  = "folder"
-  folder_id   = var.folder_trusted
+  folder_id   = local.folder_trusted
   constraint  = "iam.automaticIamGrantsForDefaultServiceAccounts"
   policy_type = "boolean"
   enforce     = true

@@ -14,20 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-# externalized for notebook module and testing
-output "bkt_p_bootstrap_notebook" {
-  description = "bucket containing the boot scripts for notebooks"
-  value       = module.bootstrap.bucket
-}
-
-# externalized for testing
-output "bq_p_dataset_obj" {
-  description = "object reference for bigquery dataset"
-  value       = module.bigquery.bigquery_dataset
-}
-
-# externalized for testing
-output "bq_p_table_obj" {
-  description = "object reference for bigquery table"
-  value       = module.bigquery.bigquery_tables
+terraform {
+  required_version = ">= 0.12"
 }

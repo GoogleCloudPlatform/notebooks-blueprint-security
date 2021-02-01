@@ -14,6 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-terraform {
-  required_version = ">= 0.13"
+# Configures the default project and zone for underlying Google Cloud API calls
+# >= 3.51.0 where notebook resources GA
+provider "google" {
+  version               = "~> 3.51.0"
+  user_project_override = true
+}
+
+provider "google-beta" {
+  version               = "~> 3.51.0"
+  user_project_override = true
 }

@@ -19,9 +19,11 @@ terraform {
 }
 
 provider "google" {
-  version = "~> 3.51.0"
+  version               = "~> 3.51.0"
+  user_project_override = true
 }
 
 provider "google-beta" {
-  version = "~> 3.51.0"
+  version               = "~> 3.51.0"
+  user_project_override = true
 }

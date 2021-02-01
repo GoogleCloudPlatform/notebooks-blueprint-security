@@ -57,6 +57,12 @@ You will also need to set a few environment variables:
 export TF_VAR_org_id="your_org_id"
 export TF_VAR_folder_id="your_folder_id"
 export TF_VAR_billing_account="your_billing_account_id"
+
+export TF_VAR_default_policy_id = ${TF_VAR_org_id}  # access policy only accepts org_id
+export TF_VAR_vpc_perimeter_ip_subnetworks = "your_subnet_for_vpc_perimeter"
+export TF_VAR_caip_users = '["scientist1@example.com", "scientist2@example.com"]'
+export TF_VAR_confid_users = '["group@example.com", "group2@example.com"]'
+export TF_VAR_trusted_scientists = '["user:scientist1@example.com", "user:scientist2@example.com"]'
 ```
 
 With these settings in place, you can prepare a test project using Docker:

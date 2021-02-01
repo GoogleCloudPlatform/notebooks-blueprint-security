@@ -12,11 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-kms_project_id = attribute('project_id')
-kms_region = attribute('region')
-kms_key_ring_name = attribute('key_ring_name')
-kms_higher_trust_data_key_name = attribute('data_key_name')
-kms_data_etl_key_name = attribute('etl_key_name')
+kms_project_id = attribute('kms_project_id')
+
+kms_zone = attribute('zone')
+kms_region = kms_zone.split(/-/)[0]
+
+kms_key_ring_name = attribute('notebook_key_ring_name')
+kms_higher_trust_data_key_name = attribute('notebook_key_name').split('/').last
 
 control 'gcp_kms' do
   title 'KMS module GCP resources'
@@ -34,21 +36,9 @@ control 'gcp_kms' do
     its('primary_state') { should eq "ENABLED" }
     its('purpose') { should eq "ENCRYPT_DECRYPT" }
 
-    # assume resource created witin 6 hrs
-    its('next_rotation_time') { should be > Time.now + 3888000 - 6*60*60 }
+    # assume resource created witin 24 hrs
+    its('next_rotation_time') { should be > Time.now + 3888000 - 24*60*60 }
     its('version_template.protection_level') { should eq "HSM"}
-  end
-
-  # greater than 10 days
-  describe google_kms_crypto_key(project: kms_project_id, location: kms_region, key_ring_name: kms_key_ring_name, name: kms_data_etl_key_name) do
-    it { should exist }
-    its('crypto_key_name') { should cmp kms_data_etl_key_name }
-    its('primary_state') { should eq "ENABLED" }
-    its('purpose') { should eq "ENCRYPT_DECRYPT" }
-
-    # assume resource created witin 6 hrs
-    its('next_rotation_time') { should be > Time.now + 864000 - 6*60*60}
-    its('version_template.protection_level') { should eq 'SOFTWARE'}
   end
 end
 

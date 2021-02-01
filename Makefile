@@ -18,7 +18,7 @@
 # Make will use bash instead of sh
 SHELL := /usr/bin/env bash
 
-DOCKER_TAG_VERSION_DEVELOPER_TOOLS := 0
+DOCKER_TAG_VERSION_DEVELOPER_TOOLS := 0.13
 DOCKER_IMAGE_DEVELOPER_TOOLS := cft/developer-tools
 REGISTRY_URL := gcr.io/cloud-foundation-cicd
 
@@ -26,7 +26,18 @@ REGISTRY_URL := gcr.io/cloud-foundation-cicd
 .PHONY: docker_run
 docker_run:
 	docker run --rm -it \
-		-e SERVICE_ACCOUNT_JSON \
+        -e SERVICE_ACCOUNT_JSON \
+        -e TF_VAR_org_id \
+        -e TF_VAR_folder_id \
+        -e TF_VAR_billing_account \
+        -e TF_VAR_project_trusted_analytics \
+        -e TF_VAR_project_trusted_data \
+        -e TF_VAR_project_trusted_kms \
+        -e TF_VAR_default_policy_id \
+        -e TF_VAR_vpc_perimeter_ip_subnetworks \
+        -e TF_VAR_caip_users \
+        -e TF_VAR_confid_users \
+        -e TF_VAR_trusted_scientists \
 		-v "$(CURDIR)":/workspace \
 		$(REGISTRY_URL)/${DOCKER_IMAGE_DEVELOPER_TOOLS}:${DOCKER_TAG_VERSION_DEVELOPER_TOOLS} \
 		/bin/bash
@@ -35,10 +46,13 @@ docker_run:
 .PHONY: docker_test_prepare
 docker_test_prepare:
 	docker run --rm -it \
-		-e SERVICE_ACCOUNT_JSON \
+		-e GOOGLE_OAUTH_ACCESS_TOKEN \
 		-e TF_VAR_org_id \
 		-e TF_VAR_folder_id \
 		-e TF_VAR_billing_account \
+		-e TF_VAR_project_trusted_analytics \
+		-e TF_VAR_project_trusted_data \
+		-e TF_VAR_project_trusted_kms \
 		-v "$(CURDIR)":/workspace \
 		$(REGISTRY_URL)/${DOCKER_IMAGE_DEVELOPER_TOOLS}:${DOCKER_TAG_VERSION_DEVELOPER_TOOLS} \
 		/usr/local/bin/execute_with_credentials.sh prepare_environment
@@ -47,10 +61,18 @@ docker_test_prepare:
 .PHONY: docker_test_cleanup
 docker_test_cleanup:
 	docker run --rm -it \
-		-e SERVICE_ACCOUNT_JSON \
-		-e TF_VAR_org_id \
-		-e TF_VAR_folder_id \
-		-e TF_VAR_billing_account \
+        -e SERVICE_ACCOUNT_JSON \
+        -e TF_VAR_org_id \
+        -e TF_VAR_folder_id \
+        -e TF_VAR_billing_account \
+        -e TF_VAR_project_trusted_analytics \
+        -e TF_VAR_project_trusted_data \
+        -e TF_VAR_project_trusted_kms \
+        -e TF_VAR_default_policy_id \
+        -e TF_VAR_vpc_perimeter_ip_subnetworks \
+        -e TF_VAR_caip_users \
+        -e TF_VAR_confid_users \
+        -e TF_VAR_trusted_scientists \
 		-v "$(CURDIR)":/workspace \
 		$(REGISTRY_URL)/${DOCKER_IMAGE_DEVELOPER_TOOLS}:${DOCKER_TAG_VERSION_DEVELOPER_TOOLS} \
 		/usr/local/bin/execute_with_credentials.sh cleanup_environment

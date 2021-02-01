@@ -98,11 +98,15 @@ Functional examples are included in the
 | vpc\_perimeter\_policy\_name | The perimeter policy's name. | `string` | `""` | yes |
 | vpc\_perimeter\_ip\_subnetworks | IP subnets allowed to access the higher trust perimeters. | `list(string)` | `[]` | yes |
 | vpc\_perimeter\_regions | 2 letter identifier for regions allowed for VPC access. A valid ISO 3166-1 alpha-2 code. | `list(string)` | `[]` | yes |
+| project\_trusted\_analytics | Project that holds Notebooks | `string` | `""` | yes |
+| project\_trusted\_data | Project that holds data used Notebook | `string` | `""` | yes |
 | project\_trusted\_kms | Project that holds KMS keys used to protect PII data for Notebooks | `string` | `""` | yes |
 | resource\_locations | Regions where resource can be provisioned | `list(string)` | `[]` | yes |
 | vpc\_subnets\_projects\_allowed | list of projects with allowed vpc subnets for the notebooks; defined with the under constraint format (e.g. ["under:projects/project_id1", "under:projects/project_id2"]) | `list(string)` | `[]` | yes |
 | notebook\_key\_name | name to use to create a KMS/HSM key that protects pii data | `string` | `""` | yes |
-| confid\_users | The list of groups with privileged users that can access PII data. | `list(string)` | `[]` | yes |
+| caip\_users | The list of users that need an AI Platform Notebook (list of emails). | `list(string)` | `[]` | yes |
+| trusted\_scientists | The list of trusted scientists (in the form of user:scientist1@example.com) | `list(string)` | `[]` | yes |
+| confid\_users | The list of groups with privileged users that can access PII data. (ex: group@example.com) | `list(string)` | `[]` | yes |
 | dataset\_id | BigQuery dataset ID with PII data that scientists need access | `string` | `""` | yes |
 | notebook\_name\_prefix | Prefix used in provisioning Notebooks in the higher trust boundary. | `string` | `"trusted-sample"` | no |
 
@@ -137,7 +141,7 @@ Organization Level
 - Service Usage Consumer: `roles/serviceusage.serviceUsageConsumer`
 
 Restricted Shared VPC Project (created in blueprint foundation)
-- Network Admin: `compute.networkAdmin``
+- Network Admin: `compute.networkAdmin`
 
 Analytics Project
 - Service Account Creator: `roles/iam.serviceAccountCreator`

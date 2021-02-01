@@ -15,24 +15,85 @@
  */
 
 locals {
-  int_required_roles = [
-    "roles/owner"
+  int_required_roles_folder = [
+    "roles/serviceusage.serviceUsageConsumer",
+    "roles/iam.serviceAccountCreator",
+    "roles/bigquery.jobUser",
+    "roles/bigquery.user",
+    "roles/bigquery.dataOwner",
+    "roles/iam.serviceAccountUser",
+    "roles/serviceusage.serviceUsageAdmin",
+    "roles/storage.admin",
   ]
+  int_required_roles_project_analytics = [
+    "roles/compute.admin",
+    "roles/notebooks.runner",
+    "roles/cloudkms.admin",
+  ]
+  int_required_roles_project_data = [
+    "roles/iam.roleAdmin",
+  ]
+  int_required_roles_project_kms = [
+    "roles/cloudkms.admin",
+    "roles/storage.objectCreator",
+  ]
+
+  int_required_roles_org = [
+    "roles/orgpolicy.policyAdmin",
+    "roles/accesscontextmanager.policyAdmin",
+    "roles/iam.securityAdmin",
+    "roles/serviceusage.serviceUsageConsumer",
+  ]
+
+
 }
 
 resource "google_service_account" "int_test" {
-  project      = module.project.project_id
-  account_id   = "ci-account"
-  display_name = "ci-account"
+  project      = var.project_trusted_analytics
+  account_id   = format("ci-account-%s", random_string.random_name.result)
+  display_name = format("ci-account-%s", random_string.random_name.result)
 }
 
-resource "google_project_iam_member" "int_test" {
-  count = length(local.int_required_roles)
+resource "google_organization_iam_member" "int_test_org" {
+  count = length(local.int_required_roles_org)
 
-  project = module.project.project_id
-  role    = local.int_required_roles[count.index]
+  org_id = var.org_id
+  role   = local.int_required_roles_org[count.index]
+  member = "serviceAccount:${google_service_account.int_test.email}"
+}
+
+resource "google_folder_iam_member" "int_test" {
+  count = length(local.int_required_roles_folder)
+
+  folder = local.folder_trusted
+  role   = local.int_required_roles_folder[count.index]
+  member = "serviceAccount:${google_service_account.int_test.email}"
+}
+
+resource "google_project_iam_member" "int_test_analytics" {
+  count = length(local.int_required_roles_project_analytics)
+
+  project = var.project_trusted_analytics
+  role    = local.int_required_roles_project_analytics[count.index]
   member  = "serviceAccount:${google_service_account.int_test.email}"
 }
+
+resource "google_project_iam_member" "int_test_data" {
+  count = length(local.int_required_roles_project_data)
+
+  project = var.project_trusted_data
+  role    = local.int_required_roles_project_data[count.index]
+  member  = "serviceAccount:${google_service_account.int_test.email}"
+}
+
+resource "google_project_iam_member" "int_test_kms" {
+  count = length(local.int_required_roles_project_kms)
+
+  project = var.project_trusted_kms
+  role    = local.int_required_roles_project_kms[count.index]
+  member  = "serviceAccount:${google_service_account.int_test.email}"
+}
+
 
 resource "google_service_account_key" "int_test" {
   service_account_id = google_service_account.int_test.id

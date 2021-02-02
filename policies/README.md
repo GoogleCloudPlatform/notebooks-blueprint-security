@@ -1,4 +1,5 @@
-# Policy Contraints
+# Policy Constraints
+Use [config validator](https://github.com/forseti-security/policy-library/blob/master/docs/user_guide.md) to enforce policies.
 
 ## Before you being
 

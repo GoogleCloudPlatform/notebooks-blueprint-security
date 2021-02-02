@@ -2,7 +2,7 @@
 
 This example illustrates how to use the `notebooks-blueprint-security` blueprint.
 
-It requires a BigQuery table with sample PII data.  An example is provisioned as part of the testing
+It requires a BigQuery table with sample PII data.  An example is provisioned as part of the testing specified in `/test/setup`
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Inputs

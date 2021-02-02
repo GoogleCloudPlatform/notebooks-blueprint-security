@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-
-
 locals {
   bootstrap_bkt_name = format("restricted-bootstrap-nbk-%s", random_string.random_name.result)
   data_key_name      = format("sample_data_key_name_%s", random_string.random_name.result)
@@ -26,12 +24,16 @@ locals {
 
 module "bq_data_key" {
   source               = "terraform-google-modules/kms/google"
+  version              = "~> 1.2"
+
   project_id           = var.project_trusted_kms
   location             = local.region
   keyring              = format("trusted-bq-keyring-%s", random_string.random_name.result)
   keys                 = [local.data_key_name]
   key_protection_level = "HSM"
   key_rotation_period  = "3888000s" # 45 days
+
+  depends_on = [module.project_services_kms]
 }
 
 #=====================================================================
@@ -52,7 +54,6 @@ data "google_storage_project_service_account" "gcs_default_account_bootstrap" {
   project = var.project_trusted_kms
 }
 
-
 resource "google_kms_crypto_key_iam_binding" "iam_p_bq_sa_confid" {
   crypto_key_id = module.bq_data_key.keys[local.data_key_name]
   role          = "roles/cloudkms.cryptoKeyEncrypterDecrypter"
@@ -66,6 +67,8 @@ resource "google_kms_crypto_key_iam_binding" "iam_p_bq_sa_confid" {
 
 module "bigquery" {
   source                     = "terraform-google-modules/bigquery/google"
+  version                    = "~> 4.4"
+
   dataset_id                 = local.dataset_name
   dataset_name               = local.dataset_name
   description                = "Dataset holds tables with PII"
@@ -86,7 +89,11 @@ module "bigquery" {
     }
   ]
 
-  depends_on = [google_kms_crypto_key_iam_binding.iam_p_bq_sa_confid]
+  depends_on = [
+    google_kms_crypto_key_iam_binding.iam_p_bq_sa_confid, 
+    module.project_services_data,
+    module.project_services_analytics
+  ]
 }
 
 resource "random_string" "tmp_name" {
@@ -94,6 +101,7 @@ resource "random_string" "tmp_name" {
   min_lower = 4
   special   = false
 }
+
 # Sample data is created from a public compressed csv file.  To unload it into BQ, the happens:
 # 1. create a tmp bucket
 # 2. unzip the sample csv file and upload it as an object into the tmp bucket
@@ -115,14 +123,8 @@ resource "null_resource" "download_sample_cc_into_gcs" {
     curl -X GET -o "sample_data_scripts.tar.gz" "http://storage.googleapis.com/dataflow-dlp-solution-sample-data/sample_data_scripts.tar.gz"
     tar -zxvf sample_data_scripts.tar.gz
     rm sample_data_scripts.tar.gz
-    #source /usr/local/bin/task_helper_functions.sh
-    #local tmpfile
-    # shellcheck disable=SC2119
     tmpfile=$(mktemp)
     echo ${google_service_account_key.int_test.private_key} | base64 --decode > $tmpfile
-    #export GOOGLE_APPLICATION_CREDENTIALS=$tmpfile
-    # Login to GCP for using bq-script and gsutil
-    #gcloud auth activate-service-account --key-file="$GOOGLE_APPLICATION_CREDENTIALS"
     gcloud auth activate-service-account --key-file=$tmpfile
     gsutil cp solution-test/${local.sample_csv_name}  ${module.tmp_data.bucket.url}
     rm -fr solution-test/

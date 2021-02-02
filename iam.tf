@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 Google LLC
+ * Copyright 2021 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,8 +35,6 @@ resource "google_service_account" "sa_p_notebook_compute" {
 #       - run BQ jobs and queries
 #   - (optional) Storage: roles/storage.objectAdmin
 #       - create and destroy temporary buckets to manage state
-#   - Pub/Sub: @TODO
-#       - receive de-id values for analysis
 # Notebooks: roles/notebooks.admin
 resource "google_project_iam_member" "notebook_instance_compute" {
   project = var.project_trusted_analytics
@@ -64,26 +62,28 @@ resource "google_project_iam_member" "notebook_instance_caip" {
 
 # create custom role from dataViewer that doesn't allow export
 module "role_restricted_data_viewer" {
-  source               = "terraform-google-modules/iam/google//modules/custom_role_iam"
-  target_level         = "project"
-  target_id            = var.project_trusted_data
-  role_id              = format("blueprint_restricted_data_viewer_%s",random_string.random_name.result)
-  title                = format("Blueprint restricted Data Viewer %s", random_string.random_name.result)
-  description          = "BQ Data Viewer role with export removed"
-  base_roles           = ["roles/bigquery.dataViewer"]
-  permissions          = []
+  source  = "terraform-google-modules/iam/google//modules/custom_role_iam"
+  version = "~> 6.4"
+
+  target_level = "project"
+  target_id    = var.project_trusted_data
+  role_id      = format("blueprint_restricted_data_viewer_%s", random_string.random_name.result)
+  title        = format("Blueprint restricted Data Viewer %s", random_string.random_name.result)
+  description  = "BQ Data Viewer role with export removed"
+  base_roles   = ["roles/bigquery.dataViewer"]
+  permissions  = []
   excluded_permissions = [
-    "bigquery.tables.export", 
+    "bigquery.tables.export",
     "bigquery.models.export",
-    "resourcemanager.projects.list", 
+    "resourcemanager.projects.list",
   ]
-  members              = []
+  members = []
 }
 
 # IAM - add group binding for scientists.  the notebook's VM SA will already have access
 resource "google_bigquery_dataset_iam_binding" "iam_bq_confid_viewer" {
   dataset_id = var.dataset_id
-  role       = format("projects/%s/roles/%s",var.project_trusted_data,module.role_restricted_data_viewer.custom_role_id)
+  role       = format("projects/%s/roles/%s", var.project_trusted_data, module.role_restricted_data_viewer.custom_role_id)
   project    = var.project_trusted_data
 
   members = concat(var.confid_users, ["serviceAccount:${google_service_account.sa_p_notebook_compute.email}"])

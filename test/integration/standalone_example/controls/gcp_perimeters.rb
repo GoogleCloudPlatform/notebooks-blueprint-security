@@ -12,12 +12,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-org_id = attribute('org')
-vpc_restricted_services = attribute('restricted_services')
-vpc_policy_name = attribute('policy_name')
+vpc_restricted_services = [
+    "compute.googleapis.com",
+    "storage.googleapis.com",
+    "notebooks.googleapis.com",
+    "bigquery.googleapis.com",
+    "datacatalog.googleapis.com",
+    "dataflow.googleapis.com",
+    "dlp.googleapis.com",
+    "cloudkms.googleapis.com",
+    "secretmanager.googleapis.com",
+    "cloudasset.googleapis.com",
+    "cloudfunctions.googleapis.com",
+    "pubsub.googleapis.com",
+    "monitoring.googleapis.com",
+    "logging.googleapis.com"
+  ]
+vpc_policy_name = attribute('default_policy_id')
 vpc_access_level_name = attribute('access_level_name')
-vpc_perimeter_name = attribute('perimeter_title')
-vpc_resources_within_perimieter = attribute('resources_protected')
+vpc_perimeter_name = attribute('perimeter_name')
+vpc_resources_within_perimieter = attribute('vpc_perimeter_protected_resources')
 
 puts vpc_resources_within_perimieter
 

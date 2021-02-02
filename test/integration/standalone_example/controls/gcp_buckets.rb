@@ -12,18 +12,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-folder = attribute('trusted_folder')
-included_regions =  attribute('included_regions')
+gcs_bucket_notebooks = attribute('bkt_notebooks_name')
+gcs_bucket_zone = attribute('zone').upcase
+gcs_bucket_region = gcs_bucket_zone.split(/-/)[0]
+gcs_key_notebooks = attribute('notebook_key_name')
+gcs_bucket_notebooks_project_name = attribute('bkt_notebooks_project_name')
 
-# constraints to validate
-resource_location = 'constraints/gcp.resourceLocations'
+control 'gcp_buckets' do
+  title 'Data module GCP resources for Cloud Storage'
 
-control 'gcp_policy' do
-  title 'OrgPolicies module constraint tests for gcp constraints'
-
-  describe google_organization_policy(organization_name: folder, constraint: resource_location ) do
+  describe google_storage_bucket(name: gcs_bucket_notebooks) do
     it { should exist }
-    its('constraint') { should eq resource_location }
-    its('list_policy.allowed_values') { should include included_regions }
+    its('storage_class') { should eq 'STANDARD' }
+    its('location') { should eq gcs_bucket_region }
+    its('encryption.default_kms_key_name') { should eq gcs_key_notebooks }
   end
+
 end
+

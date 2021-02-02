@@ -37,7 +37,7 @@ control 'gcp_notebooks' do
       its('metadata_keys') { should include 'enable-oslogin' }
       its('metadata_values') { should include 'TRUE' }
       its('metadata_keys') { should include 'post-startup-script' }
-      its('metadata_values') { should include script_name[0] }
+      its('metadata_values') { should include script_name }
       its('metadata_keys') { should include 'serial-port-enable' }
       its('metadata_values') { should include 'FALSE' }
       its('metadata_keys') { should include 'block-project-ssh-keys' }

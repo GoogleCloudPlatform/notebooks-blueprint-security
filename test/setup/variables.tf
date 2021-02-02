@@ -24,3 +24,15 @@ variable "folder_id" {
 variable "billing_account" {
   description = "The billing account id associated with the project, e.g. XXXXXX-YYYYYY-ZZZZZZ"
 }
+
+variable "project_trusted_analytics" {
+  description = "project id created by user for Notebooks"
+}
+
+variable "project_trusted_data" {
+  description = "project id created by user for data"
+}
+
+variable "project_trusted_kms" {
+  description = "project id created by user for keys"
+}

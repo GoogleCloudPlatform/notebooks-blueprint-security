@@ -14,27 +14,57 @@
 # limitations under the License.
 #
 
-name: perimeters
+name: gcp_notebooks
 depends:
   - name: inspec-gcp
     git: https://github.com/inspec/inspec-gcp.git
     tag: v1.7.0
 attributes:
-  - name: org
+  - name: zone
     required: true
     type: string
-  - name: policy_name
+  - name: folder_trusted
     required: true
     type: string
-  - name: restricted_services
+  - name: project_id
+    required: true
+    type: string
+  - name: bkt_notebooks_project_id
+    required: true
+    type: string 
+  - name: notebook_instances
     required: true
     type: array
+  - name: caip_sa_email
+    required: true
+    type: string
+  - name: script_name
+    required: true
+    type: string
+  - name: notebook_key_name
+    required: true
+    type: string
+  - name: bkt_notebooks_name
+    required: true
+    type: string 
+  - name: notebook_key_ring_name
+    required: true
+    type: string
+  - name: kms_project_id
+    required: true
+    type: string    
+  - name: resource_locations
+    required: true
+    type: array    
+  - name: vpc_perimeter_protected_resources
+    required: true
+    type: array    
+  - name: default_policy_id
+    required: true
+    type: string    
+  - name: perimeter_name
+    required: true
+    type: string    
   - name: access_level_name
     required: true
-    type: string
-  - name: perimeter_title
-    required: true
-    type: string
-  - name: resources_protected
-    required: true
-    type: array
+    type: string    

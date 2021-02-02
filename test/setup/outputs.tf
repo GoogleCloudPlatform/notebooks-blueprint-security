@@ -14,11 +14,36 @@
  * limitations under the License.
  */
 
-output "project_id" {
-  value = module.project.project_id
-}
+# output "project_analytics" {
+#   value = module.project_analytics.project_id
+# }
+
+# output "project_data" {
+#   value = module.project_data.project_id
+# }
+
+# output "project_kms" {
+#   value = module.project_kms.project_id
+# }
 
 output "sa_key" {
   value     = google_service_account_key.int_test.private_key
   sensitive = true
+}
+
+output "example_zone" {
+  value = local.zone
+}
+
+output "example_vpc" {
+  value = regex("(project.*)", module.example_vpc.network_self_link)[0]
+}
+
+output "example_vpc_subnet" {
+  value = module.example_vpc.subnets["${local.subnet_region}/${local.subnet_name}"].id
+}
+
+output dataset_id {
+  description = "BigQuery dataset id"
+  value       = module.bigquery.bigquery_dataset.dataset_id
 }

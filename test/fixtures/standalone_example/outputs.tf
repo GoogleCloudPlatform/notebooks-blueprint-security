@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 Google LLC
+ * Copyright 2020 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,64 +14,82 @@
  * limitations under the License.
  */
 
+output "project_id" {
+  description = "project holding notebooks"
+  value       = var.project_trusted_analytics
+}
+
+output "kms_project_id" {
+  description = "project holding keys"
+  value       = var.project_trusted_kms
+}
+
+output "zone" {
+  description = "zone where notebooks exist"
+  value       = var.zone
+}
 
 output "caip_sa_email" {
   description = "email of the SA used by CAIP; should not be a default SA"
-  value       = module.notebook.caip_sa_email
+  value       = module.standalone_example.caip_sa_email
 }
 
 output "notebook_instances" {
   description = "list of notebooks created (vm names)"
-  value       = module.notebook.notebook_instances
+  value       = module.standalone_example.notebook_instances
 }
 
 output "script_name" {
   description = "name of the post startup script installed"
-  value       = module.notebook.script_name
+  value       = module.standalone_example.script_name
 }
 
 output "notebook_key_name" {
-  description = "name of the post startup script installed"
-  value       = module.notebook.notebook_key_name
+  description = "name of the key used by notebook"
+  value       = module.standalone_example.notebook_key_name
+}
+
+output "bkt_notebooks_project_id" {
+  description = "name of the project that holds the bootstrap bucket"
+  value       = var.project_trusted_kms
 }
 
 output "bkt_notebooks_name" {
-  description = "name of bootstrap bucket"
-  value       = module.notebook.bkt_notebooks_name
+  description = "name of the bootstrap bucket"
+  value       = module.standalone_example.bkt_notebooks_name
 }
 
 output "notebook_key_ring_name" {
   description = "name of keyring"
-  value       = module.notebook.notebook_key_ring_name
+  value       = module.standalone_example.notebook_key_ring_name
 }
 
 output "resource_locations" {
   description = "name of regions expected in org policy"
-  value       = local.resource_locations
+  value       =  module.standalone_example.resource_locations
 }
 
 output "folder_trusted" {
   description = "folder that holds all the trusted projects and constraints"
-  value       = module.notebook.folder_trusted
+  value       = module.standalone_example.folder_trusted
 }
 
 output "vpc_perimeter_protected_resources" {
   description = "list of projects included in the VPC-Sc perimeter"
-  value       = module.notebook.vpc_perimeter_resource_protected
+  value       =  module.standalone_example.vpc_perimeter_protected_resources
 }
 
 output "default_policy_id" {
-  description = "access level policy id (i.e organization id)"
-  value       = var.default_policy_id
+  description = "access level policy id. (i.e organization id)"
+  value       =  var.default_policy_id
 }
 
 output "perimeter_name" {
   description = "perimeter name used to protect the notebooks"
-  value       = module.notebook.perimeter_name
+  value       =  module.standalone_example.perimeter_name
 }
 
 output "access_level_name" {
   description = "access level policy name"
-  value       = module.notebook.access_level_name
+  value       =  module.standalone_example.access_level_name
 }
-

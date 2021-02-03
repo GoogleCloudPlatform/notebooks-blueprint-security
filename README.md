@@ -2,6 +2,8 @@
 
 This repository provides an opinionated way to set up AI Platform Notebook in a secure way using Terraform.
 
+**This is not an officially supported Google product**
+
 ## Reference Architecture
 ![Reference Architecture](diagrams/notebook_blueprint_arch.png)	   	
 

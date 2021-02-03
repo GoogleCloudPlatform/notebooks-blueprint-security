@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 Google LLC
+ * Copyright 2021 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,40 +17,28 @@
 # Organizational Policies (applied at the folder level)
 #
 # These are the minimum policies
-# - No outside domains: constraints/iam.allowedPolicyMemberDomains
 # - No default SA: constraints/iam.disableServiceAccountCreation
 # - No SA Key creation: constraints/iam.disableServiceAccountKeyCreation
 # - No default grants: constraints/iam.automaticIamGrantsForDefaultServiceAccounts
 #
 # (Optional policies)
-# - None
-
-# TODO expose this at the top level
-# TODO debug how to only allow the company's domain
-#resource "google_folder_organization_policy" "domain_policy" {
-#  folder     = local.folder_trusted
-#  constraint = "iam.allowedPolicyMemberDomains"
-#
-#  list_policy {
-#    allow {
-#      values = ["google.com"]
-#    }
-#  }
-#}
+# - No outside domains: constraints/iam.allowedPolicyMemberDomains
 
 module "service_account_policy" {
   source      = "terraform-google-modules/org-policy/google"
+  version     = "~> 4.0"
   policy_for  = "folder"
   folder_id   = local.folder_trusted
   constraint  = "iam.disableServiceAccountCreation"
   policy_type = "boolean"
   enforce     = true
 
-  depends_on  = [google_service_account.sa_p_notebook_compute]
+  depends_on = [google_service_account.sa_p_notebook_compute]
 }
 
 module "service_account_key_policy" {
   source      = "terraform-google-modules/org-policy/google"
+  version     = "~> 4.0"
   policy_for  = "folder"
   folder_id   = local.folder_trusted
   constraint  = "iam.disableServiceAccountKeyCreation"
@@ -60,6 +48,7 @@ module "service_account_key_policy" {
 
 module "iam_grant_policy" {
   source      = "terraform-google-modules/org-policy/google"
+  version     = "~> 4.0"
   policy_for  = "folder"
   folder_id   = local.folder_trusted
   constraint  = "iam.automaticIamGrantsForDefaultServiceAccounts"

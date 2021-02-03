@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 Google LLC
+ * Copyright 2021 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,25 +14,31 @@
  * limitations under the License.
  */
 variable "org_id" {
-  description = "The numeric organization id"
+  description = "The numeric organization id."
 }
 
 variable "folder_id" {
-  description = "The folder to deploy in"
+  description = "The folder to deploy in."
 }
 
 variable "billing_account" {
-  description = "The billing account id associated with the project, e.g. XXXXXX-YYYYYY-ZZZZZZ"
+  description = "The billing account id associated with the project, e.g. XXXXXX-YYYYYY-ZZZZZZ."
 }
 
 variable "project_trusted_analytics" {
-  description = "project id created by user for Notebooks"
+  description = "Project id created by user for Notebooks."
 }
 
 variable "project_trusted_data" {
-  description = "project id created by user for data"
+  description = "Project id created by user for data."
 }
 
 variable "project_trusted_kms" {
-  description = "project id created by user for keys"
+  description = "Project id created by user for keys."
+}
+
+variable "vpc_subnet_range" {
+  description = "private CIDR range for the test subnet."
+  type    = string
+  default = "10.10.20.0/24"
 }

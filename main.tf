@@ -1,5 +1,5 @@
 /*
-Copyright 2020 Google LLC
+Copyright 2021 Google LLC
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-# append all resource names to help with testing
+# Append all resource names to help with testing
 # buckets must be all lowercase for buckets
 resource "random_string" "random_name" {
   length    = 4
@@ -28,10 +28,12 @@ locals {
   bootstrap_bkt_name = format("restricted-%s-%s", var.bootstrap_notebooks_bucket_name, random_string.random_name.result)
 }
 
-# The key ring holds data keys that encrypt any PII data at rest such as BQ, GCS, or boot images
-# Initial key is HSM backed key rotates every 45 days
+# The key ring holds data keys that encrypt any PII data at rest such as BQ, GCS, or boot images.
+# Initial key is HSM backed key rotates every 45 days.
 module "kms_data" {
-  source               = "terraform-google-modules/kms/google"
+  source  = "terraform-google-modules/kms/google"
+  version = "~> 1.2"
+
   project_id           = var.project_trusted_kms
   location             = local.region
   keyring              = format("trusted-data-keyring-%s", random_string.random_name.result)
@@ -41,7 +43,9 @@ module "kms_data" {
 }
 
 module "bootstrap" {
-  source        = "terraform-google-modules/cloud-storage/google//modules/simple_bucket"
+  source  = "terraform-google-modules/cloud-storage/google//modules/simple_bucket"
+  version = "~> 1.7"
+
   project_id    = var.project_trusted_kms
   name          = local.bootstrap_bkt_name
   location      = local.region
@@ -51,7 +55,7 @@ module "bootstrap" {
   }
 }
 
-# IAM for the CAIP service account to read the post startup script.
+# IAM for the AI Platform user service account to read the post startup script.
 resource "google_storage_bucket_iam_member" "member" {
   bucket = module.bootstrap.bucket.name
   role   = "roles/storage.objectViewer"
@@ -64,7 +68,7 @@ resource "google_storage_bucket_object" "postscript" {
   bucket = module.bootstrap.bucket.name
 }
 
-# IAM policy for each Data Scientist
+# IAM policy for each user (ie. data scientist)
 resource "google_project_iam_member" "notebook_caip_user_iam" {
   project  = var.project_trusted_analytics
   role     = "roles/notebooks.viewer"
@@ -74,7 +78,7 @@ resource "google_project_iam_member" "notebook_caip_user_iam" {
 }
 
 # Creates a trusted notebook per relevant user that has file
-# download disabled. Although some values are hardcoded, you can
+# download disabled. Although some values are hard-coded, you can
 # customize them using variables.
 resource "google_notebooks_instance" "caip_nbk_p_trusted" {
   provider        = google-beta
@@ -149,7 +153,9 @@ resource "google_notebooks_instance" "caip_nbk_p_trusted" {
 }
 
 module "access_level_members_higher_trust" {
-  source         = "terraform-google-modules/vpc-service-controls/google//modules/access_level"
+  source  = "terraform-google-modules/vpc-service-controls/google//modules/access_level"
+  version = "~> 2.0"
+
   policy         = var.default_policy_id
   name           = format("higher_trust_notebooks_members_%s", random_string.random_name.result)
   members        = var.trusted_scientists
@@ -175,15 +181,16 @@ data "google_project" "trusted_kms" {
 }
 
 module "regular_service_perimeter_higher_trust" {
-  source         = "terraform-google-modules/vpc-service-controls/google//modules/regular_service_perimeter"
+  source  = "terraform-google-modules/vpc-service-controls/google//modules/regular_service_perimeter"
+  version = "~> 2.0"
+
   policy         = var.default_policy_id
   perimeter_name = format("higher_trust_notebooks_%s", random_string.random_name.result)
   description    = "Perimeter shielding Notebook projects with PII data"
   resources = [
-# TODO add in
-    # "${data.google_project.trusted_data.number}",
-    # "${data.google_project.trusted_analytics.number}",
-    # "${data.google_project.trusted_kms.number}",
+    "${data.google_project.trusted_data.number}",
+    "${data.google_project.trusted_analytics.number}",
+    "${data.google_project.trusted_kms.number}",
   ]
   access_levels = [module.access_level_members_higher_trust.name]
   restricted_services = [

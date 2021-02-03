@@ -27,6 +27,7 @@ echo "export TF_VAR_trusted_private_subnet='${example_vpc_subnet}'" >> ../source
 example_dataset_id=$(terraform output dataset_id)
 echo "export TF_VAR_dataset_id='${example_dataset_id}'" >> ../source.sh
 
+# TODO use token when https://github.com/inspec/inspec-gcp/issues/282 is added
 sa_json=$(terraform output sa_key)
 # shellcheck disable=SC2086
 echo "export SERVICE_ACCOUNT_JSON='$(echo $sa_json | base64 --decode)'" >> ../source.sh

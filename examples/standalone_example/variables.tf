@@ -15,7 +15,7 @@
  */
 
 variable "vpc_perimeter_ip_subnetworks" {
-  description = "IP subnets for perimeters"
+  description = "IP subnets for perimeters."
   type        = list(string)
 }
 
@@ -30,22 +30,22 @@ variable "project_trusted_analytics" {
 }
 
 variable "project_trusted_data" {
-  description = "The trusted project for hosting all PII data"
+  description = "The trusted project for data used by notebooks."
   type        = string
 }
 
 variable "project_trusted_kms" {
-  description = "Top level trusted environment folder that will house the encryption keys"
+  description = "Top trusted project for encryption keys."
   type        = string
 }
 
 variable "trusted_private_network" {
-  description = "network for Notebooks.  Should be a restricted private VPC."
+  description = "Network for Notebooks.  Should be a restricted private VPC."
   type        = string
 }
 
 variable "trusted_private_subnet" {
-  description = "subnet for Notebooks.  Should be part of a restricted private network"
+  description = "Subnet with no external IP for Notebooks.  Should be part of a restricted private network."
   type        = string
 }
 
@@ -65,12 +65,12 @@ variable "trusted_scientists" {
 }
 
 variable "dataset_id" {
-  description = "The BigQuery data for Notebooks"
+  description = "The BigQuery data for notebooks."
   type        = string
 
 }
 
 variable "zone" {
-  description = "The zone in which to create the secured notebook. Must match the region"
+  description = "The zone in which to create the secured notebook. Must match the region."
   type        = string
 }

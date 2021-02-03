@@ -29,10 +29,12 @@ module "example_vpc" {
   subnets = [
     {
       subnet_name           = local.subnet_name
-      subnet_ip             = "10.10.20.0/24"
+      subnet_ip             = var.vpc_subnet_range
       subnet_region         = local.subnet_region
       subnet_private_access = "true"
       description           = "example subnet for integration tests"
     },
   ]
+
+  depends_on = [module.project_services_analytics]
 }

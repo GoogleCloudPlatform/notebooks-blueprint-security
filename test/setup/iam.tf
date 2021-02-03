@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 Google LLC
+ * Copyright 2021 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,21 +18,24 @@ locals {
   int_required_roles_folder = [
     "roles/serviceusage.serviceUsageConsumer",
     "roles/iam.serviceAccountCreator",
-    "roles/bigquery.jobUser",
-    "roles/bigquery.user",
-    "roles/bigquery.dataOwner",
     "roles/iam.serviceAccountUser",
     "roles/serviceusage.serviceUsageAdmin",
     "roles/storage.admin",
   ]
+
   int_required_roles_project_analytics = [
     "roles/compute.admin",
     "roles/notebooks.runner",
     "roles/cloudkms.admin",
   ]
+
   int_required_roles_project_data = [
     "roles/iam.roleAdmin",
+    "roles/bigquery.jobUser",
+    "roles/bigquery.user",
+    "roles/bigquery.dataOwner",
   ]
+
   int_required_roles_project_kms = [
     "roles/cloudkms.admin",
     "roles/storage.objectCreator",
@@ -93,7 +96,6 @@ resource "google_project_iam_member" "int_test_kms" {
   role    = local.int_required_roles_project_kms[count.index]
   member  = "serviceAccount:${google_service_account.int_test.email}"
 }
-
 
 resource "google_service_account_key" "int_test" {
   service_account_id = google_service_account.int_test.id

@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 Google LLC
+ * Copyright 2021 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,10 +24,13 @@
 # - Require OS login: constraints/compute.requireOsLogin
 # - Restrict forwarding to internal only: compute.restrictProtocolForwardingCreationForTypes"
 # - Restrict Shared VPC Subnets: constraints/compute.restrictSharedVpcSubnetworks
-# none
+#
+# (Optional policies)
+# - none
 
 module "external_ip_policy" {
   source      = "terraform-google-modules/org-policy/google"
+  version     = "~> 4.0"
   constraint  = "compute.vmExternalIpAccess"
   policy_for  = "folder"
   folder_id   = local.folder_trusted
@@ -37,6 +40,7 @@ module "external_ip_policy" {
 
 module "network_policy" {
   source      = "terraform-google-modules/org-policy/google"
+  version     = "~> 4.0"
   policy_for  = "folder"
   folder_id   = local.folder_trusted
   constraint  = "compute.skipDefaultNetworkCreation"
@@ -46,6 +50,7 @@ module "network_policy" {
 
 module "serial_port_access_policy" {
   source      = "terraform-google-modules/org-policy/google"
+  version     = "~> 4.0"
   policy_for  = "folder"
   folder_id   = local.folder_trusted
   constraint  = "compute.disableSerialPortAccess"
@@ -55,6 +60,7 @@ module "serial_port_access_policy" {
 
 module "serial_port_logging_policy" {
   source      = "terraform-google-modules/org-policy/google"
+  version     = "~> 4.0"
   policy_for  = "folder"
   folder_id   = local.folder_trusted
   constraint  = "compute.disableSerialPortLogging"
@@ -64,6 +70,7 @@ module "serial_port_logging_policy" {
 
 module "ssh_policy" {
   source      = "terraform-google-modules/org-policy/google"
+  version     = "~> 4.0"
   policy_for  = "folder"
   folder_id   = local.folder_trusted
   constraint  = "compute.requireOsLogin"
@@ -73,6 +80,7 @@ module "ssh_policy" {
 
 module "protocol_forwarding_creation" {
   source            = "terraform-google-modules/org-policy/google"
+  version           = "~> 4.0"
   constraint        = "compute.restrictProtocolForwardingCreationForTypes"
   policy_for        = "folder"
   folder_id         = local.folder_trusted
@@ -83,6 +91,7 @@ module "protocol_forwarding_creation" {
 
 module "vpc_subnet_policy" {
   source            = "terraform-google-modules/org-policy/google"
+  version           = "~> 4.0"
   constraint        = "compute.restrictSharedVpcSubnetworks"
   policy_for        = "folder"
   folder_id         = local.folder_trusted

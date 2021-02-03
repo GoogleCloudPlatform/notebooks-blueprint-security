@@ -2,9 +2,13 @@
 
 This repository provides an opinionated way to set up AI Platform Notebook in a secure way using Terraform.
 
+## Reference Architecture
+![Reference Architecture](diagrams/notebook_blueprint_arch.png)	   	
+
+
 The resources that this module will create are:
 
-- One AI Platform Notebook per data scientist
+- One AI Platform Notebook per Notebook user
 - Service Account for Notebooks
 - an HSM key used for Customer Managed Encryption Keys (CMEK) in each Notebook
 - Custom Role to restrict exporting data
@@ -34,7 +38,24 @@ Basic usage of this module is as follows:
 module "notebooks_blueprint_security" {
   source  = "GoogleCloudPlatform/notebooks-blueprint-security/google"
 
-  // TBA TODO once complete refactoring
+  vpc_perimeter_regions           = ["US", "DE"]
+  vpc_perimeter_policy_name       = "higher_trust_perimeter_policy"
+  vpc_perimeter_ip_subnetworks    = ["NETWORK_CIDR"]  # allowed to access VPC-SC perimeters
+  zone                            = "us-central1-a"
+  resource_locations              = ["in:us-locations", "in:eu-locations"]
+  notebook_key_name               = "trusted-data-key"
+  dataset_id                      = "sample_ds_for_notebooks"
+  notebook_name_prefix            = "trusted-sample"
+  bootstrap_notebooks_bucket_name = "notebook_bootstrap"
+  default_policy_id               = "12345678"  # likely org id
+  project_trusted_analytics       = "trusted-analytics"
+  project_trusted_data            = "trusted-data"
+  project_trusted_kms             = "trusted-kms"
+  trusted_private_network         = "projects/<shared-restricted-prj>/global/networks/<your_vpc>"
+  trusted_private_subnet          = "projects/<shared-restricted-prj>/regions/<region>/subnetworks/<your_subnets_for_notebooks>"
+  caip_users                      = ["trusted1@example.com", "trusted2@example.com"]
+  confid_users                    = ["group:admin@example.com", "group:trusted-users@example.com"]
+  trusted_scientists              = ["user:trusted1@example.com", "user:trusted2@example.com"]
 }
 ```
 
@@ -47,16 +68,16 @@ module "notebooks_blueprint_security" {
     * establish an [SSH tunnel](https://cloud.google.com/ai-platform/notebooks/docs/ssh-access) from your device to your AI Platform Notebook
     * in your browser, visit `http://localhost:8080` to access your AI Platform Notebook
 
-Be sure to specify your `projectName`, `datasetName`, and `tableName` below, which should match your terraform.tfvars file.
+Be sure to specify your `projectName`, `dataset`, and `table` below, which should match your terraform.tfvars file.
 ```
 %%bigquery
 SELECT
   *
-FROM ‘<projectName>.<datasetName>.<tableName>
+FROM ‘<projectID>.<dataset>.<table>
 LIMIT 10
 ```
 
-5. `terraform destroy  -var-file="YOUR_FILE.tfvars"` to destroy the built infrastructure. Note: Replace `YOUR_file` with the name of your tfvars file from the first step
+1. `terraform destroy  -var-file="YOUR_FILE.tfvars"` to destroy the built infrastructure. Note: Replace `YOUR_file` with the name of your tfvars file from the first step
 
 ### Adding identities to groups
 1.  You may need to add service accounts the appropriate IAM high trust data scientist group.
@@ -75,19 +96,6 @@ Functional examples are included in the
 
 
 ## Inputs
-
-1.  Gather the following information
-    1.  Your top-level folder that will hold the trusted notebook environment deployed by this terraform
-    3.  Your privileged project that you want to hold the following:
-        1.  the privileged terraform service account
-        2.  the terraform state
-        3.  the KMS keys
-    4.  Your Access Context Manager policy used for VPC-SC configuration for your data scientists
-        1.  `# gcloud access-context-manager policies list --organization ${ORGANIZATION_ID} --format json | jq .[].name | sed 's/"//g' | awk '{split($0,a,"/"); print a[2]}'`
-        2.  Select your region from where you'd like data scientiests to access data (e.g US; see full list of [access context regions](https://cloud.google.com/access-context-manager/docs/access-level-attributes#regions))
-    5.  Create and get tour IAM group and data scientists identities
-    6.  Your VPC subnet (CIDR) where you want your notebooks deployed
-    7.  Your zone where you want your notebooks deployed
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 | Name | Description | Type | Default | Required |
@@ -126,7 +134,7 @@ These sections describe requirements for using this module.
 
 The following dependencies must be available:
 
-- [Terraform][terraform] v0.13
+- [Terraform][terraform] v0.12
 - [Terraform Provider for GCP][terraform-provider-gcp] plugin v3.51
 
 ### Service Account
@@ -182,6 +190,7 @@ In order to operate with the Service Account you must activate the following API
 In order to operate with the Service Account you must activate the following APIs on the project where your KMS/HSM keys reside:
 
 - Google Cloud Storage API: `storage.googleapis.com`
+- Key Management Service (KMS) API: `cloudkms.googleapis.com`
 
 
 ### Resource Hierarchy

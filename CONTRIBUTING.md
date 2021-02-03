@@ -57,7 +57,9 @@ You will also need to set a few environment variables:
 export TF_VAR_org_id="your_org_id"
 export TF_VAR_folder_id="your_folder_id"
 export TF_VAR_billing_account="your_billing_account_id"
-
+export TF_VAR_project_trusted_analytics="your_analytics_project_id"
+export TF_VAR_project_trusted_data="your_data_project_id"
+export TF_VAR_project_trusted_kms="your_kms_project_id"
 export TF_VAR_default_policy_id = ${TF_VAR_org_id}  # access policy only accepts org_id
 export TF_VAR_vpc_perimeter_ip_subnetworks = "your_subnet_for_vpc_perimeter"
 export TF_VAR_caip_users = '["scientist1@example.com", "scientist2@example.com"]'
@@ -65,7 +67,12 @@ export TF_VAR_confid_users = '["group@example.com", "group2@example.com"]'
 export TF_VAR_trusted_scientists = '["user:scientist1@example.com", "user:scientist2@example.com"]'
 ```
 
-With these settings in place, you can prepare a test project using Docker:
+With these settings in place, you can prepare a test project using Docker.  This creates the following in your test environment based on the `test/setup` directory:
+
+*  BigQuery dataset and table with sample PII data
+*  Test service account
+*  VPC network and subnet
+
 ```
 make docker_test_prepare
 ```
@@ -76,6 +83,9 @@ Run `make docker_test_integration` to test all of the example modules
 noninteractively, using the prepared test project.
 
 ### Interactive Execution
+
+1. Run `make docker_test_prepare` to prepare the environment and the testing Docker container in
+   interactive mode.
 
 1. Run `make docker_run` to start the testing Docker container in
    interactive mode.

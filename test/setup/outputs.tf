@@ -14,18 +14,6 @@
  * limitations under the License.
  */
 
-# output "project_analytics" {
-#   value = module.project_analytics.project_id
-# }
-
-# output "project_data" {
-#   value = module.project_data.project_id
-# }
-
-# output "project_kms" {
-#   value = module.project_kms.project_id
-# }
-
 output "sa_key" {
   value     = google_service_account_key.int_test.private_key
   sensitive = true

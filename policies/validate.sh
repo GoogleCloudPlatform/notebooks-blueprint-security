@@ -36,7 +36,7 @@ export BILLING_ACCOUNT=""
 
 export TRUSTED_FOLDER_ID="" # 12345678
 
-# folder that has all the trusted projets (e.g folder/123456890)
+# folder that has all the trusted projects (e.g folder/123456890)
 export TRUSTED_FOLDER_RESOURCE_NAME="organizations/${ORGANIZATION_ID}/folders/${TRUSTED_FOLDER_ID}"
 
 # Your project names defined in the terraform/terraform.template.tfvars file
@@ -52,11 +52,11 @@ export DOMAIN=""  # your organization's domain
 # a list of regex's of instances to test
 export VM_INSTANCES="//compute.googleapis.com/projects/${PRJ_HIGH_TRUST_ANALYTICS}/.*"
 
-# list of networks where trusted enviroment can use.  values are separated by spaces (e.g. <...>/network1 <...>/network2)
+# list of networks where trusted environment can use.  values are separated by spaces (e.g. <...>/network1 <...>/network2)
 # e.g https://www.googleapis.com/compute/v1/projects/<projectid>/global/networks/<networkName>
 export NETWORKS=""
 
-# list of access level policy names.  values are sparated by a space.
+# list of access level policy names.  values are separated by a space.
 export VPC_SC_ACCESS_LEVELS_NAME=""
 
 # list of projects within the vpc-sc.  values are separated by a space.
@@ -135,8 +135,8 @@ kpt cfg set constraint/ vpc_sc_project_ids ${VPC_SC_PROJECTS}
 
 pushd ../../terraform
 source setup_variables.sh
-# impersonnate with a token (use cloud identity to set the default time to 1 hr)
-# this uses oauth so that a SA key isn't needed
+# impersonate with a token (use cloud identity to set the default time to 1 hr)
+# this uses Oauth2 so that a SA key isn't needed
 gcloud config set auth/impersonate_service_account ${TERRAFORM_SA}
 export GOOGLE_OAUTH_ACCESS_TOKEN=$(gcloud auth print-access-token)
 

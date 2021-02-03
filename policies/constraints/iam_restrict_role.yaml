@@ -28,5 +28,5 @@ spec:
     mode: allowlist
     role: roles/owner
     members: # {"$ref":"#/definitions/io.k8s.cli.setters.project_owners"}
-    - "user:*@google.com"
-    - "group:*@google.com"
+    - "user:*@example.com"
+    - "group:*@example.com"

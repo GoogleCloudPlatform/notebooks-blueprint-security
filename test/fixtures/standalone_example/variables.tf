@@ -25,27 +25,27 @@ variable "default_policy_id" {
 }
 
 variable "project_trusted_analytics" {
-  description = "The trusted project for analytics activities and data scientists"
+  description = "The trusted project for analytics activities and data scientists."
   type        = string
 }
 
 variable "project_trusted_data" {
-  description = "The trusted project for hosting all PII data"
+  description = "The trusted project for hosting all PII data."
   type        = string
 }
 
 variable "project_trusted_kms" {
-  description = "Top level trusted environment folder that will house the encryption keys"
+  description = "Top level trusted environment folder that will house the encryption keys."
   type        = string
 }
 
 variable "trusted_private_network" {
-  description = "network for Notebooks.  Should be a restricted private VPC."
+  description = "Network for Notebooks.  Should be a restricted private VPC."
   type        = string
 }
 
 variable "trusted_private_subnet" {
-  description = "subnet for Notebooks.  Should be part of a restricted private network"
+  description = "Subnet for Notebooks.  Should be part of a restricted private network."
   type        = string
 }
 
@@ -70,6 +70,6 @@ variable "dataset_id" {
 }
 
 variable "zone" {
-  description = "The zone in which to create the secured notebook. Must match the region"
+  description = "The zone in which to create the secured notebook. Must match the region."
   type        = string
 }

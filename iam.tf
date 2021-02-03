@@ -18,7 +18,7 @@
 # within the project for the data scientist.  
 #
 # The data scientist should not be given the ability to become an SA.  Instead, they should be given
-# OSLogin role and SSH into the notebook
+# OSLogin User role and SSH into the notebook
 resource "google_service_account" "sa_p_notebook_compute" {
   project      = var.project_trusted_analytics
   account_id   = format("sa-p-notebook-compute-%s", random_string.random_name.result)
@@ -27,7 +27,7 @@ resource "google_service_account" "sa_p_notebook_compute" {
 
 # We are giving privileges to the notebook-compute service account
 # Compute: compute.instanceAdmin
-#    - gce instance adminsitration, shieldedVM, osLogin
+#    - gce instance administration, shieldedVM, osLogin
 # Data
 #   - Big Query: roles/bigquery.dataViewer
 #       - read data

@@ -25,7 +25,7 @@ variable "default_policy_id" {
 }
 
 variable "project_trusted_analytics" {
-  description = "The trusted project for analytics activities and data scientists"
+  description = "The trusted project for analytics activities and data scientists."
   type        = string
 }
 

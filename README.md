@@ -39,6 +39,7 @@ Basic usage of this module is as follows:
 ```hcl
 module "notebooks_blueprint_security" {
   source  = "GoogleCloudPlatform/notebooks-blueprint-security/google"
+  version = "~> 1.0"
 
   vpc_perimeter_regions           = ["US", "DE"]
   vpc_perimeter_policy_name       = "higher_trust_perimeter_policy"

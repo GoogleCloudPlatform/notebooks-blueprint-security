@@ -109,19 +109,6 @@ maintain a standard of quality.
 
 Run `make docker_test_lint`.
 
-[docker-engine]: https://www.docker.com/products/docker-engine
-[flake8]: http://flake8.pycqa.org/en/latest/
-[gofmt]: https://golang.org/cmd/gofmt/
-[google-cloud-sdk]: https://cloud.google.com/sdk/install
-[hadolint]: https://github.com/hadolint/hadolint
-[inspec]: https://inspec.io/
-[kitchen-terraform]: https://github.com/newcontext-oss/kitchen-terraform
-[kitchen]: https://kitchen.ci/
-[make]: https://en.wikipedia.org/wiki/Make_(software)
-[shellcheck]: https://www.shellcheck.net/
-[terraform-docs]: https://github.com/segmentio/terraform-docs
-[terraform]: https://terraform.io/
-
 ## Contributor License Agreement
 
 Contributions to this project must be accompanied by a Contributor License
@@ -135,7 +122,7 @@ You generally only need to submit a CLA once, so if you've already submitted one
 (even if it was for a different project), you probably don't need to do it
 again.
 
-## Code reviews
+## Code Reviews
 
 All submissions, including submissions by project members, require review. We
 use GitHub pull requests for this purpose. Consult
@@ -146,3 +133,16 @@ information on using pull requests.
 
 This project follows
 [Google's Open Source Community Guidelines](https://opensource.google/conduct/).
+
+[docker-engine]: https://www.docker.com/products/docker-engine
+[flake8]: http://flake8.pycqa.org/en/latest/
+[gofmt]: https://golang.org/cmd/gofmt/
+[google-cloud-sdk]: https://cloud.google.com/sdk/install
+[hadolint]: https://github.com/hadolint/hadolint
+[inspec]: https://inspec.io/
+[kitchen-terraform]: https://github.com/newcontext-oss/kitchen-terraform
+[kitchen]: https://kitchen.ci/
+[make]: https://en.wikipedia.org/wiki/Make_(software)
+[shellcheck]: https://www.shellcheck.net/
+[terraform-docs]: https://github.com/segmentio/terraform-docs
+[terraform]: https://terraform.io/

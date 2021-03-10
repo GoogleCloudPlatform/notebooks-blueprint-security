@@ -24,9 +24,62 @@ The resources that this module will create are:
   - `constraints/compute.restrictProtocolForwardingCreationForTypes`
   - `constraints/compute.restrictSharedVpcSubnetworks`
 
+## Assumptions
+
+*   You have your Project and network configuration available for where you want to deploy your trusted environment.
+*   You have the appropriate IAM permissions to configure project resources (see [service account roles](#service-account)).
+*   You have an IAM Group and list of identities that is allowed to access the trusted environment.
+*   You are familiar with your organization's security best practices and policies.  Learn about Google Cloud security foundation best practices by reading the [security foundation blueprint](https://github.com/terraform-google-modules/terraform-example-foundation).
+
 ## Prerequisites
 
-- Deploy the [security foundation blueprint](https://github.com/terraform-google-modules/terraform-example-foundation)
+### Prepare your admin workstation
+You can use Cloud Shell, a local machine or VM as your admin workstation 
+
+#### 
+[**Tools for Cloud Shell as your Admin workstation**](#tools-for-cloud-shell-as-your-admin-workstation)
+
+*   [Terraform >= 0.12.3](https://www.terraform.io/downloads.html)
+*   [Terraform Provider for GCP][terraform-provider-gcp] plugin v3.51
+
+#### 
+[**Tools for a local workstation as your Admin workstation**](#tools-for-a-local-workstation-as-your-admin-workstation)
+
+*   [Cloud SDK (gcloud CLI)](https://cloud.google.com/sdk/docs/quickstarts)
+*   [Terraform >= 0.12.3](https://www.terraform.io/downloads.html)
+*   [Terraform Provider for GCP][terraform-provider-gcp] plugin v3.51
+
+#### 
+**Installation instructions for Tools for your environment** 
+
+
+##### 
+[Install Cloud SDK](#install-cloud-sdk)
+
+
+This is pre installed if you are using Cloud Shell
+
+The Google Cloud SDK is used to interact with your GCP resources. [Installation instructions](https://cloud.google.com/sdk/downloads) for multiple platforms are available online.
+
+##### 
+[Install Terraform](https://www.terraform.io/intro/getting-started/install.html)
+
+Terraform is used to automate the manipulation of cloud infrastructure. Its [installation instructions](https://www.terraform.io/intro/getting-started/install.html) are also available online.
+When configuring terraform for use with Google cloud create a service account as detailed in [Getting started with the google provider](https://www.terraform.io/docs/providers/google/guides/getting_started.html#adding-credentials)
+
+
+#### **Authentication** 
+
+After installing the gcloud SDK run gcloud init to set up the gcloud cli. When executing choose the correct region and zone
+
+'gcloud init'
+
+Ensure you are using the correct project  . Replace my-project-name with the name of your project
+
+Where the project name is my-project-name
+
+`gcloud config set project my-project-name`
+
 
 ## Compatibility
 
@@ -70,12 +123,12 @@ module "notebooks_blueprint_security" {
     * establish an [SSH tunnel](https://cloud.google.com/ai-platform/notebooks/docs/ssh-access) from your device to your AI Platform Notebook
     * in your browser, visit `http://localhost:8080` to access your AI Platform Notebook
 
-Be sure to specify your `projectName`, `dataset`, and `table` below, which should match your terraform.tfvars file.
+Be sure to specify your `PROJECT_ID`, `DATASET`, and `TABLE` below, which should match your terraform.tfvars file.
 ```
 %%bigquery
 SELECT
   *
-FROM ‘<projectID>.<dataset>.<table>
+FROM `PROJECT_ID.DATASET.TABLE`
 LIMIT 10
 ```
 

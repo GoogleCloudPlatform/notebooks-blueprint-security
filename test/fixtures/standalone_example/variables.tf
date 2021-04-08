@@ -49,18 +49,13 @@ variable "trusted_private_subnet" {
   type        = string
 }
 
-variable "caip_users" {
-  description = "The list of users that need an AI Platform Notebook. In this blueprint, there are the same as the trusted users."
-  type        = list(string)
-}
-
 variable "confidential_groups" {
   description = "The list of groups allowed to access PII data."
   type        = list(string)
 }
 
 variable "trusted_scientists" {
-  description = "The list of trusted users. In this blueprint, they are the same as the caip_users who have their own notebooks."
+  description = "The list of trusted users."
   type        = list(string)
 }
 

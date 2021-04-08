@@ -35,7 +35,6 @@ docker_run:
         -e TF_VAR_project_trusted_kms \
         -e TF_VAR_default_policy_id \
         -e TF_VAR_vpc_perimeter_ip_subnetworks \
-        -e TF_VAR_caip_users \
         -e TF_VAR_confidential_groups \
         -e TF_VAR_trusted_scientists \
 		-v "$(CURDIR)":/workspace \
@@ -70,7 +69,6 @@ docker_test_cleanup:
         -e TF_VAR_project_trusted_kms \
         -e TF_VAR_default_policy_id \
         -e TF_VAR_vpc_perimeter_ip_subnetworks \
-        -e TF_VAR_caip_users \
         -e TF_VAR_confidential_groups \
         -e TF_VAR_trusted_scientists \
 		-v "$(CURDIR)":/workspace \

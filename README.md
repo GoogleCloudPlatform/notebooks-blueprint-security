@@ -108,7 +108,6 @@ module "notebooks_blueprint_security" {
   project_trusted_kms             = "trusted-kms"
   trusted_private_network         = "projects/<shared-restricted-prj>/global/networks/<your_vpc>"
   trusted_private_subnet          = "projects/<shared-restricted-prj>/regions/<region>/subnetworks/<your_subnets_for_notebooks>"
-  caip_users                      = ["trusted1@example.com", "trusted2@example.com"]
   confidential_groups             = ["group:data-owners@example.com", "group:trusted-data-scientists@example.com"]
   trusted_scientists              = ["user:trusted1@example.com", "user:trusted2@example.com"]
 }

@@ -15,7 +15,7 @@
  */
 
 # The notebook-compute-sa provides the underlying policies that the compute uses to access other resources
-# within the project for the data scientist.  
+# within the project for the data scientist.
 #
 # The data scientist should not be given the ability to become an SA.  Instead, they should be given
 # OSLogin User role and SSH into the notebook
@@ -86,7 +86,7 @@ resource "google_bigquery_dataset_iam_binding" "iam_bq_confid_viewer" {
   role       = format("projects/%s/roles/%s", var.project_trusted_data, module.role_restricted_data_viewer.custom_role_id)
   project    = var.project_trusted_data
 
-  members = concat(var.confid_users, ["serviceAccount:${google_service_account.sa_p_notebook_compute.email}"])
+  members = concat(var.confidential_groups, ["serviceAccount:${google_service_account.sa_p_notebook_compute.email}"])
 }
 
 #=====================================================================
@@ -118,7 +118,7 @@ data "google_project" "project_analytics" {
 #=====================================================================
 # Grant access to KMS to support CMEK for data services
 # This is fine grain limited to only the single key.
-# 
+#
 # config_users: a group with trusted scientists identities.  Add users in this group.
 # google_managed_members: need the AI Platform's service's identity granted access.  Do not add identities to this group
 #=====================================================================
@@ -134,7 +134,7 @@ resource "google_kms_crypto_key_iam_binding" "iam_p_bq_sa_confid" {
       "serviceAccount:service-${data.google_project.project_analytics.number}@compute-system.iam.gserviceaccount.com",
     ],
     ["serviceAccount:${google_service_account.sa_p_notebook_compute.email}"],
-    var.confid_users
+    var.confidential_groups
   )
 }
 

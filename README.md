@@ -5,7 +5,7 @@ This repository provides an opinionated way to set up AI Platform Notebook in a 
 **This is not an officially supported Google product**
 
 ## Reference Architecture
-![Reference Architecture](diagrams/notebook_blueprint_arch.png)	   	
+![Reference Architecture](diagrams/notebook_blueprint_arch.png)
 
 
 The resources that this module will create are:
@@ -34,26 +34,26 @@ The resources that this module will create are:
 ## Prerequisites
 
 ### Prepare your admin workstation
-You can use Cloud Shell, a local machine or VM as your admin workstation 
+You can use Cloud Shell, a local machine or VM as your admin workstation
 
-#### 
+####
 [**Tools for Cloud Shell as your Admin workstation**](#tools-for-cloud-shell-as-your-admin-workstation)
 
 *   [Terraform >= 0.12.3](https://www.terraform.io/downloads.html)
 *   [Terraform Provider for GCP][terraform-provider-gcp] plugin v3.51
 
-#### 
+####
 [**Tools for a local workstation as your Admin workstation**](#tools-for-a-local-workstation-as-your-admin-workstation)
 
 *   [Cloud SDK (gcloud CLI)](https://cloud.google.com/sdk/docs/quickstarts)
 *   [Terraform >= 0.12.3](https://www.terraform.io/downloads.html)
 *   [Terraform Provider for GCP][terraform-provider-gcp] plugin v3.51
 
-#### 
-**Installation instructions for Tools for your environment** 
+####
+**Installation instructions for Tools for your environment**
 
 
-##### 
+#####
 [Install Cloud SDK](#install-cloud-sdk)
 
 
@@ -61,14 +61,14 @@ This is pre installed if you are using Cloud Shell
 
 The Google Cloud SDK is used to interact with your GCP resources. [Installation instructions](https://cloud.google.com/sdk/downloads) for multiple platforms are available online.
 
-##### 
+#####
 [Install Terraform](https://www.terraform.io/intro/getting-started/install.html)
 
 Terraform is used to automate the manipulation of cloud infrastructure. Its [installation instructions](https://www.terraform.io/intro/getting-started/install.html) are also available online.
 When configuring terraform for use with Google cloud create a service account as detailed in [Getting started with the google provider](https://www.terraform.io/docs/providers/google/guides/getting_started.html#adding-credentials)
 
 
-#### **Authentication** 
+#### **Authentication**
 
 After installing the gcloud SDK run gcloud init to set up the gcloud cli. When executing choose the correct region and zone
 
@@ -109,7 +109,7 @@ module "notebooks_blueprint_security" {
   trusted_private_network         = "projects/<shared-restricted-prj>/global/networks/<your_vpc>"
   trusted_private_subnet          = "projects/<shared-restricted-prj>/regions/<region>/subnetworks/<your_subnets_for_notebooks>"
   caip_users                      = ["trusted1@example.com", "trusted2@example.com"]
-  confid_users                    = ["group:admin@example.com", "group:trusted-users@example.com"]
+  confidential_groups             = ["group:data-owners@example.com", "group:trusted-data-scientists@example.com"]
   trusted_scientists              = ["user:trusted1@example.com", "user:trusted2@example.com"]
 }
 ```

@@ -44,6 +44,6 @@ module "notebook" {
   trusted_private_network   = var.trusted_private_network
   trusted_private_subnet    = var.trusted_private_subnet
   caip_users                = var.caip_users
-  confid_users              = var.confid_users
+  confidential_groups       = var.confidential_groups
   trusted_scientists        = var.trusted_scientists
 }

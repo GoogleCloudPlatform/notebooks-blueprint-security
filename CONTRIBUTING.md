@@ -62,8 +62,7 @@ export TF_VAR_project_trusted_data="your_data_project_id"
 export TF_VAR_project_trusted_kms="your_kms_project_id"
 export TF_VAR_default_policy_id = ${TF_VAR_org_id}  # access policy only accepts org_id
 export TF_VAR_vpc_perimeter_ip_subnetworks = "your_subnet_for_vpc_perimeter"
-export TF_VAR_caip_users = '["scientist1@example.com", "scientist2@example.com"]'
-export TF_VAR_confid_users = '["group@example.com", "group2@example.com"]'
+export TF_VAR_confidential_groups = '["group:data-owners@example.com", "group:trusted-data-scientists@example.com"]'
 export TF_VAR_trusted_scientists = '["user:scientist1@example.com", "user:scientist2@example.com"]'
 ```
 

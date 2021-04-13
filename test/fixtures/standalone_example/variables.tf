@@ -49,12 +49,7 @@ variable "trusted_private_subnet" {
   type        = string
 }
 
-variable "caip_users" {
-  description = "The list of users that need an AI Platform Notebook."
-  type        = list(string)
-}
-
-variable "confid_users" {
+variable "confidential_groups" {
   description = "The list of groups allowed to access PII data."
   type        = list(string)
 }

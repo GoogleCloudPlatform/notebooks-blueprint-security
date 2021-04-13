@@ -72,9 +72,9 @@ resource "google_storage_bucket_object" "postscript" {
 resource "google_project_iam_member" "notebook_caip_user_iam" {
   project  = var.project_trusted_analytics
   role     = "roles/notebooks.viewer"
-  for_each = toset(var.caip_users)
+  for_each = toset(var.trusted_scientists)
 
-  member = "user:${each.value}"
+  member = each.value
 }
 
 # Creates a trusted notebook per relevant user that has file
@@ -83,10 +83,10 @@ resource "google_project_iam_member" "notebook_caip_user_iam" {
 resource "google_notebooks_instance" "caip_nbk_p_trusted" {
   provider        = google-beta
   project         = var.project_trusted_analytics
-  for_each        = toset(var.caip_users)
+  for_each        = toset(var.trusted_scientists)
   service_account = google_service_account.sa_p_notebook_compute.email
 
-  name         = format("caip-nbk-%s-%s-%s", var.notebook_name_prefix, split("@", each.value)[0], random_string.random_name.result)
+  name         = format("caip-nbk-%s-%s-%s", var.notebook_name_prefix, split("@", split(":", each.value)[1])[0], random_string.random_name.result)
   location     = var.zone
   machine_type = "n1-standard-1"
 

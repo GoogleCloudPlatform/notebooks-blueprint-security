@@ -35,8 +35,7 @@ docker_run:
         -e TF_VAR_project_trusted_kms \
         -e TF_VAR_default_policy_id \
         -e TF_VAR_vpc_perimeter_ip_subnetworks \
-        -e TF_VAR_caip_users \
-        -e TF_VAR_confid_users \
+        -e TF_VAR_confidential_groups \
         -e TF_VAR_trusted_scientists \
 		-v "$(CURDIR)":/workspace \
 		$(REGISTRY_URL)/${DOCKER_IMAGE_DEVELOPER_TOOLS}:${DOCKER_TAG_VERSION_DEVELOPER_TOOLS} \
@@ -70,8 +69,7 @@ docker_test_cleanup:
         -e TF_VAR_project_trusted_kms \
         -e TF_VAR_default_policy_id \
         -e TF_VAR_vpc_perimeter_ip_subnetworks \
-        -e TF_VAR_caip_users \
-        -e TF_VAR_confid_users \
+        -e TF_VAR_confidential_groups \
         -e TF_VAR_trusted_scientists \
 		-v "$(CURDIR)":/workspace \
 		$(REGISTRY_URL)/${DOCKER_IMAGE_DEVELOPER_TOOLS}:${DOCKER_TAG_VERSION_DEVELOPER_TOOLS} \

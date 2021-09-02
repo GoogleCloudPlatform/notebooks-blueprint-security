@@ -83,7 +83,10 @@ resource "google_project_iam_member" "notebook_caip_user_iam" {
 resource "google_notebooks_instance" "caip_nbk_p_trusted" {
   provider        = google-beta
   project         = var.project_trusted_analytics
-  for_each        = toset(var.trusted_scientists)
+
+  # var.trusted_scientists has users that are defined with the IAM type such as "user:aaa@example.com", "group:bbb@example.com", "serviceAccount:ccc@example.com".
+  # Therefore, we need to remove the prefix type
+  for_each        = toset(split("\n",replace(join("\n",tolist(var.trusted_scientists)),"/\\S+:/","")))
   service_account = google_service_account.sa_p_notebook_compute.email
 
   # replace characters with dash (-) from user identities not supported in GCE instance names such as period (.), apostrophe ('), underscore (_)

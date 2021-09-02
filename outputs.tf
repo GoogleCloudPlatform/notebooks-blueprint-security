@@ -69,7 +69,7 @@ output "vpc_perimeter_resource_protected" {
 # used for testing
 output "access_level_name" {
   description = "access level name used in the perimeter policy"
-  value       = modules.access_level_members_higher_trust.name
+  value       = module.access_level_members_higher_trust.name
 }
 
 # used for testing

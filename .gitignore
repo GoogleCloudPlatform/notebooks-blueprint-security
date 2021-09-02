@@ -49,3 +49,4 @@ crash.log
 *.tfvars
 
 credentials.json
+demo/

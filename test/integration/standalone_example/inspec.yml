@@ -31,7 +31,7 @@ attributes:
     type: string
   - name: bkt_notebooks_project_id
     required: true
-    type: string 
+    type: string
   - name: notebook_instances
     required: true
     type: array
@@ -46,25 +46,25 @@ attributes:
     type: string
   - name: bkt_notebooks_name
     required: true
-    type: string 
+    type: string
   - name: notebook_key_ring_name
     required: true
     type: string
   - name: kms_project_id
     required: true
-    type: string    
+    type: string
   - name: resource_locations
     required: true
-    type: array    
+    type: array
   - name: vpc_perimeter_protected_resources
     required: true
-    type: array    
+    type: array
   - name: default_policy_id
     required: true
-    type: string    
+    type: string
   - name: perimeter_name
     required: true
-    type: string    
+    type: string
   - name: access_level_name
     required: true
-    type: string    
+    type: string

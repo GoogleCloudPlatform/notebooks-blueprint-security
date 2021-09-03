@@ -59,7 +59,7 @@ output "folder_trusted" {
 # used for testing
 output "vpc_perimeter_resource_protected" {
   description = "list of projects included in the VPC-Sc perimeter"
-  value       = [
+  value = [
     "${data.google_project.trusted_data.number}",
     "${data.google_project.trusted_analytics.number}",
     "${data.google_project.trusted_kms.number}",

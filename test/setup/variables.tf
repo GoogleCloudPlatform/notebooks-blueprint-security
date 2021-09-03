@@ -40,6 +40,6 @@ variable "project_trusted_kms" {
 
 variable "vpc_subnet_range" {
   description = "Private CIDR range for the test subnet."
-  type    = string
-  default = "10.10.20.0/24"
+  type        = string
+  default     = "10.10.20.0/24"
 }

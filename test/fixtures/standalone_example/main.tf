@@ -15,17 +15,17 @@
  */
 
 module "standalone_example" {
-  source     = "../../../examples/standalone_example"
+  source = "../../../examples/standalone_example"
 
-  zone                     = var.zone
-  vpc_perimeter_ip_subnetworks    = var.vpc_perimeter_ip_subnetworks
-  default_policy_id         = var.default_policy_id
-  project_trusted_analytics = var.project_trusted_analytics
-  project_trusted_data      = var.project_trusted_data
-  project_trusted_kms       = var.project_trusted_kms
-  trusted_private_network   = var.trusted_private_network
-  trusted_private_subnet    = var.trusted_private_subnet
-  confidential_groups       = var.confidential_groups
-  trusted_scientists        = var.trusted_scientists
-  dataset_id                = var.dataset_id
+  zone                         = var.zone
+  vpc_perimeter_ip_subnetworks = var.vpc_perimeter_ip_subnetworks
+  default_policy_id            = var.default_policy_id
+  project_trusted_analytics    = var.project_trusted_analytics
+  project_trusted_data         = var.project_trusted_data
+  project_trusted_kms          = var.project_trusted_kms
+  trusted_private_network      = var.trusted_private_network
+  trusted_private_subnet       = var.trusted_private_subnet
+  confidential_groups          = var.confidential_groups
+  trusted_scientists           = var.trusted_scientists
+  dataset_id                   = var.dataset_id
 }

@@ -34,7 +34,7 @@ module "project_services_analytics" {
   source  = "terraform-google-modules/project-factory/google//modules/project_services"
   version = "4.0.0"
 
-  project_id                  = var.project_trusted_analytics
+  project_id = var.project_trusted_analytics
 
   activate_apis = [
     "compute.googleapis.com",
@@ -48,35 +48,35 @@ module "project_services_analytics" {
     "storage-api.googleapis.com",
     "iamcredentials.googleapis.com",
     "serviceusage.googleapis.com",
-   ]
-  }
+  ]
+}
 
 module "project_services_data" {
   source  = "terraform-google-modules/project-factory/google//modules/project_services"
   version = "4.0.0"
 
-  project_id                  = var.project_trusted_data
+  project_id = var.project_trusted_data
 
   activate_apis = [
     "bigquery.googleapis.com",
     "cloudresourcemanager.googleapis.com",
     "storage-api.googleapis.com",
     "serviceusage.googleapis.com"
-   ]
+  ]
 }
 
 module "project_services_kms" {
   source  = "terraform-google-modules/project-factory/google//modules/project_services"
   version = "4.0.0"
 
-  project_id                  = var.project_trusted_kms
+  project_id = var.project_trusted_kms
 
   activate_apis = [
     "cloudkms.googleapis.com",
     "cloudresourcemanager.googleapis.com",
     "storage-api.googleapis.com",
     "serviceusage.googleapis.com",
-   ]
+  ]
 }
 
 data "google_project" "trusted_analytics" {

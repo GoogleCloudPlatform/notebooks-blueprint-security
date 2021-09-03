@@ -66,7 +66,7 @@ output "notebook_key_ring_name" {
 
 output "resource_locations" {
   description = "Name of regions expected in org policy."
-  value       =  module.standalone_example.resource_locations
+  value       = module.standalone_example.resource_locations
 }
 
 output "folder_trusted" {
@@ -76,20 +76,20 @@ output "folder_trusted" {
 
 output "vpc_perimeter_protected_resources" {
   description = "List of projects included in the VPC-Sc perimeter."
-  value       =  module.standalone_example.vpc_perimeter_protected_resources
+  value       = module.standalone_example.vpc_perimeter_protected_resources
 }
 
 output "default_policy_id" {
   description = "Access level policy id. (i.e organization id)."
-  value       =  var.default_policy_id
+  value       = var.default_policy_id
 }
 
 output "perimeter_name" {
   description = "Perimeter name used to protect the notebooks."
-  value       =  module.standalone_example.perimeter_name
+  value       = module.standalone_example.perimeter_name
 }
 
 output "access_level_name" {
   description = "Access level policy name."
-  value       =  module.standalone_example.access_level_name
+  value       = module.standalone_example.access_level_name
 }

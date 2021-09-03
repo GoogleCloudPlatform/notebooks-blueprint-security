@@ -8,25 +8,35 @@ It requires a BigQuery table with sample PII data.  An example is provisioned as
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|:----:|:-----:|:-----:|
-| vpc\_perimeter\_ip\_subnetworks | IP subnets allowed to access the higher trust perimeters. | `list(string)` | `[]` | yes |
-| default\_policy\_id | The parent of this AccessPolicy in the Cloud Resource Hierarchy. As of now, only organization IDs are accepted as parent. | `string` | `""` | yes |
-| project\_trusted\_analytics | Project that holds Notebooks | `string` | `""` | yes |
-| project\_trusted\_data | Project that holds data used Notebook | `string` | `""` | yes |
-| project\_trusted\_kms | Project that holds KMS keys used to protect PII data for Notebooks | `string` | `""` | yes |
-| trusted_private_network | The URI of the private network where you want your Notebooks.  This would be the restricted_network_self_link from the foundational security blueprint terraform  | `string` | `""` | yes |
-| trusted_private_subnet | The URI of the private subnet where you want your Notebooks. This would be the restricted_subnets_self_link from the foundational security blueprint terraform | `string` | `""` | yes |
-| caip\_users | The list of users that need an AI Platform Notebook (list of emails). | `list(string)` | `[]` | yes |
-| trusted\_scientists | The list of trusted scientists (in the form of user:scientist1@example.com) | `list(string)` | `[]` | yes |
-| confid\_users | The list of groups with privileged users that can access PII data. (ex: group@example.com) | `list(string)` | `[]` | yes |
-| dataset\_id | BigQuery dataset ID with PII data that scientists need access | `string` | `""` | yes |
-| zone | The zone in which to create the secured notebook. Must match the region | `string` | `""` | yes |
+|------|-------------|------|---------|:--------:|
+| confidential\_groups | The list of groups allowed to access PII data. | `list(string)` | n/a | yes |
+| dataset\_id | The BigQuery data for notebooks. | `string` | n/a | yes |
+| default\_policy\_id | The id of the default org policy. | `string` | n/a | yes |
+| project\_trusted\_analytics | The trusted project for analytics activities and data scientists. | `string` | n/a | yes |
+| project\_trusted\_data | The trusted project for data used by notebooks. | `string` | n/a | yes |
+| project\_trusted\_kms | Top trusted project for encryption keys. | `string` | n/a | yes |
+| trusted\_private\_network | Network for Notebooks.  Should be a restricted private VPC. | `string` | n/a | yes |
+| trusted\_private\_subnet | Subnet with no external IP for Notebooks.  Should be part of a restricted private network. | `string` | n/a | yes |
+| trusted\_scientists | The list of trusted users. | `list(string)` | n/a | yes |
+| vpc\_perimeter\_ip\_subnetworks | IP subnets for perimeters. | `list(string)` | n/a | yes |
+| zone | The zone in which to create the secured notebook. Must match the region. | `string` | n/a | yes |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| none | none |
+| access\_level\_name | Access level policy name. |
+| bkt\_notebooks\_name | Name of bootstrap bucket. |
+| caip\_sa\_email | Email of the SA used by CAIP; should not be a default SA. |
+| default\_policy\_id | Access level policy id (i.e organization id). |
+| folder\_trusted | Folder that holds all the trusted projects and constraints. |
+| notebook\_instances | List of notebooks created (vm names). |
+| notebook\_key\_name | Key name used to protect notebooks. |
+| notebook\_key\_ring\_name | Name of keyring protecting notebooks. |
+| perimeter\_name | Perimeter name used to protect the notebooks. |
+| resource\_locations | Name of regions expected in org policy. |
+| script\_name | Name of the post startup script installed. |
+| vpc\_perimeter\_protected\_resources | List of projects included in the VPC-Sc perimeter. |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 

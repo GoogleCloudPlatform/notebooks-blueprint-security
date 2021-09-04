@@ -41,7 +41,7 @@ control 'gcp_notebooks' do
       its('metadata_keys') { should include 'serial-port-enable' }
       its('metadata_values') { should include 'FALSE' }
       its('metadata_keys') { should include 'block-project-ssh-keys' }
-      its('metadata_values') { should include 'TRUE' }    
+      its('metadata_values') { should include 'TRUE' }
     end
   end
 end

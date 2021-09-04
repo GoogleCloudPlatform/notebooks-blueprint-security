@@ -18,7 +18,7 @@
 #
 # These are the minimum policies
 # - Resource location: constraints/gcp.resourceLocations
-#     - references of valid value groups: https://cloud.google.com/resource-manager/docs/organization-policy/defining-locations#value_groups     
+#     - references of valid value groups: https://cloud.google.com/resource-manager/docs/organization-policy/defining-locations#value_groups
 #
 # (Optional policies)
 # - none

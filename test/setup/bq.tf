@@ -23,8 +23,8 @@ locals {
 }
 
 module "bq_data_key" {
-  source               = "terraform-google-modules/kms/google"
-  version              = "~> 1.2"
+  source  = "terraform-google-modules/kms/google"
+  version = "~> 1.2"
 
   project_id           = var.project_trusted_kms
   location             = local.region
@@ -39,7 +39,7 @@ module "bq_data_key" {
 #=====================================================================
 # Grant access to KMS to support CMEK for data services
 # This is fine grain limited to only the single key.
-# 
+#
 #=====================================================================
 data "google_bigquery_default_service_account" "bq_default_account" {
   project = var.project_trusted_data
@@ -66,8 +66,8 @@ resource "google_kms_crypto_key_iam_binding" "iam_p_bq_sa_confid" {
 }
 
 module "bigquery" {
-  source                     = "terraform-google-modules/bigquery/google"
-  version                    = "~> 4.4"
+  source  = "terraform-google-modules/bigquery/google"
+  version = "~> 4.4"
 
   dataset_id                 = local.dataset_name
   dataset_name               = local.dataset_name
@@ -90,7 +90,7 @@ module "bigquery" {
   ]
 
   depends_on = [
-    google_kms_crypto_key_iam_binding.iam_p_bq_sa_confid, 
+    google_kms_crypto_key_iam_binding.iam_p_bq_sa_confid,
     module.project_services_data,
     module.project_services_analytics
   ]

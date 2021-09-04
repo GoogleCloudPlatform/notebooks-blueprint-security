@@ -1,20 +1,18 @@
 #!/bin/bash
 
-#
 # Copyright 2021 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     https://www.apache.org/licenses/LICENSE-2.0
+#      http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
 
 # Provide your privileged service account used by terraform.
 # This will likely be the same one used from the security foundational blueprint
@@ -32,7 +30,7 @@ export POLICY_NAME=""
 # Provide your billing account
 # gcloud beta billing accounts list
 # ABCDEF-123456-A1B2C3
-export BILLING_ACCOUNT=""  
+export BILLING_ACCOUNT=""
 
 export TRUSTED_FOLDER_ID="" # 12345678
 
@@ -126,19 +124,20 @@ kpt cfg set constraint/ locations ${REGIONS}
 
 kpt cfg set constraint/ domain ${DOMAIN}
 
-kpt cfg set constraint/ vm_instances ${VM_INSTANCES}
+kpt cfg set constraint/ vm_instances "${VM_INSTANCES}"
 kpt cfg set constraint/ allowed_networks ${NETWORKS}
 
 kpt cfg set constraint/ vpc_sc_regions ${REGIONS}
 kpt cfg set constraint/ vpc_sc_access_levels ${VPC_SC_ACCESS_LEVELS_NAME}
 kpt cfg set constraint/ vpc_sc_project_ids ${VPC_SC_PROJECTS}
 
-pushd ../../terraform
-source setup_variables.sh
+pushd ../../terraform || exit
+# source setup_variables.sh
 # impersonate with a token (use cloud identity to set the default time to 1 hr)
 # this uses Oauth2 so that a SA key isn't needed
 gcloud config set auth/impersonate_service_account ${TERRAFORM_SA}
-export GOOGLE_OAUTH_ACCESS_TOKEN=$(gcloud auth print-access-token)
+GOOGLE_OAUTH_ACCESS_TOKEN=$(gcloud auth print-access-token)
+export GOOGLE_OAUTH_ACCESS_TOKEN
 
 terraform init
 terraform plan \
@@ -149,7 +148,7 @@ terraform plan \
   -var "terraform_sa_email=${TERRAFORM_SA}" \
   -var "billing_account=${BILLING_ACCOUNT}"
 
-popd
+popd || exit
 
 echo "validator skipped until v0.13 is supported"
 # TODO uncomment once validator support terraform v0.13

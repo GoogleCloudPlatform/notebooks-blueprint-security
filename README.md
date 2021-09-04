@@ -152,30 +152,42 @@ Functional examples are included in the
 ## Inputs
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+## Inputs
+
 | Name | Description | Type | Default | Required |
-|------|-------------|:----:|:-----:|:-----:|
-| trusted_private_network | The URI of the private network where you want your Notebooks.  This would be the restricted_network_self_link from the foundational security blueprint terraform  | `string` | `""` | yes |
-| trusted_private_subnet | The URI of the private subnet where you want your Notebooks. This would be the restricted_subnets_self_link from the foundational security blueprint terraform | `string` | `""` | yes |
-| default\_policy\_id | The parent of this AccessPolicy in the Cloud Resource Hierarchy. As of now, only organization IDs are accepted as parent. | `string` | `""` | yes |
-| vpc\_perimeter\_policy\_name | The perimeter policy's name. | `string` | `""` | yes |
-| vpc\_perimeter\_ip\_subnetworks | IP subnets allowed to access the higher trust perimeters. | `list(string)` | `[]` | yes |
-| vpc\_perimeter\_regions | 2 letter identifier for regions allowed for VPC access. A valid ISO 3166-1 alpha-2 code. | `list(string)` | `[]` | yes |
-| project\_trusted\_analytics | Project that holds Notebooks | `string` | `""` | yes |
-| project\_trusted\_data | Project that holds data used Notebook | `string` | `""` | yes |
-| project\_trusted\_kms | Project that holds KMS keys used to protect PII data for Notebooks | `string` | `""` | yes |
-| resource\_locations | Regions where resource can be provisioned | `list(string)` | `[]` | yes |
-| vpc\_subnets\_projects\_allowed | list of projects with allowed vpc subnets for the notebooks; defined with the under constraint format (e.g. ["under:projects/project_id1", "under:projects/project_id2"]) | `list(string)` | `[]` | yes |
-| notebook\_key\_name | name to use to create a KMS/HSM key that protects pii data | `string` | `""` | yes |
-| trusted\_scientists | The list of trusted scientists (in the form of user:scientist1@example.com) | `list(string)` | `[]` | yes |
-| confidentials\_groups | The list of groups with privileged users that can access PII data. (ex: group:trusted-data-scientists@example.com) | `list(string)` | `[]` | yes |
-| dataset\_id | BigQuery dataset ID with PII data that scientists need access | `string` | `""` | yes |
-| notebook\_name\_prefix | Prefix used in provisioning Notebooks in the higher trust boundary. | `string` | `"trusted-sample"` | no |
+|------|-------------|------|---------|:--------:|
+| bootstrap\_notebooks\_bucket\_name | Bucket name to create bootstrap scripts for notebooks. | `string` | `"notebook_bootstrap"` | no |
+| confidential\_groups | The list of groups allowed to access PII data. | `list(string)` | n/a | yes |
+| dataset\_id | BigQuery dataset ID with PII data that your scientists need to access from their Notebook. | `string` | n/a | yes |
+| default\_policy\_id | The id of the default org policy. | `string` | n/a | yes |
+| notebook\_key\_name | HSM key used to protect PII data in Notebooks. | `string` | `"trusted-data-key"` | no |
+| notebook\_name\_prefix | Prefix for notebooks indicating in higher trusted environment. | `string` | `"trusted-sample"` | no |
+| project\_trusted\_analytics | The trusted project for analytics activities and data scientists. | `string` | n/a | yes |
+| project\_trusted\_data | The trusted project that has PII data for notebooks. | `string` | n/a | yes |
+| project\_trusted\_kms | Top level trusted environment folder that will house the encryption keys. | `string` | n/a | yes |
+| resource\_locations | The locations used in org policy to limit where resources can be provisioned. | `list(string)` | <pre>[<br>  "in:us-locations",<br>  "in:eu-locations"<br>]</pre> | no |
+| trusted\_private\_network | Network with no external IP for Notebooks.  Should be a restricted private VPC. | `string` | n/a | yes |
+| trusted\_private\_subnet | Subnet with no external IP for Notebooks.  Should be part of a restricted private network and have logs and private network enabled. | `string` | n/a | yes |
+| trusted\_scientists | The list of trusted users. | `list(string)` | n/a | yes |
+| vpc\_perimeter\_ip\_subnetworks | IP subnets for perimeters. | `list(string)` | n/a | yes |
+| vpc\_perimeter\_policy\_name | Policy name for VPC service control perimeter. | `string` | `"higher_trust_perimeter_policy"` | no |
+| vpc\_perimeter\_regions | 2 letter identifier for regions allowed for VPC access. A valid ISO 3166-1 alpha-2 code. | `list(string)` | n/a | yes |
+| zone | The zone in which to create the secured notebook. Must match the region. | `string` | n/a | yes |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| none | none |
+| access\_level\_name | access level name used in the perimeter policy |
+| bkt\_notebooks\_name | name of bootstrap bucket |
+| caip\_sa\_email | email of the SA used by CAIP; should not be a default SA |
+| folder\_trusted | folder that holds all the trusted projects and constraints |
+| notebook\_instances | list of notebooks created (vm names) |
+| notebook\_key\_name | name of the key used in the notebooks. |
+| notebook\_key\_ring\_name | name of keyring |
+| perimeter\_name | vpc-sc perimeter name |
+| script\_name | name of the post startup script installed |
+| vpc\_perimeter\_resource\_protected | list of projects included in the VPC-Sc perimeter |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 

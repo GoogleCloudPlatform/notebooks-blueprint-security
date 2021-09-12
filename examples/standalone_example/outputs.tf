@@ -16,7 +16,7 @@
 
 
 output "caip_sa_email" {
-  description = "Email of the SA used by CAIP; should not be a default SA."
+  description = "Email of the SA used by Cloud AI Platform; should not be a default SA."
   value       = module.notebook.caip_sa_email
 }
 
@@ -56,7 +56,7 @@ output "folder_trusted" {
 }
 
 output "vpc_perimeter_protected_resources" {
-  description = "List of projects included in the VPC-Sc perimeter."
+  description = "List of projects included in the VPC-SC perimeter."
   value       = module.notebook.vpc_perimeter_resource_protected
 }
 

@@ -15,15 +15,15 @@
  */
 
 terraform {
-  required_version = ">= 0.12"
-}
-
-provider "google" {
-  version               = "~> 3.51"
-  user_project_override = true
-}
-
-provider "google-beta" {
-  version               = "~> 3.51"
-  user_project_override = true
+  required_version = ">= 0.13.0"
+  required_providers {
+    google = {
+      source  = "hashicorp/google"
+      version = ">= 3.51"
+    }
+    google-beta = {
+      source  = "hashicorp/google-beta"
+      version = ">= 3.51"
+    }
+  }
 }

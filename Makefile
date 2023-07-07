@@ -1,4 +1,4 @@
-# Copyright 2021 Google LLC
+# Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -26,17 +26,7 @@ REGISTRY_URL := gcr.io/cloud-foundation-cicd
 .PHONY: docker_run
 docker_run:
 	docker run --rm -it \
-        -e SERVICE_ACCOUNT_JSON \
-        -e TF_VAR_org_id \
-        -e TF_VAR_folder_id \
-        -e TF_VAR_billing_account \
-        -e TF_VAR_project_trusted_analytics \
-        -e TF_VAR_project_trusted_data \
-        -e TF_VAR_project_trusted_kms \
-        -e TF_VAR_default_policy_id \
-        -e TF_VAR_vpc_perimeter_ip_subnetworks \
-        -e TF_VAR_confidential_groups \
-        -e TF_VAR_trusted_scientists \
+		-e SERVICE_ACCOUNT_JSON \
 		-v "$(CURDIR)":/workspace \
 		$(REGISTRY_URL)/${DOCKER_IMAGE_DEVELOPER_TOOLS}:${DOCKER_TAG_VERSION_DEVELOPER_TOOLS} \
 		/bin/bash
@@ -45,13 +35,10 @@ docker_run:
 .PHONY: docker_test_prepare
 docker_test_prepare:
 	docker run --rm -it \
-		-e GOOGLE_OAUTH_ACCESS_TOKEN \
+		-e SERVICE_ACCOUNT_JSON \
 		-e TF_VAR_org_id \
 		-e TF_VAR_folder_id \
 		-e TF_VAR_billing_account \
-		-e TF_VAR_project_trusted_analytics \
-		-e TF_VAR_project_trusted_data \
-		-e TF_VAR_project_trusted_kms \
 		-v "$(CURDIR)":/workspace \
 		$(REGISTRY_URL)/${DOCKER_IMAGE_DEVELOPER_TOOLS}:${DOCKER_TAG_VERSION_DEVELOPER_TOOLS} \
 		/usr/local/bin/execute_with_credentials.sh prepare_environment
@@ -60,17 +47,10 @@ docker_test_prepare:
 .PHONY: docker_test_cleanup
 docker_test_cleanup:
 	docker run --rm -it \
-        -e SERVICE_ACCOUNT_JSON \
-        -e TF_VAR_org_id \
-        -e TF_VAR_folder_id \
-        -e TF_VAR_billing_account \
-        -e TF_VAR_project_trusted_analytics \
-        -e TF_VAR_project_trusted_data \
-        -e TF_VAR_project_trusted_kms \
-        -e TF_VAR_default_policy_id \
-        -e TF_VAR_vpc_perimeter_ip_subnetworks \
-        -e TF_VAR_confidential_groups \
-        -e TF_VAR_trusted_scientists \
+		-e SERVICE_ACCOUNT_JSON \
+		-e TF_VAR_org_id \
+		-e TF_VAR_folder_id \
+		-e TF_VAR_billing_account \
 		-v "$(CURDIR)":/workspace \
 		$(REGISTRY_URL)/${DOCKER_IMAGE_DEVELOPER_TOOLS}:${DOCKER_TAG_VERSION_DEVELOPER_TOOLS} \
 		/usr/local/bin/execute_with_credentials.sh cleanup_environment
@@ -100,6 +80,14 @@ docker_generate_docs:
 		-v "$(CURDIR)":/workspace \
 		$(REGISTRY_URL)/${DOCKER_IMAGE_DEVELOPER_TOOLS}:${DOCKER_TAG_VERSION_DEVELOPER_TOOLS} \
 		/bin/bash -c 'source /usr/local/bin/task_helper_functions.sh && generate_docs'
+
+# Generate metadata
+.PHONY: docker_generate_metadata_w_display
+docker_generate_metadata:
+	docker run --rm -it \
+		-v "$(CURDIR)":/workspace \
+		$(REGISTRY_URL)/${DOCKER_IMAGE_DEVELOPER_TOOLS}:${DOCKER_TAG_VERSION_DEVELOPER_TOOLS} \
+		/bin/bash -c 'source /usr/local/bin/task_helper_functions.sh && generate_metadata display'
 
 # Alias for backwards compatibility
 .PHONY: generate_docs

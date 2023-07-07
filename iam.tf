@@ -20,7 +20,7 @@
 # The data scientist should not be given the ability to become an SA.  Instead, they should be given
 # OSLogin User role and SSH into the notebook
 resource "google_service_account" "sa_p_notebook_compute" {
-  project      = var.project_trusted_analytics
+  project      = module.analytics_project.project_id
   account_id   = format("sa-p-notebook-compute-%s", random_string.random_name.result)
   display_name = "Notebooks in trusted environment"
 }
@@ -37,25 +37,25 @@ resource "google_service_account" "sa_p_notebook_compute" {
 #       - create and destroy temporary buckets to manage state
 # Notebooks: roles/notebooks.admin
 resource "google_project_iam_member" "notebook_instance_compute" {
-  project = var.project_trusted_analytics
+  project = module.analytics_project.project_id
   role    = "roles/compute.instanceAdmin"
   member  = "serviceAccount:${google_service_account.sa_p_notebook_compute.email}"
 }
 
 resource "google_project_iam_member" "notebook_instance_bq_job" {
-  project = var.project_trusted_analytics
+  project = module.analytics_project.project_id
   role    = "roles/bigquery.jobUser"
   member  = "serviceAccount:${google_service_account.sa_p_notebook_compute.email}"
 }
 
 resource "google_project_iam_member" "notebook_instance_bq_session" {
-  project = var.project_trusted_analytics
+  project = module.analytics_project.project_id
   role    = "roles/bigquery.readSessionUser"
   member  = "serviceAccount:${google_service_account.sa_p_notebook_compute.email}"
 }
 
 resource "google_project_iam_member" "notebook_instance_caip" {
-  project = var.project_trusted_analytics
+  project = module.analytics_project.project_id
   role    = "roles/notebooks.admin"
   member  = "serviceAccount:${google_service_account.sa_p_notebook_compute.email}"
 }
@@ -66,7 +66,7 @@ module "role_restricted_data_viewer" {
   version = "~> 6.4"
 
   target_level = "project"
-  target_id    = var.project_trusted_data
+  target_id    = module.data_project.project_id
   role_id      = format("blueprint_restricted_data_viewer_%s", random_string.random_name.result)
   title        = format("Blueprint restricted Data Viewer %s", random_string.random_name.result)
   description  = "BQ Data Viewer role with export removed"
@@ -83,8 +83,8 @@ module "role_restricted_data_viewer" {
 # IAM - add group binding for scientists.  the notebook's VM SA will already have access
 resource "google_bigquery_dataset_iam_binding" "iam_bq_confid_viewer" {
   dataset_id = var.dataset_id
-  role       = format("projects/%s/roles/%s", var.project_trusted_data, module.role_restricted_data_viewer.custom_role_id)
-  project    = var.project_trusted_data
+  role       = format("projects/%s/roles/%s", module.data_project.project_id, module.role_restricted_data_viewer.custom_role_id)
+  project    = module.data_project.project_id
 
   members = concat(var.confidential_groups, ["serviceAccount:${google_service_account.sa_p_notebook_compute.email}"])
 }
@@ -93,26 +93,26 @@ resource "google_bigquery_dataset_iam_binding" "iam_bq_confid_viewer" {
 # Get Service Accounts for all data services
 #=====================================================================
 data "google_bigquery_default_service_account" "bq_default_account" {
-  project = var.project_trusted_data
+  project = module.data_project.project_id
 }
 
 # get the GCS default service account for the data project
 data "google_storage_project_service_account" "gcs_default_account_data" {
-  project = var.project_trusted_data
+  project = module.data_project.project_id
 }
 
 # get the GCS default service account for the project holding bootstrap code
 data "google_storage_project_service_account" "gcs_default_account_bootstrap" {
-  project = var.project_trusted_kms
+  project = module.kms_project.project_id
 }
 
 # get the GCS default service account for the bootstrap project
 data "google_compute_default_service_account" "gce_default_account_analytics" {
-  project = var.project_trusted_analytics
+  project = module.analytics_project.project_id
 }
 
 data "google_project" "project_analytics" {
-  project_id = var.project_trusted_analytics
+  project_id = module.analytics_project.project_id
 }
 
 #=====================================================================

@@ -31,7 +31,22 @@ output "example_vpc_subnet" {
   value = module.example_vpc.subnets["${local.subnet_region}/${local.subnet_name}"].id
 }
 
-output dataset_id {
+output "dataset_id" {
   description = "BigQuery dataset id"
   value       = module.bigquery.bigquery_dataset.dataset_id
+}
+
+output "project_trusted_analytics" {
+  description = "Analytics Project ID"
+  value = module.analytics_project.project_id
+}
+
+output "project_trusted_data" {
+  description = "Data Project ID"
+  value = module.data_project.project_id
+}
+
+output "project_trusted_kms" {
+  description = "KMS Project ID"
+  value = module.kms_project.project_id
 }

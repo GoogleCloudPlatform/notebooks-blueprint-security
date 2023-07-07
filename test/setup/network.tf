@@ -17,10 +17,11 @@
 locals {
   subnet_name   = "example-subnet-01"
   subnet_region = "us-central1"
+  subnet_range  = "10.10.20.0/24"
 }
 module "example_vpc" {
   source  = "terraform-google-modules/network/google"
-  version = "~> 3.0"
+  version = "~> 6.0"
 
   project_id   = var.project_trusted_analytics
   network_name = format("example-vpc-%s", random_string.random_name.result)
@@ -29,7 +30,7 @@ module "example_vpc" {
   subnets = [
     {
       subnet_name           = local.subnet_name
-      subnet_ip             = var.vpc_subnet_range
+      subnet_ip             = local.subnet_range
       subnet_region         = local.subnet_region
       subnet_private_access = "true"
       description           = "example subnet for integration tests"

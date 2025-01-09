@@ -20,7 +20,7 @@ locals {
 }
 module "example_vpc" {
   source  = "terraform-google-modules/network/google"
-  version = "~> 3.0"
+  version = "~> 10.0"
 
   project_id   = var.project_trusted_analytics
   network_name = format("example-vpc-%s", random_string.random_name.result)

@@ -67,7 +67,7 @@ resource "google_kms_crypto_key_iam_binding" "iam_p_bq_sa_confid" {
 
 module "bigquery" {
   source  = "terraform-google-modules/bigquery/google"
-  version = "~> 4.4"
+  version = "~> 10.0"
 
   dataset_id                 = local.dataset_name
   dataset_name               = local.dataset_name

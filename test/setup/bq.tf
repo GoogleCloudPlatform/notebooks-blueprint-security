@@ -24,7 +24,7 @@ locals {
 
 module "bq_data_key" {
   source  = "terraform-google-modules/kms/google"
-  version = "~> 1.2"
+  version = "~> 4.0"
 
   project_id           = var.project_trusted_kms
   location             = local.region

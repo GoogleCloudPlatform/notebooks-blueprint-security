@@ -32,7 +32,7 @@ locals {
 # Initial key is HSM backed key rotates every 45 days.
 module "kms_data" {
   source  = "terraform-google-modules/kms/google"
-  version = "~> 1.2"
+  version = "~> 4.0"
 
   project_id           = var.project_trusted_kms
   location             = local.region

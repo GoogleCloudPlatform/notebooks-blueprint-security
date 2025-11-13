@@ -30,7 +30,7 @@
 
 module "external_ip_policy" {
   source      = "terraform-google-modules/org-policy/google"
-  version     = "~> 4.0"
+  version     = "~> 7.0"
   constraint  = "compute.vmExternalIpAccess"
   policy_for  = "folder"
   folder_id   = local.folder_trusted
@@ -40,7 +40,7 @@ module "external_ip_policy" {
 
 module "network_policy" {
   source      = "terraform-google-modules/org-policy/google"
-  version     = "~> 4.0"
+  version     = "~> 7.0"
   policy_for  = "folder"
   folder_id   = local.folder_trusted
   constraint  = "compute.skipDefaultNetworkCreation"
@@ -50,7 +50,7 @@ module "network_policy" {
 
 module "serial_port_access_policy" {
   source      = "terraform-google-modules/org-policy/google"
-  version     = "~> 4.0"
+  version     = "~> 7.0"
   policy_for  = "folder"
   folder_id   = local.folder_trusted
   constraint  = "compute.disableSerialPortAccess"
@@ -60,7 +60,7 @@ module "serial_port_access_policy" {
 
 module "serial_port_logging_policy" {
   source      = "terraform-google-modules/org-policy/google"
-  version     = "~> 4.0"
+  version     = "~> 7.0"
   policy_for  = "folder"
   folder_id   = local.folder_trusted
   constraint  = "compute.disableSerialPortLogging"
@@ -70,7 +70,7 @@ module "serial_port_logging_policy" {
 
 module "ssh_policy" {
   source      = "terraform-google-modules/org-policy/google"
-  version     = "~> 4.0"
+  version     = "~> 7.0"
   policy_for  = "folder"
   folder_id   = local.folder_trusted
   constraint  = "compute.requireOsLogin"
@@ -80,7 +80,7 @@ module "ssh_policy" {
 
 module "protocol_forwarding_creation" {
   source            = "terraform-google-modules/org-policy/google"
-  version           = "~> 4.0"
+  version           = "~> 7.0"
   constraint        = "compute.restrictProtocolForwardingCreationForTypes"
   policy_for        = "folder"
   folder_id         = local.folder_trusted
@@ -91,7 +91,7 @@ module "protocol_forwarding_creation" {
 
 module "vpc_subnet_policy" {
   source            = "terraform-google-modules/org-policy/google"
-  version           = "~> 4.0"
+  version           = "~> 7.0"
   constraint        = "compute.restrictSharedVpcSubnetworks"
   policy_for        = "folder"
   folder_id         = local.folder_trusted

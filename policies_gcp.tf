@@ -25,7 +25,7 @@
 
 module "drz_policy" {
   source            = "terraform-google-modules/org-policy/google"
-  version           = "~> 4.0"
+  version           = "~> 7.0"
   constraint        = "gcp.resourceLocations"
   policy_for        = "folder"
   folder_id         = local.folder_trusted

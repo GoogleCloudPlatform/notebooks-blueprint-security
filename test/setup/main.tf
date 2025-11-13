@@ -32,7 +32,7 @@ locals {
 
 module "project_services_analytics" {
   source  = "terraform-google-modules/project-factory/google//modules/project_services"
-  version = "4.0.0"
+  version = "18.2.0"
 
   project_id = var.project_trusted_analytics
 
@@ -53,7 +53,7 @@ module "project_services_analytics" {
 
 module "project_services_data" {
   source  = "terraform-google-modules/project-factory/google//modules/project_services"
-  version = "4.0.0"
+  version = "18.2.0"
 
   project_id = var.project_trusted_data
 
@@ -67,7 +67,7 @@ module "project_services_data" {
 
 module "project_services_kms" {
   source  = "terraform-google-modules/project-factory/google//modules/project_services"
-  version = "4.0.0"
+  version = "18.2.0"
 
   project_id = var.project_trusted_kms
 

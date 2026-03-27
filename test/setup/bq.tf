@@ -126,7 +126,7 @@ resource "null_resource" "download_sample_cc_into_gcs" {
     tmpfile=$(mktemp)
     echo ${google_service_account_key.int_test.private_key} | base64 --decode > $tmpfile
     gcloud auth activate-service-account --key-file=$tmpfile
-    gsutil cp solution-test/${local.sample_csv_name}  ${module.tmp_data.bucket.url}
+    gcloud storage cp solution-test/${local.sample_csv_name}  ${module.tmp_data.bucket.url}
     rm -fr solution-test/
     EOF
   }

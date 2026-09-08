@@ -26,7 +26,7 @@
 
 module "service_account_policy" {
   source      = "terraform-google-modules/org-policy/google"
-  version     = "~> 4.0"
+  version     = "~> 7.0"
   policy_for  = "folder"
   folder_id   = local.folder_trusted
   constraint  = "iam.disableServiceAccountCreation"
@@ -38,7 +38,7 @@ module "service_account_policy" {
 
 module "service_account_key_policy" {
   source      = "terraform-google-modules/org-policy/google"
-  version     = "~> 4.0"
+  version     = "~> 7.0"
   policy_for  = "folder"
   folder_id   = local.folder_trusted
   constraint  = "iam.disableServiceAccountKeyCreation"
@@ -48,7 +48,7 @@ module "service_account_key_policy" {
 
 module "iam_grant_policy" {
   source      = "terraform-google-modules/org-policy/google"
-  version     = "~> 4.0"
+  version     = "~> 7.0"
   policy_for  = "folder"
   folder_id   = local.folder_trusted
   constraint  = "iam.automaticIamGrantsForDefaultServiceAccounts"

@@ -63,7 +63,7 @@ resource "google_project_iam_member" "notebook_instance_caip" {
 # create custom role from dataViewer that doesn't allow export
 module "role_restricted_data_viewer" {
   source  = "terraform-google-modules/iam/google//modules/custom_role_iam"
-  version = "~> 6.4"
+  version = "~> 8.0"
 
   target_level = "project"
   target_id    = var.project_trusted_data

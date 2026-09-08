@@ -44,7 +44,7 @@ module "kms_data" {
 
 module "bootstrap" {
   source  = "terraform-google-modules/cloud-storage/google//modules/simple_bucket"
-  version = "~> 1.7"
+  version = "~> 12.0"
 
   project_id    = var.project_trusted_kms
   name          = local.bootstrap_bkt_name
